@@ -4,6 +4,8 @@
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
+      <itemPath>BundlerParser.h</itemPath>
+      <itemPath>Controlls.h</itemPath>
       <itemPath>ShaderHandler.h</itemPath>
       <itemPath>cube.h</itemPath>
     </logicalFolder>
@@ -44,6 +46,10 @@
           <commandLine>-std=c++0x -lX11 -lGL -lGLEW -lglfw</commandLine>
         </ccTool>
       </compileType>
+      <item path="BundlerParser.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Controlls.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="ShaderHandler.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="cube.h" ex="false" tool="3" flavor2="0">
@@ -72,6 +78,10 @@
           <developmentMode>5</developmentMode>
         </asmTool>
       </compileType>
+      <item path="BundlerParser.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Controlls.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="ShaderHandler.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="cube.h" ex="false" tool="3" flavor2="0">

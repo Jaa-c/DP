@@ -25,6 +25,7 @@ public:
 	ShaderHandler() {
 		g_ProgramId = 0;
 	}
+	
 	~ShaderHandler() {}
 	
 	void compileShaderProgram(ShaderList shader, bool vert, bool geom, bool frag) {
