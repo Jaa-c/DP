@@ -120,7 +120,7 @@ const int NUM_CUBE_INDICES  = sizeof(CUBE_INDEX_ARRAY) / sizeof(GLubyte);
 inline void pgr2DrawCube()
 {
    GLboolean vertex_array   = true;//glIsEnabled(GL_VERTEX_ARRAY);
-   GLboolean normal_array   = true;//glIsEnabled(GL_NORMAL_ARRAY);
+   GLboolean normal_array   = false;//glIsEnabled(GL_NORMAL_ARRAY);
    GLboolean texcoord_array = false;//glIsEnabled(GL_TEXTURE_COORD_ARRAY);
 
    glEnableClientState(GL_VERTEX_ARRAY);

@@ -13,17 +13,29 @@
 #include <fstream>
 #include <sstream>
 #include <algorithm>
+#include <stdexcept>
 
 #include "lib/glm/core/type_mat3x3.hpp"
 
 struct Point {
-	glm::vec3 position;
+	float x;
+	float y;
+	float z;
 	
 	Point() {};
-	Point(int _x, int _y, int _z) : position(_x, _y, _z) {}
+	Point(int _x, int _y, int _z) : x(_x), y(_y), z(_z) {}
 	
 	float & operator[] (int i) {
-		return position[i];
+		switch(i) {
+			case 0:
+				return x;
+			case 1:
+				return y;
+			case 2:
+				return z;
+			default:
+				throw std::out_of_range("");
+		}
 	}
 };
 
@@ -33,7 +45,6 @@ struct Camera {
 	
 	float focalL;
 	float d1, d2;
-	
 };
 
 class BundlerParser {
@@ -129,17 +140,14 @@ public:
 			
 			points.push_back(point);
 		}
-		
-		std::cout << "points: " << points.size() << "\n";
-			
-	
+					
 	}
 	
 	std::vector<Camera> * getCameras() {
 		return &cameras;
 	}
 	
-	std::vector<Point> * getPoint()  {
+	std::vector<Point> * getPoints()  {
 		return &points;
 	}
 	

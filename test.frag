@@ -17,15 +17,15 @@ void main() {
 
 	vec3 N = normalize(In.v_Normal);
 	vec3 L = normalize(lp - In.v_ViewPos);
-	float diffuse = max(dot(N, L), 0.0);
+	float diffuse = max(dot(N, L), 0.0f);
 
 	vec3 E = normalize(-In.v_ViewPos);
 	vec3 R = normalize(-reflect(L, N));
 	
-	float specular = pow(max(dot(R, E), 0.0), 32.0);
+	float specular = pow(max(dot(R, E), 0.0f), 32.0f);
 	
-	vec3 color = min(vec3(0.8f, 0.2f, 0.2f) * diffuse + 0, 1.0f);
+	vec3 color = min(vec3(0.8f, 0.2f, 0.2f) * diffuse + specular, 1.0f);
 	
-	a_FragColor = vec4(color, 1.0);
+	a_FragColor = vec4(color, 1.0f);
 
 }

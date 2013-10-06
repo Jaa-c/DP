@@ -10,77 +10,82 @@
 
 #include <iostream>
 
+
 class ShaderHandler {
-private:
-	GLuint g_ProgramId;		// Shader program id
+public:
+	/// list of avaiable shaders
+	enum ShaderList {
+		SHADER_TEST,
+		SHADER_POINTS,
+		SIZE,
+	};
 	
-	const std::string SHADER_TEST_SRC = "test";
+	
+private:
+	/// shader file names
+	const std::string SHADER_SRC[SIZE] = {
+		"test",
+		"points"
+	};
+	
+	/// Shader program ids
+	GLuint g_ProgramId[SIZE];		
 	
 public:
 
-	enum ShaderList {
-		SHADER_TEST,
-	};
-	
-	ShaderHandler() {
-		g_ProgramId = 0;
-	}
+	ShaderHandler() {}
 	
 	~ShaderHandler() {}
 	
 	void compileShaderProgram(ShaderList shader, bool vert, bool geom, bool frag) {
-		std::string name;
-		switch(shader) {
-			case SHADER_TEST:
-				name = SHADER_TEST_SRC;
-				break;
-		}
+		
+		std::string name = SHADER_SRC[shader];
 		
 		// Delete shader program if exists
-		if (g_ProgramId) {
-			glDeleteProgram(g_ProgramId);
+		if (g_ProgramId[shader]) {
+			glDeleteProgram(g_ProgramId[shader]);
 		}
 
 		// Create shader program object
-		g_ProgramId = glCreateProgram();
+		g_ProgramId[shader] = glCreateProgram();
 
 		if (vert) {
 			std::string n = name + ".vert";
 			GLuint id = createShaderFromFile(GL_VERTEX_SHADER, n.c_str());
-			glAttachShader(g_ProgramId, id);
+			glAttachShader(g_ProgramId[shader], id);
 			glDeleteShader(id);
 		}
 
 		if (geom) {
 			std::string n = name + ".geom";
 			GLuint id = createShaderFromFile(GL_GEOMETRY_SHADER, n.c_str());
-			glAttachShader(g_ProgramId, id);
+			glAttachShader(g_ProgramId[shader], id);
 			glDeleteShader(id);
 		}
 
 		if (frag) {
 			std::string n = name + ".frag";
 			GLuint id = createShaderFromFile(GL_FRAGMENT_SHADER, n.c_str());
-			glAttachShader(g_ProgramId, id);
+			glAttachShader(g_ProgramId[shader], id);
 			glDeleteShader(id);
 		}
 
 		// Link shader program
-		glLinkProgram(g_ProgramId);
+		glLinkProgram(g_ProgramId[shader]);
 
-		if (!checkProgramLinkStatus(g_ProgramId)) {
-			checkProgramInfoLog(g_ProgramId);
+		if (!checkProgramLinkStatus(g_ProgramId[shader])) {
+			checkProgramInfoLog(g_ProgramId[shader]);
 			printf("Shader program creation failed.\n\n");
-			glDeleteProgram(g_ProgramId);
-			g_ProgramId  = 0;
+			glDeleteProgram(g_ProgramId[shader]);
+			g_ProgramId[shader]  = 0;
 			return;
 		} else {
 			printf("Shader program compiled successfully.\n\n");
 		}
 	}
 	
-	GLuint getProgramId() {
-		return g_ProgramId;
+	GLuint getProgramId(ShaderList shader) {
+		return g_ProgramId[shader];
 	}
 
 private:
@@ -97,7 +102,8 @@ private:
 				break;
 			case GL_GEOMETRY_SHADER: std::cout << "geometry shader creation ... ";
 				break;
-			default: return 0;
+			default: 
+				return 0;
 		}
 
 		GLuint shader_id = glCreateShader(shader_type);
@@ -200,8 +206,6 @@ private:
 		}
 	}
 
-
 };
-
 
 #endif	/* SHADERHANDLER_H */

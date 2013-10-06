@@ -24,20 +24,11 @@
 
 // GLSL variables
 GLuint g_WireMode = 0;
+GLuint pointsVBO = 0;
 
 ShaderHandler *shaderHandler;
 Controlls *controlls;
-
-glm::mat4 g_CameraProjectionMatrix;
-
-void printMat4(glm::mat4 &m) {
-	std::cout << m[0][0] << " "<< m[0][1] << " "<< m[0][2] << " "<< m[0][3] << "\n";
-	std::cout << m[1][0] << " "<< m[1][1] << " "<< m[1][2] << " "<< m[1][3] << "\n";
-	std::cout << m[2][0] << " "<< m[2][1] << " "<< m[2][2] << " "<< m[2][3] << "\n";
-	std::cout << m[3][0] << " "<< m[3][1] << " "<< m[3][2] << " "<< m[3][3] << "\n";
-		
-}
-
+BundlerParser bp;
 
 void initGL() {
 	
@@ -48,7 +39,18 @@ void initGL() {
 	glDisable(GL_CULL_FACE);
 	
 	shaderHandler->compileShaderProgram(ShaderHandler::SHADER_TEST, true, false, true);
+	shaderHandler->compileShaderProgram(ShaderHandler::SHADER_POINTS, true, false, true);
+
+	glGenBuffers(1, &pointsVBO);
 	
+	glBindBuffer(GL_ARRAY_BUFFER, pointsVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 3 * bp.getPoints()->size(), &bp.getPoints()->at(0).x, GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0); //index 0, 3 floats per vertex
+    //glEnableVertexAttribArray(0);//Enable attribute index 0 as being used 
+	
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	
+
 }
 
 void main_loop() {
@@ -56,31 +58,46 @@ void main_loop() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
     glPolygonMode(GL_FRONT_AND_BACK, g_WireMode ? GL_LINE : GL_FILL);
-	glDisable(GL_CULL_FACE);
+	
 	
 	controlls->updateCameraViewMatrix();
 	
 	glm::mat4 * modelView = controlls->getModelViewMatrix();
 	glm::mat4 * projection = controlls->getProjectionMatrix();
 	
-    // Turn on programmable pipeline
-    if (true) {
-        glUseProgram(shaderHandler->getProgramId());    // Active shader program
-		
-		glm::mat3 normalM = glm::inverseTranspose(glm::mat3(*modelView));
-		
-		glUniformMatrix4fv(glGetUniformLocation(shaderHandler->getProgramId(), "u_ModelViewMatrix"), 1, GL_FALSE, &(*modelView)[0][0]);
-		
-		glUniformMatrix4fv(glGetUniformLocation(shaderHandler->getProgramId(), "u_ProjectionMatrix"), 1, GL_FALSE, &(*projection)[0][0]);
-    
-		glUniformMatrix3fv(glGetUniformLocation(shaderHandler->getProgramId(), "u_NormalMatrix"), 1, GL_FALSE, &normalM[0][0]);
-    
-	}
-	
-	pgr2DrawCube();
+	ShaderHandler::ShaderList shader = ShaderHandler::SHADER_TEST;
+	glUseProgram(shaderHandler->getProgramId(shader));    // Active shader program
 
-    // Turn off programmable pipeline
-    glUseProgram(0);
+	glm::mat3 normalM = glm::inverseTranspose(glm::mat3(*modelView));
+
+	glUniformMatrix4fv(glGetUniformLocation(shaderHandler->getProgramId(shader), "u_ModelViewMatrix"), 1, GL_FALSE, &(*modelView)[0][0]);
+	glUniformMatrix4fv(glGetUniformLocation(shaderHandler->getProgramId(shader), "u_ProjectionMatrix"), 1, GL_FALSE, &(*projection)[0][0]);
+	glUniformMatrix3fv(glGetUniformLocation(shaderHandler->getProgramId(shader), "u_NormalMatrix"), 1, GL_FALSE, &normalM[0][0]);
+    
+	pgr2DrawCube();
+	
+	glUseProgram(0);
+	
+	glEnable(GL_POINT_SPRITE);
+	glEnable(GL_PROGRAM_POINT_SIZE );
+		
+	shader = ShaderHandler::SHADER_POINTS;
+	glUseProgram(shaderHandler->getProgramId(shader));    // Active shader program
+	
+	glUniformMatrix4fv(glGetUniformLocation(shaderHandler->getProgramId(shader), "u_ModelViewMatrix"), 1, GL_FALSE, &(*modelView)[0][0]);
+	glUniformMatrix4fv(glGetUniformLocation(shaderHandler->getProgramId(shader), "u_ProjectionMatrix"), 1, GL_FALSE, &(*projection)[0][0]);
+	
+	glEnableClientState(GL_VERTEX_ARRAY);
+	
+	glBindBuffer(GL_ARRAY_BUFFER, pointsVBO);
+	glEnableVertexAttribArray(0);
+	glDrawArrays(GL_POINTS, 0, bp.getPoints()->size());
+	glDisableVertexAttribArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	
+	glDisableClientState( GL_VERTEX_ARRAY ); 
+	
+	glUseProgram(0);
 
 }
 
@@ -99,9 +116,8 @@ void mousePositionCallback(int x, int y) {
 
 int main(int argc, char** argv) {
 	
-	BundlerParser bp;
+	
 	bp.parseFile("/home/jaa/Dokumenty/FEL/DP/data/bundle.rd.out");
-	return 0;
 	
 	const int window_width = 800;
 	const int window_height = 600;
