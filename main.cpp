@@ -74,29 +74,15 @@ void main_loop() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glPolygonMode(GL_FRONT_AND_BACK, g_WireMode ? GL_LINE : GL_FILL);
 	
-	//controlls->updateCameraViewMatrix();
+	controlls->updateCameraViewMatrix();
 	
 	glm::mat4 * modelView = controlls->getModelViewMatrix();
 	glm::mat4 * projection = controlls->getProjectionMatrix();
-	
-	
-	ShaderHandler::ShaderList shader = ShaderHandler::SHADER_TEST;
-//	glUseProgram(shaderHandler->getProgramId(shader));    // Active shader program
-//
-//	glm::mat3 normalM = glm::inverseTranspose(glm::mat3(*modelView));
-//
-//	glUniformMatrix4fv(glGetUniformLocation(shaderHandler->getProgramId(shader), "u_ModelViewMatrix"), 1, GL_FALSE, &(*modelView)[0][0]);
-//	glUniformMatrix4fv(glGetUniformLocation(shaderHandler->getProgramId(shader), "u_ProjectionMatrix"), 1, GL_FALSE, &(*projection)[0][0]);
-//	glUniformMatrix3fv(glGetUniformLocation(shaderHandler->getProgramId(shader), "u_NormalMatrix"), 1, GL_FALSE, &normalM[0][0]);
-//    
-//	pgr2DrawCube();
-//	
-//	glUseProgram(0);
-	
+		
 	glEnable(GL_POINT_SPRITE);
 	glEnable(GL_PROGRAM_POINT_SIZE );
 		
-	shader = ShaderHandler::SHADER_POINTS;
+	ShaderHandler::ShaderList shader = ShaderHandler::SHADER_POINTS;
 	glUseProgram(shaderHandler->getProgramId(shader));    // Active shader program
 	
 	glUniformMatrix4fv(glGetUniformLocation(shaderHandler->getProgramId(shader), "u_ModelViewMatrix"), 1, GL_FALSE, &(*modelView)[0][0]);
@@ -127,7 +113,6 @@ void main_loop() {
 	
 	glDrawArrays(GL_POINTS, 0, bp.getCameras()->size());
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	
 	
 	glUseProgram(0);
 

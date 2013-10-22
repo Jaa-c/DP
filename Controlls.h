@@ -15,6 +15,8 @@ private:
 	BundlerParser * bp;
 	int cameraId;
 	
+	bool freeWalk;
+	
 	//Transformation matrixes
 	glm::mat4 g_CameraProjectionMatrix; // Camera projection transformation
 	glm::mat4 g_CameraViewMatrix; // Camera view transformation
@@ -33,7 +35,7 @@ private:
 
 public:
 
-	Controlls(int winWidth, int winHeight, BundlerParser * bp) : cameraId(0), mouseRotationEnabled(false) {
+	Controlls(int winWidth, int winHeight, BundlerParser * bp) : cameraId(0), mouseRotationEnabled(false), freeWalk(true) {
 		this->bp = bp;
 		cameraPos = glm::vec3(0.0f, -2.0f, -4.0f);
 		cameraRot = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -48,6 +50,9 @@ public:
 	 * this code is inspired by NVIDIA CUDA samples v5.0 (Smoke Particles)
 	 */
 	void updateCameraViewMatrix() {
+		if(!freeWalk) {
+			return;
+		}
 		//camera inertia
 		cameraPosLag += (cameraPos - cameraPosLag) * inertia;
 		cameraRotLag += (cameraRot - cameraRotLag) * inertia;
@@ -66,32 +71,35 @@ public:
 			return;
 		}
 		switch (key) {
-			case 'S':
-			case 's': // backwards
+			case 'S':// backwards
 				cameraPos[0] -= g_CameraViewMatrix[0][2] * walkSpeed;
 				cameraPos[1] -= g_CameraViewMatrix[1][2] * walkSpeed;
 				cameraPos[2] -= g_CameraViewMatrix[2][2] * walkSpeed;
 				break;
-			case 'W':
-			case 'w': // forwards
+			case 'W':// forwards
 				cameraPos[0] += g_CameraViewMatrix[0][2] * walkSpeed;
 				cameraPos[1] += g_CameraViewMatrix[1][2] * walkSpeed;
 				cameraPos[2] += g_CameraViewMatrix[2][2] * walkSpeed;
 				break;
-			case 'A':
-			case 'a': //left
+			case 'A'://left
 				cameraPos[0] += g_CameraViewMatrix[0][0] * walkSpeed;
 				cameraPos[1] += g_CameraViewMatrix[1][0] * walkSpeed;
 				cameraPos[2] += g_CameraViewMatrix[2][0] * walkSpeed;
 				break;
-			case 'D':
-			case 'd': //right
+			case 'D'://right
 				cameraPos[0] -= g_CameraViewMatrix[0][0] * walkSpeed;
 				cameraPos[1] -= g_CameraViewMatrix[1][0] * walkSpeed;
 				cameraPos[2] -= g_CameraViewMatrix[2][0] * walkSpeed;
 				break;
+			case 'P':
+				freeWalk = !freeWalk;
+				setCameraParams();
+				break;
 			case GLFW_KEY_LEFT:
-				cameraId = (cameraId - 1) % bp->getCameras()->size();
+				cameraId--;
+				if(cameraId < 0) {
+					cameraId = bp->getCameras()->size()-1;
+				}
 				setCameraParams();
 				break;
 			case GLFW_KEY_RIGHT:
@@ -135,7 +143,8 @@ public:
 	
 	void setCameraParams() {
 		Camera * cam = &bp->getCameras()->at(cameraId);
-		glm::vec3 p = -1 * glm::transpose(cam->rotate) * cam->translate;
+		
+		glm::vec3 p = cam->translate;//-1 * glm::transpose(cam->rotate) * cam->translate;
 		g_CameraViewMatrix[3][0] = p[0];
 		g_CameraViewMatrix[3][1] = p[1];
 		g_CameraViewMatrix[3][2] = p[2];
