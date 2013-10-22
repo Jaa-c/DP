@@ -8,8 +8,13 @@
 #ifndef CONTROLLS_H
 #define	CONTROLLS_H
 
+#include "BundlerParser.h"
+
 class Controlls {
 private:
+	BundlerParser * bp;
+	int cameraId;
+	
 	//Transformation matrixes
 	glm::mat4 g_CameraProjectionMatrix; // Camera projection transformation
 	glm::mat4 g_CameraViewMatrix; // Camera view transformation
@@ -23,19 +28,18 @@ private:
 
 	int ox, oy;
 	const float inertia = 0.08f; //mouse inertia
-	const float rotateSpeed = 0.4f; //mouse rotate speed (sensitivity)
-	const float walkSpeed = 0.05f; //walking speed (wasd)
+	const float rotateSpeed = 0.2f; //mouse rotate speed (sensitivity)
+	const float walkSpeed = 0.25f; //walking speed (wasd)
 
 public:
 
-	Controlls(int winWidth, int winHeight) {
+	Controlls(int winWidth, int winHeight, BundlerParser * bp) : cameraId(0), mouseRotationEnabled(false) {
+		this->bp = bp;
 		cameraPos = glm::vec3(0.0f, -2.0f, -4.0f);
 		cameraRot = glm::vec3(0.0f, 0.0f, 0.0f);
 
 		cameraPosLag = cameraPos;
 		cameraRotLag = cameraRot;
-
-		mouseRotationEnabled = false;
 
 		g_CameraProjectionMatrix = glm::perspective(55.0f, GLfloat(winWidth) / GLfloat(winHeight), 0.010f, 1000.0f);
 	}
@@ -58,6 +62,9 @@ public:
 	 * Callback for keyboard actions
 	 */
 	void keyboardAction(int key, int action) {
+		if(action != GLFW_PRESS) {
+			return;
+		}
 		switch (key) {
 			case 'S':
 			case 's': // backwards
@@ -82,6 +89,14 @@ public:
 				cameraPos[0] -= g_CameraViewMatrix[0][0] * walkSpeed;
 				cameraPos[1] -= g_CameraViewMatrix[1][0] * walkSpeed;
 				cameraPos[2] -= g_CameraViewMatrix[2][0] * walkSpeed;
+				break;
+			case GLFW_KEY_LEFT:
+				cameraId = (cameraId - 1) % bp->getCameras()->size();
+				setCameraParams();
+				break;
+			case GLFW_KEY_RIGHT:
+				cameraId = (cameraId + 1) % bp->getCameras()->size();
+				setCameraParams();
 				break;
 		}
 	}
@@ -116,6 +131,28 @@ public:
 
 	glm::mat4 * getProjectionMatrix() {
 		return &g_CameraProjectionMatrix;
+	}
+	
+	void setCameraParams() {
+		Camera * cam = &bp->getCameras()->at(cameraId);
+		glm::vec3 p = -1 * glm::transpose(cam->rotate) * cam->translate;
+		g_CameraViewMatrix[3][0] = p[0];
+		g_CameraViewMatrix[3][1] = p[1];
+		g_CameraViewMatrix[3][2] = p[2];
+		
+		glm::mat3 rot = cam->rotate;
+		
+		g_CameraViewMatrix[0][0] = rot[0][0];
+		g_CameraViewMatrix[0][1] = rot[0][1];
+		g_CameraViewMatrix[0][2] = rot[0][2];
+		
+		g_CameraViewMatrix[1][0] = rot[1][0];
+		g_CameraViewMatrix[1][1] = rot[1][1];
+		g_CameraViewMatrix[1][2] = rot[1][2];
+		
+		g_CameraViewMatrix[2][0] = rot[2][0];
+		g_CameraViewMatrix[2][1] = rot[2][1];
+		g_CameraViewMatrix[2][2] = rot[2][2];
 	}
 
 };

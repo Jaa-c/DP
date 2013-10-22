@@ -24,6 +24,8 @@
                    projectFiles="false"
                    kind="IMPORTANT_FILES_FOLDER">
       <itemPath>Makefile</itemPath>
+      <itemPath>cameras.frag</itemPath>
+      <itemPath>cameras.vert</itemPath>
       <itemPath>points.frag</itemPath>
       <itemPath>points.vert</itemPath>
       <itemPath>test.frag</itemPath>

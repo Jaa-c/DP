@@ -17,6 +17,7 @@ public:
 	enum ShaderList {
 		SHADER_TEST,
 		SHADER_POINTS,
+		SHADER_CAMERAS,
 		SIZE,
 	};
 	
@@ -25,7 +26,8 @@ private:
 	/// shader file names
 	const std::string SHADER_SRC[SIZE] = {
 		"test",
-		"points"
+		"points",
+		"cameras"
 	};
 	
 	/// Shader program ids
