@@ -9,6 +9,7 @@
 #define	CONTROLLS_H
 
 #include "BundlerParser.h"
+#include "glm/core/type_mat4x4.hpp"
 
 class Controlls {
 private:
@@ -43,7 +44,7 @@ public:
 		cameraPosLag = cameraPos;
 		cameraRotLag = cameraRot;
 
-		g_CameraProjectionMatrix = glm::perspective(55.0f, GLfloat(winWidth) / GLfloat(winHeight), 0.010f, 1000.0f);
+		g_CameraProjectionMatrix = glm::perspective(65.0f, GLfloat(winWidth) / GLfloat(winHeight), 0.010f, 1000.0f);
 	}
 
 	/**
@@ -144,24 +145,21 @@ public:
 	void setCameraParams() {
 		Camera * cam = &bp->getCameras()->at(cameraId);
 		
-		glm::vec3 p = cam->translate;//-1 * glm::transpose(cam->rotate) * cam->translate;
-		g_CameraViewMatrix[3][0] = p[0];
-		g_CameraViewMatrix[3][1] = p[1];
-		g_CameraViewMatrix[3][2] = p[2];
+		g_CameraViewMatrix[3][0] = cam->translate[0];
+		g_CameraViewMatrix[3][1] = cam->translate[1];
+		g_CameraViewMatrix[3][2] = cam->translate[2];
 		
-		glm::mat3 rot = cam->rotate;
+		g_CameraViewMatrix[0][0] = cam->rotate[0][0];
+		g_CameraViewMatrix[0][1] = cam->rotate[0][1];
+		g_CameraViewMatrix[0][2] = cam->rotate[0][2];
 		
-		g_CameraViewMatrix[0][0] = rot[0][0];
-		g_CameraViewMatrix[0][1] = rot[0][1];
-		g_CameraViewMatrix[0][2] = rot[0][2];
+		g_CameraViewMatrix[1][0] = cam->rotate[1][0];
+		g_CameraViewMatrix[1][1] = cam->rotate[1][1];
+		g_CameraViewMatrix[1][2] = cam->rotate[1][2];
 		
-		g_CameraViewMatrix[1][0] = rot[1][0];
-		g_CameraViewMatrix[1][1] = rot[1][1];
-		g_CameraViewMatrix[1][2] = rot[1][2];
-		
-		g_CameraViewMatrix[2][0] = rot[2][0];
-		g_CameraViewMatrix[2][1] = rot[2][1];
-		g_CameraViewMatrix[2][2] = rot[2][2];
+		g_CameraViewMatrix[2][0] = cam->rotate[2][0];
+		g_CameraViewMatrix[2][1] = cam->rotate[2][1];
+		g_CameraViewMatrix[2][2] = cam->rotate[2][2];
 	}
 
 };

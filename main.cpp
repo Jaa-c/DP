@@ -16,10 +16,13 @@
 #include <iostream>
 #include <cassert>
 
+const unsigned GL_ID_NONE = (unsigned)~(unsigned(0));
+
 #include "cube.h"
 #include "ShaderHandler.h"
 #include "Controlls.h"
 #include "BundlerParser.h"
+#include "ObjectData.h"
 
 
 // GLSL variables
@@ -38,6 +41,7 @@ void printMat(glm::mat4 &m) {
 	std::cout <<m[1][0]<<" "<<m[1][1]<<" "<<m[1][2]<<" "<<m[1][3]<<"\n";
 	std::cout <<m[2][0]<<" "<<m[2][1]<<" "<<m[2][2]<<" "<<m[2][3]<<"\n";
 	std::cout <<m[3][0]<<" "<<m[3][1]<<" "<<m[3][2]<<" "<<m[3][3]<<"\n\n";
+	
 }
 
 void initGL() {
