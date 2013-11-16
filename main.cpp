@@ -18,11 +18,13 @@
 
 const unsigned GL_ID_NONE = (unsigned)~(unsigned(0));
 
+#include "Log.h"
 #include "cube.h"
+#include "ObjectData.h"
 #include "ShaderHandler.h"
+#include "Renderer.h"
 #include "Controlls.h"
 #include "BundlerParser.h"
-#include "ObjectData.h"
 
 
 // GLSL variables
@@ -33,6 +35,8 @@ GLuint camPosVBO = 0;
 ShaderHandler *shaderHandler;
 Controlls *controlls;
 BundlerParser bp;
+Renderer renderer;
+ObjectData *object;
 
 float * cameraPos;
 
@@ -83,40 +87,41 @@ void main_loop() {
 	glm::mat4 * modelView = controlls->getModelViewMatrix();
 	glm::mat4 * projection = controlls->getProjectionMatrix();
 		
-	glEnable(GL_POINT_SPRITE);
-	glEnable(GL_PROGRAM_POINT_SIZE );
+//	glEnable(GL_POINT_SPRITE);
+//	glEnable(GL_PROGRAM_POINT_SIZE );
 		
-	ShaderHandler::ShaderList shader = ShaderHandler::SHADER_POINTS;
+	ShaderHandler::ShaderList shader = ShaderHandler::SHADER_BASIC;//ShaderHandler::SHADER_POINTS;
 	glUseProgram(shaderHandler->getProgramId(shader));    // Active shader program
 	
 	glUniformMatrix4fv(glGetUniformLocation(shaderHandler->getProgramId(shader), "u_ModelViewMatrix"), 1, GL_FALSE, &(*modelView)[0][0]);
 	glUniformMatrix4fv(glGetUniformLocation(shaderHandler->getProgramId(shader), "u_ProjectionMatrix"), 1, GL_FALSE, &(*projection)[0][0]);
 	
+	renderer.draw(*object);
 	
-	glBindBuffer(GL_ARRAY_BUFFER, pointsVBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 3 * bp.getPoints()->size(), &bp.getPoints()->at(0).x, GL_STATIC_DRAW); 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0); //index 0, 3 floats per vertex
-    glEnableVertexAttribArray(0);//Enable attribute index 0 as being used 
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	
-	glDrawArrays(GL_POINTS, 0, bp.getPoints()->size());
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	
-	shader = ShaderHandler::SHADER_CAMERAS;
-	glUseProgram(shaderHandler->getProgramId(shader));    // Active shader program
-	
-	glUniformMatrix4fv(glGetUniformLocation(shaderHandler->getProgramId(shader), "u_ModelViewMatrix"), 1, GL_FALSE, &(*modelView)[0][0]);
-	glUniformMatrix4fv(glGetUniformLocation(shaderHandler->getProgramId(shader), "u_ProjectionMatrix"), 1, GL_FALSE, &(*projection)[0][0]);
-	
-	
-	glGenBuffers(1, &camPosVBO);
-	glBindBuffer(GL_ARRAY_BUFFER, camPosVBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) *  bp.getCameras()->size() * 3, cameraPos, GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0); //index 0, 3 floats per vertex
-    glEnableVertexAttribArray(0);//Enable attribute index 0 as being used 
-	
-	glDrawArrays(GL_POINTS, 0, bp.getCameras()->size());
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
+//	glBindBuffer(GL_ARRAY_BUFFER, pointsVBO);
+//	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 3 * bp.getPoints()->size(), &bp.getPoints()->at(0).x, GL_STATIC_DRAW); 
+//    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0); //index 0, 3 floats per vertex
+//    glEnableVertexAttribArray(0);//Enable attribute index 0 as being used 
+//	glBindBuffer(GL_ARRAY_BUFFER, 0);
+//	
+//	glDrawArrays(GL_POINTS, 0, bp.getPoints()->size());
+//	glBindBuffer(GL_ARRAY_BUFFER, 0);
+//	
+//	shader = ShaderHandler::SHADER_CAMERAS;
+//	glUseProgram(shaderHandler->getProgramId(shader));    // Active shader program
+//	
+//	glUniformMatrix4fv(glGetUniformLocation(shaderHandler->getProgramId(shader), "u_ModelViewMatrix"), 1, GL_FALSE, &(*modelView)[0][0]);
+//	glUniformMatrix4fv(glGetUniformLocation(shaderHandler->getProgramId(shader), "u_ProjectionMatrix"), 1, GL_FALSE, &(*projection)[0][0]);
+//	
+//	
+//	glGenBuffers(1, &camPosVBO);
+//	glBindBuffer(GL_ARRAY_BUFFER, camPosVBO);
+//	glBufferData(GL_ARRAY_BUFFER, sizeof(float) *  bp.getCameras()->size() * 3, cameraPos, GL_STATIC_DRAW);
+//    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0); //index 0, 3 floats per vertex
+//    glEnableVertexAttribArray(0);//Enable attribute index 0 as being used 
+//	
+//	glDrawArrays(GL_POINTS, 0, bp.getCameras()->size());
+//	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	
 	glUseProgram(0);
 
@@ -160,6 +165,8 @@ int main(int argc, char** argv) {
 	bp.parseFile("/home/jaa/Dokumenty/FEL/DP/data/bundle.rd.out");
 	shaderHandler = new ShaderHandler();
 	controlls = new Controlls(window_width, window_height, &bp);
+	
+	object = new ObjectData(std::string("/home/jaa/Documents/FEL/DP/data/123D_catch/from_123D_low.obj"));
 	
     // Intialize GLFW   
     glfwInit();

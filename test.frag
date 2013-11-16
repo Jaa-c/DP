@@ -1,7 +1,5 @@
 #version 330 core
 
-uniform mat4 u_ModelViewMatrix;
-
 in block{
 	vec4 v_Position;
 	vec3 v_ViewPos;

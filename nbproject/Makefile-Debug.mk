@@ -42,8 +42,8 @@ OBJECTFILES= \
 CFLAGS=
 
 # CC Compiler Flags
-CCFLAGS=-std=c++0x -lX11 -lGL -lGLEW -lglfw
-CXXFLAGS=-std=c++0x -lX11 -lGL -lGLEW -lglfw
+CCFLAGS=-std=c++0x -lX11 -lGL -lGLEW -lglfw -lassimp
+CXXFLAGS=-std=c++0x -lX11 -lGL -lGLEW -lglfw -lassimp
 
 # Fortran Compiler Flags
 FFLAGS=

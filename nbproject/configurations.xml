@@ -6,8 +6,10 @@
                    projectFiles="true">
       <itemPath>BundlerParser.h</itemPath>
       <itemPath>Controlls.h</itemPath>
+      <itemPath>Log.h</itemPath>
       <itemPath>ModelLoader.h</itemPath>
       <itemPath>ObjectData.h</itemPath>
+      <itemPath>Renderer.h</itemPath>
       <itemPath>ShaderHandler.h</itemPath>
       <itemPath>cube.h</itemPath>
     </logicalFolder>
@@ -26,6 +28,8 @@
                    projectFiles="false"
                    kind="IMPORTANT_FILES_FOLDER">
       <itemPath>Makefile</itemPath>
+      <itemPath>basic.frag</itemPath>
+      <itemPath>../../../../../Dokumenty/FEL/DP/trunk/dp/basic.vert</itemPath>
       <itemPath>cameras.frag</itemPath>
       <itemPath>cameras.vert</itemPath>
       <itemPath>points.frag</itemPath>
@@ -48,16 +52,20 @@
           <incDir>
             <pElem>lib</pElem>
           </incDir>
-          <commandLine>-std=c++0x -lX11 -lGL -lGLEW -lglfw</commandLine>
+          <commandLine>-std=c++0x -lX11 -lGL -lGLEW -lglfw -lassimp</commandLine>
         </ccTool>
       </compileType>
       <item path="BundlerParser.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Controlls.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="Log.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="ModelLoader.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="ObjectData.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Renderer.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="ShaderHandler.h" ex="false" tool="3" flavor2="0">
       </item>
@@ -90,9 +98,13 @@
       </item>
       <item path="Controlls.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="Log.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="ModelLoader.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="ObjectData.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Renderer.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="ShaderHandler.h" ex="false" tool="3" flavor2="0">
       </item>

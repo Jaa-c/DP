@@ -13,6 +13,8 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
+#include "lib/glm/core/type.hpp"
+
 class ModelLoader {
 
 public:	
@@ -20,17 +22,18 @@ public:
 	(
 		const std::string &file,
 		std::vector<unsigned int> &outIndices,
-		std::vector<float> &outVertices,
-		std::vector<float> &outNormals
+		std::vector<glm::vec3> &outVertices,
+		std::vector<glm::vec3> &outNormals
 	) {
 		Assimp::Importer importer;
 		const aiScene* scene = importer.ReadFile(file, aiProcess_JoinIdenticalVertices);
+		
 		if(scene == NULL) {
+			Log::e("unable to load file: %s", importer.GetErrorString());
 			throw importer.GetErrorString();
 		}
 		
 		const aiMesh* mesh = scene->mMeshes[0];
-
 		outIndices.resize(mesh->mNumFaces * 3);
 
 		for (int i = 0; i < mesh->mNumFaces; ++i) {
@@ -41,22 +44,19 @@ public:
 			outIndices[i*3 + 2] = face.mIndices[2];
 		}
 
-		const int vertices = mesh->mNumVertices;
-		outVertices.resize(vertices * 3);
-		outNormals.resize(vertices * 3);
-		for (int i = 0; i < vertices; ++i) {
+		outVertices.resize(mesh->mNumVertices);
+		outNormals.resize(mesh->mNumVertices);
+		for (int i = 0; i < mesh->mNumVertices; ++i) {
 			if (mesh->HasPositions()) {
-				outVertices[i*3] = mesh->mVertices[i].x;
-				outVertices[i*3 + 1] = mesh->mVertices[i].y;
-				outVertices[i*3 + 2] = mesh->mVertices[i].z;
+				outVertices[i] = glm::vec3(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z);
 			}
 
 			if (mesh->HasNormals()) {
-				outNormals[i*3] = mesh->mNormals[i].x;
-				outNormals[i*3 + 1] = mesh->mNormals[i].x;
-				outNormals[i*3 + 2] = mesh->mNormals[i].x;
+				outNormals[i] = glm::vec3(mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z);
 			}
 		}
+		
+		Log::i("Loaded mesh with %d faces and %d vertices.", mesh->mNumFaces, mesh->mNumVertices);
 	}
 
 

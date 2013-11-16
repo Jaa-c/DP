@@ -18,6 +18,7 @@ public:
 		SHADER_TEST,
 		SHADER_POINTS,
 		SHADER_CAMERAS,
+		SHADER_BASIC,
 		SIZE,
 	};
 	
@@ -27,7 +28,8 @@ private:
 	const std::string SHADER_SRC[SIZE] = {
 		"test",
 		"points",
-		"cameras"
+		"cameras",
+		"basic"
 	};
 	
 	/// Shader program ids
@@ -77,12 +79,12 @@ public:
 
 		if (!checkProgramLinkStatus(g_ProgramId[shader])) {
 			checkProgramInfoLog(g_ProgramId[shader]);
-			printf("Shader program creation failed.\n\n");
+			Log::e("Shader program creation failed.");
 			glDeleteProgram(g_ProgramId[shader]);
 			g_ProgramId[shader]  = 0;
 			return;
 		} else {
-			printf("Shader program compiled successfully.\n\n");
+			Log::i("Shader program compiled successfully.");
 		}
 	}
 	
@@ -96,13 +98,13 @@ private:
 		if (source == NULL) {
 			return 0;
 		}
-
+		std::string log;
 		switch (shader_type) {
-			case GL_VERTEX_SHADER: std::cout << "vertex shader creation ... ";
+			case GL_VERTEX_SHADER: log = "vertex shader creation %s";
 				break;
-			case GL_FRAGMENT_SHADER: std::cout << "fragment shader creation ... ";
+			case GL_FRAGMENT_SHADER: log = "fragment shader creation %s";
 				break;
-			case GL_GEOMETRY_SHADER: std::cout << "geometry shader creation ... ";
+			case GL_GEOMETRY_SHADER: log = "geometry shader creation %s";
 				break;
 			default: 
 				return 0;
@@ -117,12 +119,12 @@ private:
 		glCompileShader(shader_id);
 
 		if (checkShaderCompileStatus(shader_id) != GL_TRUE) {
-			std::cout << "failed.\n";
+			Log::e(log, "failed");
 			checkShaderInfoLog(shader_id);
 			glDeleteShader(shader_id);
 			return 0;
 		} else {
-			std::cout << "successfull.\n";
+			Log::d(log, "successfull.");
 			return shader_id;
 		}
 	}

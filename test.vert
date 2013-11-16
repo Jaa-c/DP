@@ -17,7 +17,7 @@ void main () {
 	
 	vec4 viewPos = u_ModelViewMatrix * a_vertex;
 	Out.v_Normal = u_NormalMatrix * gl_Normal;
-	Out.v_ViewPos = viewPos.xyz / viewPos.w;
+	//Out.v_ViewPos = viewPos.xyz / viewPos.w;
 	
 	Out.v_Position =  u_ProjectionMatrix * viewPos;
 

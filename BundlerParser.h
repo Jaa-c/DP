@@ -80,7 +80,7 @@ public:
 		
 		if(std::getline(infile, line)) {
 			if(trim(line) != "# Bundle file v0.3") {
-				std::cout << "<BundlerParser> Doesn't seem to be bundler file\n";
+				Log::e("<BundlerParser> Doesn't seem to be bundler file");
 				return;
 			}
 		}
@@ -96,7 +96,7 @@ public:
 			return;
 		}
 		
-		std::cout << "<BundlerParser> Loading " << c << " cameras, " << p << " points\n";
+		Log::i("[BundlerParser] Loading %d cameras, %d points", c, p);
 		//parse cameras
 		for(int i = 0; i < c; ++i) {
 			std::getline(infile, line);
