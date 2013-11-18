@@ -40,6 +40,8 @@ public:
 				glBufferData(GL_ARRAY_BUFFER, data.getNormals().size() * sizeof(glm::vec3), &data.getNormals()[0], GL_STATIC_DRAW);
 				glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
 			}
+			
+			Log::d("initializing data");
 		}
 		
 		//draw geometry from VBO
@@ -49,16 +51,11 @@ public:
 		if (data.normalsID != GL_ID_NONE) {
 			glEnableVertexAttribArray(1);
 		}
-
-		if (data.texCoordsID != GL_ID_NONE) {
-			glEnableVertexAttribArray(2);
-		}
-
+		
 		glDrawElements(GL_TRIANGLES, data.getIndices().size(), GL_UNSIGNED_INT, 0);
 
 		glDisableVertexAttribArray(0);
 		glDisableVertexAttribArray(1);
-		glDisableVertexAttribArray(2);
 		glBindVertexArray(0);	
 	}
 

@@ -1,4 +1,4 @@
-#version 330 compatibility
+#version 330 core
 
 uniform mat4 u_ModelViewMatrix;
 uniform mat4 u_ProjectionMatrix;
@@ -10,15 +10,15 @@ layout(location = 2) in vec2 a_textureCoords;
 
 out block {
 	vec4 v_position;
-	vec3 v_viewPos;
+	vec4 v_viewPos;
 	vec3 v_normal;
 } Out;
 
 void main () {
 	
-	vec4 viewPos = u_ModelViewMatrix * a_vertex;
-	Out.v_Normal = u_NormalMatrix * gl_Normal;
-	Out.v_Position =  u_ProjectionMatrix * viewPos;
+	Out.v_viewPos = u_ModelViewMatrix * vec4(a_position, 1.0);
+	Out.v_normal = a_normal;
+	Out.v_position =  u_ProjectionMatrix * Out.v_viewPos;
 
-	gl_Position = Out.v_Position;
+	gl_Position = Out.v_position;
 }

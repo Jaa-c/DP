@@ -29,7 +29,7 @@ public:
 		const aiScene* scene = importer.ReadFile(file, aiProcess_JoinIdenticalVertices);
 		
 		if(scene == NULL) {
-			Log::e("unable to load file: %s", importer.GetErrorString());
+			Log::e("[ModelLoader] unable to load file: %s", importer.GetErrorString());
 			throw importer.GetErrorString();
 		}
 		
@@ -56,7 +56,7 @@ public:
 			}
 		}
 		
-		Log::i("Loaded mesh with %d faces and %d vertices.", mesh->mNumFaces, mesh->mNumVertices);
+		Log::i("[ModelLoader] Loaded mesh with %d faces and %d vertices.", mesh->mNumFaces, mesh->mNumVertices);
 	}
 
 

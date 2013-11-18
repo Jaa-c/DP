@@ -39,12 +39,12 @@ public:
 	Controlls(int winWidth, int winHeight, BundlerParser * bp) : cameraId(0), mouseRotationEnabled(false), freeWalk(true) {
 		this->bp = bp;
 		cameraPos = glm::vec3(0.0f, -2.0f, -4.0f);
-		cameraRot = glm::vec3(0.0f, 0.0f, 0.0f);
+		cameraRot = glm::vec3(0.0f, 250.0f, 0.0f);
 
 		cameraPosLag = cameraPos;
 		cameraRotLag = cameraRot;
 
-		g_CameraProjectionMatrix = glm::perspective(65.0f, GLfloat(winWidth) / GLfloat(winHeight), 0.010f, 1000.0f);
+		g_CameraProjectionMatrix = glm::perspective(65.0f, GLfloat(winWidth) / GLfloat(winHeight), 0.10f, 1000.0f);
 	}
 
 	/**
@@ -57,7 +57,7 @@ public:
 		//camera inertia
 		cameraPosLag += (cameraPos - cameraPosLag) * inertia;
 		cameraRotLag += (cameraRot - cameraRotLag) * inertia;
-
+		
 		// view transform
 		g_CameraViewMatrix = glm::rotate(glm::mat4(1.0f), cameraRotLag[0], glm::vec3(1.0, 0.0, 0.0));
 		g_CameraViewMatrix = glm::rotate(g_CameraViewMatrix, cameraRotLag[1], glm::vec3(0.0, 1.0, 0.0));
