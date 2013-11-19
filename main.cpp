@@ -33,6 +33,7 @@ const unsigned GL_ID_NONE = (unsigned)~(unsigned(0));
 GLuint g_WireMode = 0;
 GLuint pointsVBO = 0;
 GLuint camPosVBO = 0;
+GLuint pboId = 0;
 
 ShaderHandler *shaderHandler;
 Controlls *controlls;
@@ -64,7 +65,7 @@ void initGL() {
 	//shaderHandler->compileShaderProgram(ShaderHandler::SHADER_POINTS, true, false, true);
 	//shaderHandler->compileShaderProgram(ShaderHandler::SHADER_CAMERAS, true, false, true);
 	shaderHandler->compileShaderProgram(ShaderHandler::SHADER_BASIC, true, false, true);
-	
+		
 	return;
 	
 
@@ -104,33 +105,33 @@ void main_loop() {
 	glUniformMatrix4fv(glGetUniformLocation(shaderHandler->getProgramId(shader), "u_ModelViewMatrix"), 1, GL_FALSE, &(*modelView)[0][0]);
 	glUniformMatrix4fv(glGetUniformLocation(shaderHandler->getProgramId(shader), "u_ProjectionMatrix"), 1, GL_FALSE, &(*projection)[0][0]);
 	
-	glDepthFunc(GL_LESS);     // We want to get the nearest pixels
-	glColorMask(0,0,0,0);     // Disable color, it's useless, we only want depth.
-	glDepthMask(GL_TRUE);     // Ask z writing
-	
-	renderer.draw(*object);
-	
-	int visible = 0;
-	glReadPixels(0, 0, 1000, 800, GL_DEPTH_COMPONENT, GL_FLOAT, &depth_data);
-	typedef  std::vector<glm::vec3>::const_iterator points;
-	glm::mat4 mvp = *projection * *modelView;
-	for(points it = object->getVertices().begin(); it != object->getVertices().end(); ++it) {
-		glm::vec4 v =  mvp * glm::vec4(*it, 1.0);
-		v /= v.w;
-		int x = (int) (500 * (v.x + 1));
-		int y = (int) (400 * (v.y + 1));
-		//Log::d("c: %f, depth: %f", (v.z + 1)/2.0f, depth_data[x + 1000 * y]);
-		if(x >= 0 && y >= 0 && x < 1000 && y < 800) {
-			if((v.z + 1)/2.0f <= depth_data[x + 1000 * y])
-				visible++;
-		}
-	}
-	//Log::i("visible: %d", visible);
-	
-	
-	glDepthFunc(GL_LEQUAL);
-	glColorMask(1,1,1,1);     // We want color this time
-	//glDepthMask(GL_FALSE);
+//	glDepthFunc(GL_LESS);     // We want to get the nearest pixels
+//	glColorMask(0,0,0,0);     // Disable color, it's useless, we only want depth.
+//	glDepthMask(GL_TRUE);     // Ask z writing
+//	
+//	renderer.draw(*object);
+//	
+//	int visible = 0;
+//
+//	glReadPixels(0, 0, 1000, 800, GL_DEPTH_COMPONENT, GL_FLOAT, &depth_data);
+//	typedef  std::vector<glm::vec3>::const_iterator points;
+//	glm::mat4 mvp = *projection * *modelView;
+//	for(points it = object->getVertices().begin(); it != object->getVertices().end(); ++it) {
+//		glm::vec4 v =  mvp * glm::vec4(*it, 1.0);
+//		v /= v.w;
+//		int x = (int) (500 * (v.x + 1));
+//		int y = (int) (400 * (v.y + 1));
+//		//Log::d("c: %f, depth: %f", (v.z + 1)/2.0f, depth_data[x + 1000 * y]);
+//		if(x >= 0 && y >= 0 && x < 1000 && y < 800) {
+//			if((v.z + 1)/2.0f <= depth_data[x + 1000 * y])
+//				visible++;
+//		}
+//	}
+//	Log::i("visible: %d", visible);
+//	
+//	glDepthFunc(GL_LEQUAL);
+//	glColorMask(1,1,1,1);     // We want color this time
+//	glDepthMask(GL_FALSE);
 	
 	renderer.draw(*object);
 //	
@@ -233,25 +234,21 @@ int main(int argc, char** argv) {
     glfwSetMousePosCallback(mousePositionCallback);
 	
 	struct timeval start, end;
-    long seconds, useconds;
-    long time = 0;
 	int fps = 0;
-    
     srand((unsigned)std::time(0)); 
-  
+	gettimeofday(&start, NULL);
+	
    // Main loop
     while(glfwGetWindowParam(GLFW_OPENED) && !glfwGetKey(GLFW_KEY_ESC)) {
         if (main_loop) {
-			gettimeofday(&start, NULL);
+			
             main_loop();
+			
 			gettimeofday(&end, NULL);
-			seconds = end.tv_sec - start.tv_sec;
-			useconds = end.tv_usec - start.tv_usec;
-			time += ((seconds) * 1000 + useconds/1000.0) + 0.5;
-			if(time > 1000) {
-				time = 0;
-				Log::i("fps ~ %d", fps);
+			if(((end.tv_sec - start.tv_sec) * 1000 + (end.tv_usec - start.tv_usec)/1000.0) > 5000) {
+				Log::i("fps ~ %d", (int)(fps/5.0f + .5f));
 				fps = 0;
+				gettimeofday(&start, NULL);
 			}
 			fps++;
         }
