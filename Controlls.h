@@ -161,6 +161,17 @@ public:
 		g_CameraViewMatrix[2][1] = cam->rotate[2][1];
 		g_CameraViewMatrix[2][2] = cam->rotate[2][2];
 	}
+	
+	void getProjectionMatrixForCamera(int cameraID, glm::mat4x3 &projection) {
+		Camera * cam = &bp->getCameras()->at(cameraID);
+		projection = glm::mat4x3(cam->rotate);
+		projection[3] = cam->translate;
+	}
+	
+	int getCameraId() {
+		return cameraId;
+	}
+	
 
 };
 

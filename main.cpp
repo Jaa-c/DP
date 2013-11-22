@@ -43,7 +43,7 @@ ObjectData *object;
 
 float * cameraPos;
 
-void printMat(glm::mat4 &m) {
+void printMat(glm::mat4 m) {
 	std::cout <<m[0][0]<<" "<<m[0][1]<<" "<<m[0][2]<<" "<<m[0][3]<<"\n";
 	std::cout <<m[1][0]<<" "<<m[1][1]<<" "<<m[1][2]<<" "<<m[1][3]<<"\n";
 	std::cout <<m[2][0]<<" "<<m[2][1]<<" "<<m[2][2]<<" "<<m[2][3]<<"\n";
@@ -61,14 +61,7 @@ void initGL() {
     glClearColor(0.4f, 0.4f, 0.7f, 0);
 	
     glEnable(GL_DEPTH_TEST);
-	glDisable(GL_CULL_FACE);
-	glEnable(GL_TEXTURE_2D);
-	
-	//shaderHandler->compileShaderProgram(ShaderHandler::SHADER_TEST, true, false, true);
-	//shaderHandler->compileShaderProgram(ShaderHandler::SHADER_POINTS, true, false, true);
-	//shaderHandler->compileShaderProgram(ShaderHandler::SHADER_CAMERAS, true, false, true);
-	shaderHandler->compileShaderProgram(ShaderHandler::SHADER_BASIC, true, false, true);
-	
+	glDisable(GL_CULL_FACE);	
 	
 	std::vector<rgb> image;
 	int width, height;
@@ -76,18 +69,16 @@ void initGL() {
 	assert(image.size() == width * height * 3);
 	
     glGenTextures(1, &testTexture);
-    glBindTexture(GL_TEXTURE_2D, testTexture);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, &image[0]);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
-    glBindTexture(GL_TEXTURE_2D, 0);
+    glBindTexture(GL_TEXTURE_RECTANGLE, testTexture);
+    glTexImage2D(GL_TEXTURE_RECTANGLE, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, &image[0]);
+    glBindTexture(GL_TEXTURE_RECTANGLE, 0);
 	
 	glGenSamplers(1, &g_textureSampler);
 	glSamplerParameteri(g_textureSampler, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glSamplerParameteri(g_textureSampler, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glSamplerParameteri(g_textureSampler, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glSamplerParameteri(g_textureSampler, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		
+	glSamplerParameteri(g_textureSampler, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+	glSamplerParameteri(g_textureSampler, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+	
 	return;
 	
 
@@ -121,11 +112,16 @@ void main_loop() {
 //	glEnable(GL_POINT_SPRITE);
 //	glEnable(GL_PROGRAM_POINT_SIZE );
 		
-	ShaderHandler::ShaderList shader = ShaderHandler::SHADER_BASIC;//ShaderHandler::SHADER_POINTS;
-	glUseProgram(shaderHandler->getProgramId(shader));    // Active shader program
+	//ShaderHandler::ShaderList shader = ShaderHandler::SHADER_BASIC;//ShaderHandler::SHADER_POINTS;
+	int programID = shaderHandler->getProgramId(ShaderHandler::SHADER_BASIC);
+	glUseProgram(programID);    // Active shader program
 	
-	glUniformMatrix4fv(glGetUniformLocation(shaderHandler->getProgramId(shader), "u_ModelViewMatrix"), 1, GL_FALSE, &(*modelView)[0][0]);
-	glUniformMatrix4fv(glGetUniformLocation(shaderHandler->getProgramId(shader), "u_ProjectionMatrix"), 1, GL_FALSE, &(*projection)[0][0]);
+	glUniformMatrix4fv(glGetUniformLocation(programID, "u_ModelViewMatrix"), 1, GL_FALSE, &(*modelView)[0][0]);
+	glUniformMatrix4fv(glGetUniformLocation(programID, "u_ProjectionMatrix"), 1, GL_FALSE, &(*projection)[0][0]);
+	
+	Camera * c = &bp.getCameras()->at(controlls->getCameraId());
+	glUniformMatrix3fv(glGetUniformLocation(programID, "u_TextureRot"), 1, GL_FALSE, &c->rotate[0][0]);
+	glUniform3fv(glGetUniformLocation(programID, "u_TextureTrans"), 3, &c->translate[0]);
 	
 //	glDepthFunc(GL_LESS);     // We want to get the nearest pixels
 //	glColorMask(0,0,0,0);     // Disable color, it's useless, we only want depth.
@@ -163,16 +159,17 @@ void main_loop() {
 	glBindSampler(0, g_textureSampler);
 	glActiveTexture(GL_TEXTURE0 + 0);
 	
-	GLint tex0Loc = glGetUniformLocation(shaderHandler->getProgramId(shader), "texture0");
+	GLint tex0Loc = glGetUniformLocation(programID, "texture0");
 	assert(tex0Loc != -1);
 	glUniform1i(tex0Loc, 0);
 	
 	assert(testTexture);
-	glBindTexture(GL_TEXTURE_2D, testTexture);
+	glBindTexture(GL_TEXTURE_RECTANGLE, testTexture);
 			
-	renderer.drawPlane();
+	//renderer.drawPlane();
+	renderer.draw(*object);
 	
-	glBindTexture(GL_TEXTURE_2D, 0);
+	glBindTexture(GL_TEXTURE_RECTANGLE, 0);
 //	
 //	glBindBuffer(GL_ARRAY_BUFFER, pointsVBO);
 //	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 3 * bp.getPoints()->size(), &bp.getPoints()->at(0).x, GL_STATIC_DRAW); 

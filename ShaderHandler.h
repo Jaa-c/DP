@@ -37,7 +37,11 @@ private:
 	
 public:
 
-	ShaderHandler() {}
+	ShaderHandler() {
+		for(int i = 0; i < SIZE; i++) {
+			g_ProgramId[i] = GL_ID_NONE;
+		}
+	}
 	
 	~ShaderHandler() {}
 	
@@ -89,6 +93,10 @@ public:
 	}
 	
 	GLuint getProgramId(ShaderList shader) {
+		if(g_ProgramId[shader] == GL_ID_NONE) {
+			compileShaderProgram(shader, true, false, true); //TODO
+		}
+				
 		return g_ProgramId[shader];
 	}
 
