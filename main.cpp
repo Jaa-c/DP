@@ -52,6 +52,8 @@ void printMat(glm::mat4 &m) {
 }
 
 float depth_data[1000*800];
+GLuint testTexture, g_textureSampler;
+
 
 void initGL() {
 	
@@ -60,11 +62,31 @@ void initGL() {
 	
     glEnable(GL_DEPTH_TEST);
 	glDisable(GL_CULL_FACE);
+	glEnable(GL_TEXTURE_2D);
 	
 	//shaderHandler->compileShaderProgram(ShaderHandler::SHADER_TEST, true, false, true);
 	//shaderHandler->compileShaderProgram(ShaderHandler::SHADER_POINTS, true, false, true);
 	//shaderHandler->compileShaderProgram(ShaderHandler::SHADER_CAMERAS, true, false, true);
 	shaderHandler->compileShaderProgram(ShaderHandler::SHADER_BASIC, true, false, true);
+	
+	
+	std::vector<rgb> image;
+	int width, height;
+	DataLoader::loadJPEG("/home/jaa/Documents/FEL/DP/data/visualize/00000000.jpg", image, width, height);
+	assert(image.size() == width * height * 3);
+	
+    glGenTextures(1, &testTexture);
+    glBindTexture(GL_TEXTURE_2D, testTexture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, &image[0]);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
+    glBindTexture(GL_TEXTURE_2D, 0);
+	
+	glGenSamplers(1, &g_textureSampler);
+	glSamplerParameteri(g_textureSampler, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glSamplerParameteri(g_textureSampler, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glSamplerParameteri(g_textureSampler, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glSamplerParameteri(g_textureSampler, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 		
 	return;
 	
@@ -133,7 +155,24 @@ void main_loop() {
 //	glColorMask(1,1,1,1);     // We want color this time
 //	glDepthMask(GL_FALSE);
 	
-	renderer.draw(*object);
+	//renderer.draw(*object);
+	
+	
+	
+	assert(g_textureSampler);
+	glBindSampler(0, g_textureSampler);
+	glActiveTexture(GL_TEXTURE0 + 0);
+	
+	GLint tex0Loc = glGetUniformLocation(shaderHandler->getProgramId(shader), "texture0");
+	assert(tex0Loc != -1);
+	glUniform1i(tex0Loc, 0);
+	
+	assert(testTexture);
+	glBindTexture(GL_TEXTURE_2D, testTexture);
+			
+	renderer.drawPlane();
+	
+	glBindTexture(GL_TEXTURE_2D, 0);
 //	
 //	glBindBuffer(GL_ARRAY_BUFFER, pointsVBO);
 //	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 3 * bp.getPoints()->size(), &bp.getPoints()->at(0).x, GL_STATIC_DRAW); 

@@ -38,9 +38,8 @@ class Log {
 	}
 		
 	/// taken from: http://stackoverflow.com/a/8098080/683905
-	static std::string string_format(const string fmt_str, va_list args) {
+	static string string_format(const string fmt_str, va_list args) {
 		int final_n, n = fmt_str.size() * 2; /* reserve 2 times as much as the length of the fmt_str */
-		std::string str;
 		std::unique_ptr<char[]> formatted;
 		while(1) {
 			formatted.reset(new char[n]); /* wrap the plain char array into the unique_ptr */
@@ -51,7 +50,7 @@ class Log {
 			else
 				break;
 		}
-		return std::string(formatted.get());
+		return string(formatted.get());
 	}
 
 public:
@@ -74,6 +73,17 @@ public:
 		va_start(argptr, msg);
 		log(string_format(msg, argptr), LOG_ERROR);
 		va_end(argptr);
+	}
+	
+	static void checkGLError() {
+		GLenum err;
+		if((err = glGetError()) != GL_NO_ERROR) {
+			Log::d("opengl error: %d", err);
+		}
+		else {
+			Log::d("no error");
+		}
+	
 	}
 
 };

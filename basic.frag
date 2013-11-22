@@ -4,7 +4,10 @@ in block{
 	vec4 v_position;
 	vec4 v_viewPos;
 	vec3 v_normal;
+	vec2 v_texCoords;
 } In;
+
+uniform sampler2D texture0;
 
 layout(location = 0) out vec4 a_FragColor;
 
@@ -21,8 +24,11 @@ void main() {
 	vec3 R = normalize(-reflect(L, N));
 	
 	float specular = pow(max(dot(R, E), 0.0f), 256.0f);
+
+	vec3 col = texture(texture0, In.v_texCoords).rgb;
+	//col = vec3(0.6f, 0.6f, 0.6f);
 	
-	vec3 color = min(vec3(0.6f, 0.6f, 0.6f) * diffuse + specular, 1.0f);
+	vec3 color = min(col * diffuse + specular, 1.0f);
 	
 	a_FragColor = vec4(color, 1.0f);
 

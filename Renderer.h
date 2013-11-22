@@ -12,8 +12,15 @@
 
 
 class Renderer {
+	
+	GLuint planeVao;
 
 public:
+	
+	Renderer() : planeVao(GL_ID_NONE) {
+	
+	}
+	
 	void draw(ObjectData &data) {
 		if(!data.isOK()) {
 			return;
@@ -57,6 +64,56 @@ public:
 		glDisableVertexAttribArray(0);
 		glDisableVertexAttribArray(1);
 		glBindVertexArray(0);	
+	}
+	
+	void drawPlane() {
+		if(planeVao == GL_ID_NONE) {
+			glm::vec3 normal(0.0f, 0.0f, 1.0f);
+
+			std::vector<glm::vec3> vertices;
+			vertices.push_back(glm::vec3(-10.0f, -10.0f, -10.0f));
+			vertices.push_back(glm::vec3(10.0f, -1.0f, -10.0f));
+			vertices.push_back(glm::vec3(10.0f, 10.0f, -10.0f));
+			vertices.push_back(glm::vec3(-10.0f, 10.0f, -10.0f));
+
+			std::vector<glm::vec2> texCoords;
+			texCoords.push_back(glm::vec2(0.0f, 0.0f));
+			texCoords.push_back(glm::vec2(1.0f, 0.0f));
+			texCoords.push_back(glm::vec2(1.0f, 1.0f));
+			texCoords.push_back(glm::vec2(0.0f, 1.0f));
+
+			glGenVertexArrays(1, &planeVao);
+			glBindVertexArray(planeVao);
+
+			GLuint vertexVBO, normalsVBO, texCoordsVBO;	
+			glGenBuffers(1, &vertexVBO);
+			glGenBuffers(1, &normalsVBO);
+			glGenBuffers(1, &texCoordsVBO);
+
+			glBindBuffer(GL_ARRAY_BUFFER, vertexVBO);
+			glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &(*vertices.begin()), GL_STATIC_DRAW);  
+			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
+			glBindBuffer(GL_ARRAY_BUFFER, normalsVBO);
+			glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3), &normal, GL_STATIC_DRAW);  
+			glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
+			glBindBuffer(GL_ARRAY_BUFFER, texCoordsVBO);
+			glBufferData(GL_ARRAY_BUFFER, texCoords.size() * sizeof(glm::vec2), &(*texCoords.begin()), GL_STATIC_DRAW);  
+			glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, 0);
+		}
+		//draw plane
+		glBindVertexArray(planeVao);
+		glEnableVertexAttribArray(0);
+		glEnableVertexAttribArray(1);
+		glEnableVertexAttribArray(2);
+
+		glDrawArrays(GL_QUADS, 0, 4);
+
+		glDisableVertexAttribArray(0);
+		glDisableVertexAttribArray(1);
+		glDisableVertexAttribArray(2);
+		glBindVertexArray(0);
 	}
 
 };

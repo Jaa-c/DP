@@ -6,8 +6,8 @@
                    projectFiles="true">
       <itemPath>BundlerParser.h</itemPath>
       <itemPath>Controlls.h</itemPath>
+      <itemPath>../../../../../Dokumenty/FEL/DP/trunk/dp/DataLoader.h</itemPath>
       <itemPath>Log.h</itemPath>
-      <itemPath>ModelLoader.h</itemPath>
       <itemPath>ObjectData.h</itemPath>
       <itemPath>Renderer.h</itemPath>
       <itemPath>ShaderHandler.h</itemPath>
@@ -52,16 +52,19 @@
           <incDir>
             <pElem>lib</pElem>
           </incDir>
-          <commandLine>-std=c++0x -lX11 -lGL -lGLEW -lglfw -lassimp</commandLine>
+          <commandLine>-std=c++0x -lX11 -lGL -lGLEW -lglfw -lassimp -ljpeg</commandLine>
         </ccTool>
       </compileType>
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/DataLoader.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="BundlerParser.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Controlls.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Log.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="ModelLoader.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="ObjectData.h" ex="false" tool="3" flavor2="0">
       </item>
@@ -94,13 +97,52 @@
           <developmentMode>5</developmentMode>
         </asmTool>
       </compileType>
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/DataLoader.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="BundlerParser.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Controlls.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Log.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="ModelLoader.h" ex="false" tool="3" flavor2="0">
+      <item path="ObjectData.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Renderer.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="ShaderHandler.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="cube.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="main.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+    </conf>
+    <conf name="no_optirun" type="1">
+      <toolsSet>
+        <compilerSet>default</compilerSet>
+        <dependencyChecking>true</dependencyChecking>
+        <rebuildPropChanged>false</rebuildPropChanged>
+      </toolsSet>
+      <compileType>
+        <ccTool>
+          <incDir>
+            <pElem>lib</pElem>
+          </incDir>
+          <commandLine>-std=c++0x -lX11 -lGL -lGLEW -lglfw -lassimp -ljpeg</commandLine>
+        </ccTool>
+      </compileType>
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/DataLoader.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="BundlerParser.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Controlls.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Log.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="ObjectData.h" ex="false" tool="3" flavor2="0">
       </item>

@@ -18,8 +18,10 @@
 
 #include "lib/glm/core/type.hpp"
 
-class DataLoader {
+typedef unsigned char rgb;
 
+class DataLoader {
+	
 public:	
 	/**
 	 * Imports model from varios formats
@@ -73,14 +75,14 @@ public:
 	/**
 	 * Loads JPEG image to rgb array
      * @param filename path to the image
-     * @param raw pointer to dynamically allocated rgb array 
+     * @param reference to vector of rgb data
      * @param width image width
      * @param height image height
 	 * @return true if loaded OK
      */
 	static bool loadJPEG(
 		const std::string filename,
-		unsigned char *raw,
+		std::vector<rgb> &raw,
 		int &width,
 		int &height
 	) {
@@ -92,40 +94,39 @@ public:
         FILE *infile = fopen(filename.c_str(), "rb");
         
         if (!infile) {
-			Log::e("Error opening jpeg image: %s", filename );
+			Log::e("Error opening jpeg image: %s", filename.c_str());
 			return false;
         }
-
+		
         cinfo.err = jpeg_std_error(&jerr);
 
         jpeg_create_decompress(&cinfo);
         jpeg_stdio_src(&cinfo, infile);
         jpeg_read_header(&cinfo, TRUE);
 
-        jpeg_start_decompress( &cinfo );
+        jpeg_start_decompress(&cinfo);
 		width = cinfo.output_width;
 		height = cinfo.output_height;
 
-        raw = new unsigned char[width * height * cinfo.num_components];
+        raw.reserve(width * height * cinfo.num_components);
 
-        row[0] =new unsigned char[width * cinfo.num_components];
+        row[0] = new unsigned char[width * cinfo.num_components];
 
-        unsigned long location = 0;
-        while( cinfo.output_scanline < height)
+        while(cinfo.output_scanline < height)
         {
-			jpeg_read_scanlines( &cinfo, row, 1 );
+			jpeg_read_scanlines(&cinfo, row, 1);
 			for(int i = 0; i < width * cinfo.num_components; i++) {
-				raw[location++] = row[0][i];
+				raw.push_back(row[0][i]);
 			}
         }
-
+		
         jpeg_finish_decompress(&cinfo);
         jpeg_destroy_decompress(&cinfo);
         fclose(infile);
-        delete [] row;
+        delete [] row[0];
+		Log::i("Loaded image " + filename);
         return true;
 	}
-
 
 };
 

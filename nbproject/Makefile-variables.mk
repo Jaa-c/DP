@@ -22,6 +22,14 @@ CND_ARTIFACT_PATH_Release=dist/Release/GNU-Linux-x86/dp
 CND_PACKAGE_DIR_Release=dist/Release/GNU-Linux-x86/package
 CND_PACKAGE_NAME_Release=dp.tar
 CND_PACKAGE_PATH_Release=dist/Release/GNU-Linux-x86/package/dp.tar
+# no_optirun configuration
+CND_PLATFORM_no_optirun=GNU-Linux-x86
+CND_ARTIFACT_DIR_no_optirun=dist/no_optirun/GNU-Linux-x86
+CND_ARTIFACT_NAME_no_optirun=dp
+CND_ARTIFACT_PATH_no_optirun=dist/no_optirun/GNU-Linux-x86/dp
+CND_PACKAGE_DIR_no_optirun=dist/no_optirun/GNU-Linux-x86/package
+CND_PACKAGE_NAME_no_optirun=dp.tar
+CND_PACKAGE_PATH_no_optirun=dist/no_optirun/GNU-Linux-x86/package/dp.tar
 #
 # include compiler specific variables
 #

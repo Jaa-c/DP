@@ -8,7 +8,7 @@
 #ifndef OBJECTDATA_H
 #define	OBJECTDATA_H
 
-#include "ModelLoader.h"
+#include "DataLoader.h"
 
 struct ObjectData {
 	std::vector<GLuint> indices;
@@ -29,7 +29,7 @@ public:
 		normalsID(GL_ID_NONE), indicesID(GL_ID_NONE), ok(true)
 	{
 		try {
-			ModelLoader::importModel(file, indices, vertices, normals);
+			DataLoader::importModel(file, indices, vertices, normals);
 		}
 		catch(const char* c) {
 			ok = false;
