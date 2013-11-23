@@ -15,7 +15,7 @@
 #include <algorithm>
 #include <stdexcept>
 
-#include "lib/glm/core/type_mat3x3.hpp"
+#include "glm/core/type_mat3x3.hpp"
 
 struct Point {
 	float x;

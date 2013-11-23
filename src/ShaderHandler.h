@@ -24,6 +24,7 @@ public:
 	
 	
 private:
+	const std::string SHADER_PATH = "shaders/";
 	/// shader file names
 	const std::string SHADER_SRC[SIZE] = {
 		"test",
@@ -47,7 +48,7 @@ public:
 	
 	void compileShaderProgram(ShaderList shader, bool vert, bool geom, bool frag) {
 		
-		std::string name = SHADER_SRC[shader];
+		std::string name = SHADER_PATH + SHADER_SRC[shader];
 		
 		// Delete shader program if exists
 		if (g_ProgramId[shader]) {

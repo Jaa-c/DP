@@ -16,7 +16,7 @@
 #include <stdio.h>
 #include <jpeglib.h>
 
-#include "lib/glm/core/type.hpp"
+#include "glm/core/type.hpp"
 
 typedef unsigned char rgb;
 

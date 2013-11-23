@@ -4,19 +4,20 @@
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
-      <itemPath>BundlerParser.h</itemPath>
-      <itemPath>Controlls.h</itemPath>
-      <itemPath>../../../../../Dokumenty/FEL/DP/trunk/dp/DataLoader.h</itemPath>
-      <itemPath>Log.h</itemPath>
-      <itemPath>ObjectData.h</itemPath>
-      <itemPath>Renderer.h</itemPath>
-      <itemPath>ShaderHandler.h</itemPath>
-      <itemPath>cube.h</itemPath>
+      <itemPath>../../../../../Dokumenty/FEL/DP/trunk/dp/src/BundlerParser.h</itemPath>
+      <itemPath>../../../../../Dokumenty/FEL/DP/trunk/dp/src/Controlls.h</itemPath>
+      <itemPath>../../../../../Dokumenty/FEL/DP/trunk/dp/src/DataLoader.h</itemPath>
+      <itemPath>../../../../../Dokumenty/FEL/DP/trunk/dp/src/Log.h</itemPath>
+      <itemPath>../../../../../Dokumenty/FEL/DP/trunk/dp/src/ObjectData.h</itemPath>
+      <itemPath>../../../../../Dokumenty/FEL/DP/trunk/dp/src/RenderPassHandler.h</itemPath>
+      <itemPath>../../../../../Dokumenty/FEL/DP/trunk/dp/src/Renderer.h</itemPath>
+      <itemPath>../../../../../Dokumenty/FEL/DP/trunk/dp/src/ShaderHandler.h</itemPath>
+      <itemPath>../../../../../Dokumenty/FEL/DP/trunk/dp/src/cube.h</itemPath>
     </logicalFolder>
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
-      <itemPath>main.cpp</itemPath>
+      <itemPath>src/main.cpp</itemPath>
     </logicalFolder>
     <logicalFolder name="TestFiles"
                    displayName="Test Files"
@@ -28,17 +29,15 @@
                    projectFiles="false"
                    kind="IMPORTANT_FILES_FOLDER">
       <itemPath>Makefile</itemPath>
-      <itemPath>basic.frag</itemPath>
-      <itemPath>../../../../../Dokumenty/FEL/DP/trunk/dp/basic.vert</itemPath>
-      <itemPath>cameras.frag</itemPath>
-      <itemPath>cameras.vert</itemPath>
-      <itemPath>points.frag</itemPath>
-      <itemPath>points.vert</itemPath>
-      <itemPath>test.frag</itemPath>
-      <itemPath>test.geom</itemPath>
-      <itemPath>test.vert</itemPath>
+      <itemPath>shaders/basic.frag</itemPath>
+      <itemPath>shaders/basic.vert</itemPath>
+      <itemPath>shaders/points.frag</itemPath>
+      <itemPath>../../../../../Dokumenty/FEL/DP/trunk/dp/shaders/points.vert</itemPath>
     </logicalFolder>
   </logicalFolder>
+  <sourceRootList>
+    <Elem>../../../../../Dokumenty/FEL/DP/trunk/dp/src</Elem>
+  </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
     <conf name="Debug" type="1">
@@ -50,31 +49,63 @@
       <compileType>
         <ccTool>
           <incDir>
-            <pElem>lib</pElem>
+            <pElem>lib/</pElem>
+            <pElem>src</pElem>
           </incDir>
           <commandLine>-std=c++0x -lX11 -lGL -lGLEW -lglfw -lassimp -ljpeg</commandLine>
         </ccTool>
+        <linkerTool>
+          <linkerAddLib>
+            <pElem>../../../../../Dokumenty/FEL/DP/trunk/dp/lib</pElem>
+          </linkerAddLib>
+        </linkerTool>
       </compileType>
-      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/DataLoader.h"
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/BundlerParser.h"
             ex="false"
             tool="3"
             flavor2="0">
       </item>
-      <item path="BundlerParser.h" ex="false" tool="3" flavor2="0">
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/Controlls.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
       </item>
-      <item path="Controlls.h" ex="false" tool="3" flavor2="0">
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/DataLoader.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
       </item>
-      <item path="Log.h" ex="false" tool="3" flavor2="0">
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/Log.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
       </item>
-      <item path="ObjectData.h" ex="false" tool="3" flavor2="0">
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/ObjectData.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
       </item>
-      <item path="Renderer.h" ex="false" tool="3" flavor2="0">
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/RenderPassHandler.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
       </item>
-      <item path="ShaderHandler.h" ex="false" tool="3" flavor2="0">
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/Renderer.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
       </item>
-      <item path="cube.h" ex="false" tool="3" flavor2="0">
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/ShaderHandler.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
       </item>
-      <item path="main.cpp" ex="false" tool="1" flavor2="0">
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/cube.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/main.cpp" ex="false" tool="1" flavor2="0">
       </item>
     </conf>
     <conf name="Release" type="1">
@@ -97,26 +128,52 @@
           <developmentMode>5</developmentMode>
         </asmTool>
       </compileType>
-      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/DataLoader.h"
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/BundlerParser.h"
             ex="false"
             tool="3"
             flavor2="0">
       </item>
-      <item path="BundlerParser.h" ex="false" tool="3" flavor2="0">
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/Controlls.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
       </item>
-      <item path="Controlls.h" ex="false" tool="3" flavor2="0">
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/DataLoader.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
       </item>
-      <item path="Log.h" ex="false" tool="3" flavor2="0">
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/Log.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
       </item>
-      <item path="ObjectData.h" ex="false" tool="3" flavor2="0">
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/ObjectData.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
       </item>
-      <item path="Renderer.h" ex="false" tool="3" flavor2="0">
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/RenderPassHandler.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
       </item>
-      <item path="ShaderHandler.h" ex="false" tool="3" flavor2="0">
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/Renderer.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
       </item>
-      <item path="cube.h" ex="false" tool="3" flavor2="0">
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/ShaderHandler.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
       </item>
-      <item path="main.cpp" ex="false" tool="1" flavor2="0">
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/cube.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/main.cpp" ex="false" tool="1" flavor2="0">
       </item>
     </conf>
     <conf name="no_optirun" type="1">
@@ -133,26 +190,52 @@
           <commandLine>-std=c++0x -lX11 -lGL -lGLEW -lglfw -lassimp -ljpeg</commandLine>
         </ccTool>
       </compileType>
-      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/DataLoader.h"
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/BundlerParser.h"
             ex="false"
             tool="3"
             flavor2="0">
       </item>
-      <item path="BundlerParser.h" ex="false" tool="3" flavor2="0">
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/Controlls.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
       </item>
-      <item path="Controlls.h" ex="false" tool="3" flavor2="0">
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/DataLoader.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
       </item>
-      <item path="Log.h" ex="false" tool="3" flavor2="0">
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/Log.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
       </item>
-      <item path="ObjectData.h" ex="false" tool="3" flavor2="0">
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/ObjectData.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
       </item>
-      <item path="Renderer.h" ex="false" tool="3" flavor2="0">
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/RenderPassHandler.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
       </item>
-      <item path="ShaderHandler.h" ex="false" tool="3" flavor2="0">
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/Renderer.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
       </item>
-      <item path="cube.h" ex="false" tool="3" flavor2="0">
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/ShaderHandler.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
       </item>
-      <item path="main.cpp" ex="false" tool="1" flavor2="0">
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/cube.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/main.cpp" ex="false" tool="1" flavor2="0">
       </item>
     </conf>
   </confs>
