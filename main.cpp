@@ -83,9 +83,6 @@ void initGL() {
 	glSamplerParameteri(g_textureSampler, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
 	glSamplerParameteri(g_textureSampler, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
 	
-	return;
-	
-
 	glGenBuffers(1, &pointsVBO);
 	glGenBuffers(1, &camPosVBO);
 	
@@ -113,10 +110,7 @@ void main_loop() {
 	glm::mat4 * modelView = controlls->getModelViewMatrix();
 	glm::mat4 * projection = controlls->getProjectionMatrix();
 		
-//	glEnable(GL_POINT_SPRITE);
-//	glEnable(GL_PROGRAM_POINT_SIZE );
-		
-	//ShaderHandler::ShaderList shader = ShaderHandler::SHADER_BASIC;//ShaderHandler::SHADER_POINTS;
+	
 	int programID = shaderHandler->getProgramId(ShaderHandler::SHADER_BASIC);
 	glUseProgram(programID);    // Active shader program
 	
@@ -124,8 +118,8 @@ void main_loop() {
 	glUniformMatrix4fv(glGetUniformLocation(programID, "u_ProjectionMatrix"), 1, GL_FALSE, &(*projection)[0][0]);
 	
 	Camera * c = &bp.getCameras()->at(controlls->getCameraId());
-	glUniformMatrix3fv(glGetUniformLocation(programID, "u_TextureRot"), 1, GL_FALSE, &c->rotate[0][0]);
-	glUniform3fv(glGetUniformLocation(programID, "u_TextureTrans"), 1, &c->translate[0]);
+	glUniformMatrix4fv(glGetUniformLocation(programID, "u_TextureRt"), 1, GL_FALSE, &c->Rt[0][0]);
+	//glUniform3fv(glGetUniformLocation(programID, "u_TextureTrans"), 1, &c->translate[0]);
 	glUniform2fv(glGetUniformLocation(programID, "u_TextureSize"), 1, &textureSize[0]);
 	glUniform1f(glGetUniformLocation(programID, "u_TextureFL"), c->focalL);
 	
@@ -176,6 +170,17 @@ void main_loop() {
 	renderer.draw(*object);
 	
 	glBindTexture(GL_TEXTURE_RECTANGLE, 0);
+	
+	glUseProgram(0);
+	
+	
+//	
+//	programID = shaderHandler->getProgramId(ShaderHandler::SHADER_POINTS);
+//	glEnable(GL_PROGRAM_POINT_SIZE );
+//	glUseProgram(programID);
+//	
+//	glUniformMatrix4fv(glGetUniformLocation(programID, "u_ModelViewMatrix"), 1, GL_FALSE, &(*modelView)[0][0]);
+//	glUniformMatrix4fv(glGetUniformLocation(programID, "u_ProjectionMatrix"), 1, GL_FALSE, &(*projection)[0][0]);
 //	
 //	glBindBuffer(GL_ARRAY_BUFFER, pointsVBO);
 //	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 3 * bp.getPoints()->size(), &bp.getPoints()->at(0).x, GL_STATIC_DRAW); 
@@ -185,7 +190,9 @@ void main_loop() {
 //	
 //	glDrawArrays(GL_POINTS, 0, bp.getPoints()->size());
 //	glBindBuffer(GL_ARRAY_BUFFER, 0);
-//	
+	
+
+	
 //	shader = ShaderHandler::SHADER_CAMERAS;
 //	glUseProgram(shaderHandler->getProgramId(shader));    // Active shader program
 //	
@@ -224,6 +231,14 @@ void main_loop() {
 
 void keyBoardCallback(int key, int action) {
 	controlls->keyboardAction(key, action);
+	if(action != GLFW_PRESS) {
+		return;
+	}
+	switch (key) {
+		case 'R':// recompile shaders
+			shaderHandler->resetShaders();
+			break;
+	}
 }
 
 void mouseButtonCallback(int button, int action) {
