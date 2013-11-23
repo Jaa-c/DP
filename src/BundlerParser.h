@@ -42,6 +42,7 @@ struct Point {
 struct Camera {
 	glm::mat3 rotate;
 	glm::vec3 translate;
+	glm::mat4 Rt;
 	
 	float focalL;
 	float d1, d2;
@@ -121,6 +122,11 @@ public:
 			ss >> cam.translate[0];
 			ss >> cam.translate[1];
 			ss >> cam.translate[2];
+			
+			cam.Rt = glm::mat4(cam.rotate);
+			cam.Rt[3][0] = cam.translate[0];
+			cam.Rt[3][1] = cam.translate[1];
+			cam.Rt[3][2] = cam.translate[2];
 			
 			cameras.push_back(cam);
 		}

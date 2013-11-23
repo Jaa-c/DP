@@ -2,10 +2,10 @@
 #extension GL_ARB_texture_rectangle : enable
 
 in block{
-	vec4 v_position;
-	vec4 v_viewPos;
-	vec3 v_normal;
-	vec2 v_texCoords;
+	smooth vec4 v_position;
+	smooth vec4 v_viewPos;
+	smooth vec3 v_normal;
+	smooth vec2 v_texCoords;
 } In;
 
 uniform sampler2DRect texture0;
@@ -29,7 +29,7 @@ void main() {
 	vec3 col = texture2DRect(texture0, In.v_texCoords).rgb;
 	//col = vec3(0.6f, 0.6f, 0.6f);
 	
-	vec3 color = min(col * diffuse + specular, 1.0f);
+	vec3 color = min(col * diffuse + specular * .3f, 1.0f);
 	
 	a_FragColor = vec4(color, 1.0f);
 

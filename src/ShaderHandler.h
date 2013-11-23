@@ -100,6 +100,12 @@ public:
 				
 		return g_ProgramId[shader];
 	}
+	
+	void resetShaders() {
+		for(int i = 0; i < SIZE; i++) {
+			g_ProgramId[i] = GL_ID_NONE;
+		}
+	}
 
 private:
 	
