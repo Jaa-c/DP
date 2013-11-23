@@ -21,7 +21,11 @@ public:
 	}
 	
 	void draw(ObjectData *object) {
-	
+		glUseProgram(programID);
+		renderer->bindCameraMatrices(programID);
+		renderer->drawTexture(programID, *object->texture);
+		renderer->drawObject(*object);
+		glUseProgram(0);
 	}
 
 

@@ -28,6 +28,9 @@ const unsigned GL_ID_NONE = (unsigned)~(unsigned(0));
 #include "Controlls.h"
 #include "BundlerParser.h"
 
+#include "RenderPass/RenderPass.h"
+#include "RenderPass/TexturingRenderPass.h"
+
 
 // GLSL variables
 GLuint g_WireMode = 0;

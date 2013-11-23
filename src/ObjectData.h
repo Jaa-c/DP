@@ -9,6 +9,7 @@
 #define	OBJECTDATA_H
 
 #include "DataLoader.h"
+#include "Texture.h"
 
 struct ObjectData {
 	std::vector<GLuint> indices;

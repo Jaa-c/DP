@@ -8,6 +8,8 @@
 #ifndef RENDERPASS_H
 #define	RENDERPASS_H
 
+#include <GL/glew.h> //ide bug
+
 class RenderPass {
 public:	
 	enum Type {
