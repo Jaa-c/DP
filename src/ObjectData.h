@@ -24,6 +24,8 @@ public:
 	GLuint normalsID;
 	GLuint indicesID;
 	
+	Texture *texture;
+	
 	ObjectData(std::string file) : 
 		vaoID(GL_ID_NONE), texCoordsID(GL_ID_NONE), verticesID(GL_ID_NONE), 
 		normalsID(GL_ID_NONE), indicesID(GL_ID_NONE), ok(true)

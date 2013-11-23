@@ -4,6 +4,10 @@
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
+      <logicalFolder name="f1" displayName="RenderPass" projectFiles="true">
+        <itemPath>../../../../../Dokumenty/FEL/DP/trunk/dp/src/RenderPass/RenderPass.h</itemPath>
+        <itemPath>../../../../../Dokumenty/FEL/DP/trunk/dp/src/RenderPass/TexturingRenderPass.h</itemPath>
+      </logicalFolder>
       <itemPath>../../../../../Dokumenty/FEL/DP/trunk/dp/src/BundlerParser.h</itemPath>
       <itemPath>../../../../../Dokumenty/FEL/DP/trunk/dp/src/Controlls.h</itemPath>
       <itemPath>../../../../../Dokumenty/FEL/DP/trunk/dp/src/DataLoader.h</itemPath>
@@ -12,6 +16,7 @@
       <itemPath>../../../../../Dokumenty/FEL/DP/trunk/dp/src/RenderPassHandler.h</itemPath>
       <itemPath>../../../../../Dokumenty/FEL/DP/trunk/dp/src/Renderer.h</itemPath>
       <itemPath>../../../../../Dokumenty/FEL/DP/trunk/dp/src/ShaderHandler.h</itemPath>
+      <itemPath>../../../../../Dokumenty/FEL/DP/trunk/dp/src/Texture.h</itemPath>
       <itemPath>../../../../../Dokumenty/FEL/DP/trunk/dp/src/cube.h</itemPath>
     </logicalFolder>
     <logicalFolder name="SourceFiles"
@@ -85,6 +90,16 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/RenderPass/RenderPass.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/RenderPass/TexturingRenderPass.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/RenderPassHandler.h"
             ex="false"
             tool="3"
@@ -96,6 +111,11 @@
             flavor2="0">
       </item>
       <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/ShaderHandler.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/Texture.h"
             ex="false"
             tool="3"
             flavor2="0">
@@ -153,6 +173,16 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/RenderPass/RenderPass.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/RenderPass/TexturingRenderPass.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/RenderPassHandler.h"
             ex="false"
             tool="3"
@@ -164,6 +194,11 @@
             flavor2="0">
       </item>
       <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/ShaderHandler.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/Texture.h"
             ex="false"
             tool="3"
             flavor2="0">
@@ -215,6 +250,16 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/RenderPass/RenderPass.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/RenderPass/TexturingRenderPass.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/RenderPassHandler.h"
             ex="false"
             tool="3"
@@ -226,6 +271,11 @@
             flavor2="0">
       </item>
       <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/ShaderHandler.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/Texture.h"
             ex="false"
             tool="3"
             flavor2="0">

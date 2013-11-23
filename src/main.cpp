@@ -38,7 +38,7 @@ GLuint pboId = 0;
 ShaderHandler *shaderHandler;
 Controlls *controlls;
 BundlerParser bp;
-Renderer renderer;
+Renderer *renderer;
 ObjectData *object;
 
 float * cameraPos;
@@ -106,16 +106,11 @@ void main_loop() {
     glPolygonMode(GL_FRONT_AND_BACK, g_WireMode ? GL_LINE : GL_FILL);
 	
 	controlls->updateCameraViewMatrix();
-	
-	glm::mat4 * modelView = controlls->getModelViewMatrix();
-	glm::mat4 * projection = controlls->getProjectionMatrix();
 		
-	
 	int programID = shaderHandler->getProgramId(ShaderHandler::SHADER_BASIC);
 	glUseProgram(programID);    // Active shader program
 	
-	glUniformMatrix4fv(glGetUniformLocation(programID, "u_ModelViewMatrix"), 1, GL_FALSE, &(*modelView)[0][0]);
-	glUniformMatrix4fv(glGetUniformLocation(programID, "u_ProjectionMatrix"), 1, GL_FALSE, &(*projection)[0][0]);
+	renderer->bindCameraMatrices(programID);
 	
 	Camera * c = &bp.getCameras()->at(controlls->getCameraId());
 	glUniformMatrix4fv(glGetUniformLocation(programID, "u_TextureRt"), 1, GL_FALSE, &c->Rt[0][0]);
@@ -167,7 +162,7 @@ void main_loop() {
 	glBindTexture(GL_TEXTURE_RECTANGLE, testTexture);
 			
 	//renderer.drawPlane();
-	renderer.draw(*object);
+	renderer->drawObject(*object);
 	
 	glBindTexture(GL_TEXTURE_RECTANGLE, 0);
 	
@@ -178,10 +173,7 @@ void main_loop() {
 //	programID = shaderHandler->getProgramId(ShaderHandler::SHADER_POINTS);
 //	glEnable(GL_PROGRAM_POINT_SIZE );
 //	glUseProgram(programID);
-//	
-//	glUniformMatrix4fv(glGetUniformLocation(programID, "u_ModelViewMatrix"), 1, GL_FALSE, &(*modelView)[0][0]);
-//	glUniformMatrix4fv(glGetUniformLocation(programID, "u_ProjectionMatrix"), 1, GL_FALSE, &(*projection)[0][0]);
-//	
+//	renderer->bindCameraMatrices(programID);
 //	glBindBuffer(GL_ARRAY_BUFFER, pointsVBO);
 //	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 3 * bp.getPoints()->size(), &bp.getPoints()->at(0).x, GL_STATIC_DRAW); 
 //    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0); //index 0, 3 floats per vertex
@@ -195,10 +187,7 @@ void main_loop() {
 	
 //	shader = ShaderHandler::SHADER_CAMERAS;
 //	glUseProgram(shaderHandler->getProgramId(shader));    // Active shader program
-//	
-//	glUniformMatrix4fv(glGetUniformLocation(shaderHandler->getProgramId(shader), "u_ModelViewMatrix"), 1, GL_FALSE, &(*modelView)[0][0]);
-//	glUniformMatrix4fv(glGetUniformLocation(shaderHandler->getProgramId(shader), "u_ProjectionMatrix"), 1, GL_FALSE, &(*projection)[0][0]);
-//	
+//	renderer->bindCameraMatrices(programID);
 //	
 //	glGenBuffers(1, &camPosVBO);
 //	glBindBuffer(GL_ARRAY_BUFFER, camPosVBO);
@@ -259,7 +248,7 @@ int main(int argc, char** argv) {
 	bp.parseFile("/home/jaa/Dokumenty/FEL/DP/data/bundle.rd.out");
 	shaderHandler = new ShaderHandler();
 	controlls = new Controlls(window_width, window_height, &bp);
-	
+	renderer = new Renderer(controlls);
 	//object = new ObjectData(std::string("/home/jaa/Documents/FEL/DP/data/123D_catch/from_123D_low.obj"));
 	object = new ObjectData(std::string("/home/jaa/Documents/FEL/DP/data/statue.obj"));
 	
@@ -318,6 +307,7 @@ int main(int argc, char** argv) {
 	delete shaderHandler;
 	delete controlls;
 	delete cameraPos;
+	delete renderer;
     return 0;
 }
 

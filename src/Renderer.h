@@ -8,20 +8,57 @@
 #ifndef RENDERER_H
 #define	RENDERER_H
 
+#include <GL/glew.h> //stupid IDE :)
+
 #include "ObjectData.h"
+#include "Controlls.h"
+#include "Texture.h"
 
 
 class Renderer {
-	
 	GLuint planeVao;
+	Controlls *controlls;
 
 public:
 	
-	Renderer() : planeVao(GL_ID_NONE) {
+	Renderer(Controlls *controlls) : planeVao(GL_ID_NONE), controlls(controlls) {
 	
 	}
 	
-	void draw(ObjectData &data) {
+	void bindCameraMatrices(const GLuint programID) {
+		glm::mat4 * modelView = controlls->getModelViewMatrix();
+		glm::mat4 * projection = controlls->getProjectionMatrix();
+
+		glUniformMatrix4fv(glGetUniformLocation(programID, "u_ModelViewMatrix"), 1, GL_FALSE, &(*modelView)[0][0]);
+		glUniformMatrix4fv(glGetUniformLocation(programID, "u_ProjectionMatrix"), 1, GL_FALSE, &(*projection)[0][0]);	
+	}
+	
+	void drawTexture(const GLuint programID, Texture &texture) {
+		if(texture.textureID == GL_ID_NONE) {
+			glGenTextures(1, &texture.textureID);
+			glBindTexture(texture.target, texture.textureID);
+			glTexImage2D(texture.target, 0, GL_RGB, texture.width, texture.height, 0, GL_RGB, GL_UNSIGNED_BYTE, texture.getImageStart());
+			glBindTexture(texture.target, 0);
+
+			glGenSamplers(1, &texture.samplerID);
+			glSamplerParameteri(texture.samplerID, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+			glSamplerParameteri(texture.samplerID, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+			glSamplerParameteri(texture.samplerID, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+			glSamplerParameteri(texture.samplerID, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+		}
+		
+		assert(texture.samplerID);
+		assert(texture.textureID);
+		
+		glUniform1i(glGetUniformLocation(programID, "texture0"), 0);
+		
+		glBindSampler(0, texture.samplerID);
+		glActiveTexture(GL_TEXTURE0 + texture.unit);
+		
+		glBindTexture(texture.target, texture.textureID);	
+	}
+	
+	void drawObject(ObjectData &data) {
 		if(!data.isOK()) {
 			return;
 		}
@@ -115,6 +152,7 @@ public:
 		glDisableVertexAttribArray(2);
 		glBindVertexArray(0);
 	}
+	
 
 };
 
