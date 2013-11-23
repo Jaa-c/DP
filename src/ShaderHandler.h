@@ -14,7 +14,7 @@
 class ShaderHandler {
 public:
 	/// list of avaiable shaders
-	enum ShaderList {
+	enum ShaderType {
 		SHADER_TEST,
 		SHADER_POINTS,
 		SHADER_CAMERAS,
@@ -46,12 +46,12 @@ public:
 	
 	~ShaderHandler() {}
 	
-	void compileShaderProgram(ShaderList shader, bool vert, bool geom, bool frag) {
+	void compileShaderProgram(ShaderType shader, bool vert, bool geom, bool frag) {
 		
 		std::string name = SHADER_PATH + SHADER_SRC[shader];
 		
 		// Delete shader program if exists
-		if (g_ProgramId[shader]) {
+		if (g_ProgramId[shader] != GL_ID_NONE) {
 			glDeleteProgram(g_ProgramId[shader]);
 		}
 
@@ -93,7 +93,7 @@ public:
 		}
 	}
 	
-	GLuint getProgramId(ShaderList shader) {
+	GLuint getProgramId(ShaderType shader) {
 		if(g_ProgramId[shader] == GL_ID_NONE) {
 			compileShaderProgram(shader, true, false, true); //TODO
 		}

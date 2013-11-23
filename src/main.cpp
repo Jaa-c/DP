@@ -30,7 +30,13 @@ const unsigned GL_ID_NONE = (unsigned)~(unsigned(0));
 
 #include "RenderPass/RenderPass.h"
 #include "RenderPass/TexturingRenderPass.h"
+#include "RenderPassHandler.h"
 
+//TODO
+RenderPassHandler *renderPassHandler;
+ObjectData *object;
+Controlls *controlls;
+ShaderHandler *shaderHandler;
 
 // GLSL variables
 GLuint g_WireMode = 0;
@@ -38,15 +44,8 @@ GLuint pointsVBO = 0;
 GLuint camPosVBO = 0;
 GLuint pboId = 0;
 
-ShaderHandler *shaderHandler;
-Controlls *controlls;
-BundlerParser bp;
-Renderer *renderer;
-ObjectData *object;
-
 float * cameraPos;
-
-glm::vec2 textureSize;
+float depth_data[1000*800];
 
 void printMat(glm::mat4 m) {
 	std::cout <<m[0][0]<<" "<<m[0][1]<<" "<<m[0][2]<<" "<<m[0][3]<<"\n";
@@ -56,52 +55,6 @@ void printMat(glm::mat4 m) {
 	
 }
 
-float depth_data[1000*800];
-GLuint testTexture, g_textureSampler;
-
-
-void initGL() {
-	
-    // Set OpenGL state variables
-    glClearColor(0.4f, 0.4f, 0.7f, 0);
-	
-    glEnable(GL_DEPTH_TEST);
-	glDisable(GL_CULL_FACE);	
-	
-	std::vector<rgb> image;
-	int width, height;
-	DataLoader::loadJPEG("/home/jaa/Documents/FEL/DP/data/visualize/00000000.jpg", image, width, height);
-	assert(image.size() == width * height * 3);
-	textureSize.x = width;
-	textureSize.y = height;
-	
-    glGenTextures(1, &testTexture);
-    glBindTexture(GL_TEXTURE_RECTANGLE, testTexture);
-    glTexImage2D(GL_TEXTURE_RECTANGLE, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, &image[0]);
-    glBindTexture(GL_TEXTURE_RECTANGLE, 0);
-	
-	glGenSamplers(1, &g_textureSampler);
-	glSamplerParameteri(g_textureSampler, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glSamplerParameteri(g_textureSampler, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glSamplerParameteri(g_textureSampler, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-	glSamplerParameteri(g_textureSampler, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-	
-	glGenBuffers(1, &pointsVBO);
-	glGenBuffers(1, &camPosVBO);
-	
-	int cams = bp.getCameras()->size();
-	cameraPos = new float[cams * 3];
-	
-	for(int i = 0; i < cams; i++) {
-		Camera * c = &bp.getCameras()->at(i);
-		glm::vec3 v = -1 * glm::transpose(c->rotate) * c->translate;
-		cameraPos[i*3] = v[0];
-		cameraPos[i*3+1] = v[1];
-		cameraPos[i*3+2] = v[2];
-	}
-
-
-}
 
 void main_loop() {
 	
@@ -109,17 +62,8 @@ void main_loop() {
     glPolygonMode(GL_FRONT_AND_BACK, g_WireMode ? GL_LINE : GL_FILL);
 	
 	controlls->updateCameraViewMatrix();
-		
-	int programID = shaderHandler->getProgramId(ShaderHandler::SHADER_BASIC);
-	glUseProgram(programID);    // Active shader program
-	
-	renderer->bindCameraMatrices(programID);
-	
-	Camera * c = &bp.getCameras()->at(controlls->getCameraId());
-	glUniformMatrix4fv(glGetUniformLocation(programID, "u_TextureRt"), 1, GL_FALSE, &c->Rt[0][0]);
-	//glUniform3fv(glGetUniformLocation(programID, "u_TextureTrans"), 1, &c->translate[0]);
-	glUniform2fv(glGetUniformLocation(programID, "u_TextureSize"), 1, &textureSize[0]);
-	glUniform1f(glGetUniformLocation(programID, "u_TextureFL"), c->focalL);
+
+	renderPassHandler->draw(object);
 	
 //	glDepthFunc(GL_LESS);     // We want to get the nearest pixels
 //	glColorMask(0,0,0,0);     // Disable color, it's useless, we only want depth.
@@ -151,25 +95,6 @@ void main_loop() {
 	
 	//renderer.draw(*object);
 	
-	
-	
-	assert(g_textureSampler);
-	glBindSampler(0, g_textureSampler);
-	glActiveTexture(GL_TEXTURE0 + 0);
-	
-	GLint tex0Loc = glGetUniformLocation(programID, "texture0");
-	assert(tex0Loc != -1);
-	glUniform1i(tex0Loc, 0);
-	
-	assert(testTexture);
-	glBindTexture(GL_TEXTURE_RECTANGLE, testTexture);
-			
-	//renderer.drawPlane();
-	renderer->drawObject(*object);
-	
-	glBindTexture(GL_TEXTURE_RECTANGLE, 0);
-	
-	glUseProgram(0);
 	
 	
 //	
@@ -248,16 +173,27 @@ int main(int argc, char** argv) {
 	const int window_height = 800;
 	const char *window_title = "Titulek";
 	
+	BundlerParser bp;
 	bp.parseFile("/home/jaa/Dokumenty/FEL/DP/data/bundle.rd.out");
-	shaderHandler = new ShaderHandler();
-	controlls = new Controlls(window_width, window_height, &bp);
-	renderer = new Renderer(controlls);
-	//object = new ObjectData(std::string("/home/jaa/Documents/FEL/DP/data/123D_catch/from_123D_low.obj"));
-	object = new ObjectData(std::string("/home/jaa/Documents/FEL/DP/data/statue.obj"));
+	controlls = new Controlls (window_width, window_height, &bp);
 	
     // Intialize GLFW   
     glfwInit();
-
+	
+	Renderer renderer(controlls);
+	shaderHandler = new ShaderHandler();
+	
+	renderPassHandler = new RenderPassHandler();
+	renderPassHandler->add(RenderPass::TEXTURING_PASS, new TexturingRenderPass(&renderer, shaderHandler, &bp));
+	
+	object = new ObjectData(std::string("/home/jaa/Documents/FEL/DP/data/statue.obj"));
+	std::vector<rgb> image;
+	int width, height;
+	DataLoader::loadJPEG("/home/jaa/Documents/FEL/DP/data/visualize/00000000.jpg", image, width, height);
+	assert(image.size() == width * height * 3);
+	object->texture = new Texture(GL_TEXTURE_RECTANGLE, 0);
+	object->texture->setImage(&image, width, height);
+	
     // Create a window
     glfwOpenWindow(window_width, window_height, 0, 0, 0, 0, 32, 0, GLFW_WINDOW);
     glfwSetWindowTitle(window_title);
@@ -273,7 +209,23 @@ int main(int argc, char** argv) {
         return 1;
     }
 	
-	initGL();
+	// Set OpenGL state variables
+    glClearColor(0.4f, 0.4f, 0.7f, 0);
+	
+	//TODO
+	glGenBuffers(1, &pointsVBO);
+	glGenBuffers(1, &camPosVBO);
+	
+	int cams = bp.getCameras()->size();
+	cameraPos = new float[cams * 3];
+	
+	for(int i = 0; i < cams; i++) {
+		Camera * c = &bp.getCameras()->at(i);
+		glm::vec3 v = -1 * glm::transpose(c->rotate) * c->translate;
+		cameraPos[i*3] = v[0];
+		cameraPos[i*3+1] = v[1];
+		cameraPos[i*3+2] = v[2];
+	}
 
     // Set GLFW event callbacks
     //glfwSetWindowSizeCallback(_cbWindowSizeChanged);
@@ -307,10 +259,10 @@ int main(int argc, char** argv) {
 	
     glfwTerminate();    // Terminate GLFW
 	
-	delete shaderHandler;
 	delete controlls;
 	delete cameraPos;
-	delete renderer;
+	delete shaderHandler;
+	delete renderPassHandler;
     return 0;
 }
 

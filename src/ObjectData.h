@@ -39,6 +39,10 @@ public:
 		}
 	}
 	
+	~ObjectData() {
+		if(texture) delete texture;
+	}
+	
 	const std::vector<GLuint> & getIndices() const {
 		return indices;
 	}

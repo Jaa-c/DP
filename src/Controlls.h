@@ -162,13 +162,13 @@ public:
 		g_CameraViewMatrix[2][2] = cam->rotate[2][2];
 	}
 	
-	void getProjectionMatrixForCamera(int cameraID, glm::mat4x3 &projection) {
+	void getProjectionMatrixForCamera(int cameraID, glm::mat4x3 &projection) const {
 		Camera * cam = &bp->getCameras()->at(cameraID);
 		projection = glm::mat4x3(cam->rotate);
 		projection[3] = cam->translate;
 	}
 	
-	int getCameraId() {
+	int getCameraId() const {
 		return cameraId;
 	}
 	

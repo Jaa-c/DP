@@ -12,24 +12,28 @@
 
 class RenderPass {
 public:	
-	enum Type {
+	enum RenderPassType {
 		TEXTURING_PASS,
 		BUNDLER_POINTS_PASS,
 		PASS_SIZE	
 	};
 	
-	RenderPass(Type type, Renderer *r, ShaderHandler *s) : type(type) {
-		shaderHandler = s;
-		renderer = r;
-	}
-	virtual void draw(ObjectData *object);
+	virtual void draw(ObjectData *object) const = 0;
+	
+	virtual ~RenderPass() {}
 	
 protected:
-	const Type type;
+	const RenderPassType type;
 	ShaderHandler *shaderHandler;
 	Renderer *renderer;
 	
-	GLuint programID;
+	ShaderHandler::ShaderType shader;
+	
+	RenderPass(RenderPassType type, Renderer *r, ShaderHandler *s) : type(type) {
+		shaderHandler = s;
+		renderer = r;
+	}
+	
 };
 
 

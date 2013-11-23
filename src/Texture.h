@@ -9,7 +9,7 @@
 #define	TEXTURE_H
 
 class Texture {
-	std::vector<unsigned char> *image;
+	const std::vector<unsigned char> *image;
 	
 public:
 	const GLenum target;
@@ -18,8 +18,7 @@ public:
 	GLuint textureID;
 	GLuint samplerID;
 	
-	uint width;
-	uint height;
+	glm::vec2 size;
 	
 	Texture(const GLenum target, const GLuint unit) : target(target), unit(unit), 
 		textureID(GL_ID_NONE), samplerID(GL_ID_NONE) 
@@ -29,9 +28,9 @@ public:
 	
 	void setImage(const std::vector<unsigned char> *image, const int w, const int h) {
 		textureID = GL_ID_NONE;
-		image = image;
-		width = w;
-		height = h;
+		this->image = image;
+		size.x = w;
+		size.y = h;
 	};
 	
 	const unsigned char *getImageStart() {

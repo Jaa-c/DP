@@ -37,7 +37,7 @@ public:
 		if(texture.textureID == GL_ID_NONE) {
 			glGenTextures(1, &texture.textureID);
 			glBindTexture(texture.target, texture.textureID);
-			glTexImage2D(texture.target, 0, GL_RGB, texture.width, texture.height, 0, GL_RGB, GL_UNSIGNED_BYTE, texture.getImageStart());
+			glTexImage2D(texture.target, 0, GL_RGB, texture.size.x, texture.size.y, 0, GL_RGB, GL_UNSIGNED_BYTE, texture.getImageStart());
 			glBindTexture(texture.target, 0);
 
 			glGenSamplers(1, &texture.samplerID);
@@ -153,6 +153,9 @@ public:
 		glBindVertexArray(0);
 	}
 	
+	const Controlls *getControlls() {
+		return controlls;
+	}
 
 };
 
