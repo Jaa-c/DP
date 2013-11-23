@@ -4,8 +4,10 @@ uniform mat4 u_ModelViewMatrix;
 uniform mat4 u_ProjectionMatrix;
 uniform mat3 u_NormalMatrix;
 
-uniform mat3 u_TextureRot;
-uniform vec3 u_TextureTrans;
+uniform mat3	u_TextureRot;
+uniform vec3	u_TextureTrans;
+uniform vec2	u_TextureSize;
+uniform float	u_TextureFL;
 
 layout(location = 0) in vec3 a_position;
 layout(location = 1) in vec3 a_normal;
@@ -27,8 +29,8 @@ void main () {
 
 	vec3 coords =  u_TextureRot * a_position + u_TextureTrans;
 	coords /= coords.z;
-	Out.v_texCoords.x = coords.x * 2577.29663086f + 2400 * 0.5f;
-	Out.v_texCoords.y = coords.y * 2577.29663086f + 3200 * 0.5f;
+	Out.v_texCoords.x = coords.x * u_TextureFL + u_TextureSize.x * 0.5f;
+	Out.v_texCoords.y = coords.y * u_TextureFL + u_TextureSize.y * 0.5f;
 
 	gl_Position = Out.v_position;
 }

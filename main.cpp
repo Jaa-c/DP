@@ -43,6 +43,8 @@ ObjectData *object;
 
 float * cameraPos;
 
+glm::vec2 textureSize;
+
 void printMat(glm::mat4 m) {
 	std::cout <<m[0][0]<<" "<<m[0][1]<<" "<<m[0][2]<<" "<<m[0][3]<<"\n";
 	std::cout <<m[1][0]<<" "<<m[1][1]<<" "<<m[1][2]<<" "<<m[1][3]<<"\n";
@@ -67,6 +69,8 @@ void initGL() {
 	int width, height;
 	DataLoader::loadJPEG("/home/jaa/Documents/FEL/DP/data/visualize/00000000.jpg", image, width, height);
 	assert(image.size() == width * height * 3);
+	textureSize.x = width;
+	textureSize.y = height;
 	
     glGenTextures(1, &testTexture);
     glBindTexture(GL_TEXTURE_RECTANGLE, testTexture);
@@ -121,7 +125,9 @@ void main_loop() {
 	
 	Camera * c = &bp.getCameras()->at(controlls->getCameraId());
 	glUniformMatrix3fv(glGetUniformLocation(programID, "u_TextureRot"), 1, GL_FALSE, &c->rotate[0][0]);
-	glUniform3fv(glGetUniformLocation(programID, "u_TextureTrans"), 3, &c->translate[0]);
+	glUniform3fv(glGetUniformLocation(programID, "u_TextureTrans"), 1, &c->translate[0]);
+	glUniform2fv(glGetUniformLocation(programID, "u_TextureSize"), 1, &textureSize[0]);
+	glUniform1f(glGetUniformLocation(programID, "u_TextureFL"), c->focalL);
 	
 //	glDepthFunc(GL_LESS);     // We want to get the nearest pixels
 //	glColorMask(0,0,0,0);     // Disable color, it's useless, we only want depth.
