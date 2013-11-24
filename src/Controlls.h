@@ -22,7 +22,7 @@ private:
 	
 	int cameraId;
 	
-	Controlls() : cameraId(0), mouseRotationEnabled(false) {}
+	Controlls() : mouseRotationEnabled(false), cameraId(0) {}
     Controlls(Controlls const&);
     void operator=(Controlls const&);
 	

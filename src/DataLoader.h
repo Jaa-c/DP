@@ -50,7 +50,7 @@ public:
 		const aiMesh* mesh = scene->mMeshes[0];
 		outIndices.resize(mesh->mNumFaces * 3);
 
-		for (int i = 0; i < mesh->mNumFaces; ++i) {
+		for (uint i = 0; i < mesh->mNumFaces; ++i) {
 			const aiFace &face = mesh->mFaces[i];
 			assert(face.mNumIndices == 3);
 			outIndices[i*3] = face.mIndices[0];
@@ -60,7 +60,7 @@ public:
 
 		outVertices.resize(mesh->mNumVertices);
 		outNormals.resize(mesh->mNumVertices);
-		for (int i = 0; i < mesh->mNumVertices; ++i) {
+		for (uint i = 0; i < mesh->mNumVertices; ++i) {
 			if (mesh->HasPositions()) {
 				outVertices[i] = glm::vec3(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z);
 			}
@@ -113,7 +113,7 @@ public:
 
         row[0] = new unsigned char[width * cinfo.num_components];
 
-        while(cinfo.output_scanline < height)
+        while(cinfo.output_scanline < (uint) height)
         {
 			jpeg_read_scanlines(&cinfo, row, 1);
 			for(int i = 0; i < width * cinfo.num_components; i++) {

@@ -27,9 +27,9 @@ public:
 	
 	Texture *texture;
 	
-	ObjectData(std::string file) : 
+	ObjectData(std::string file) : ok(true),
 		vaoID(GL_ID_NONE), texCoordsID(GL_ID_NONE), verticesID(GL_ID_NONE), 
-		normalsID(GL_ID_NONE), indicesID(GL_ID_NONE), ok(true)
+		normalsID(GL_ID_NONE), indicesID(GL_ID_NONE)
 	{
 		try {
 			DataLoader::importModel(file, indices, vertices, normals);

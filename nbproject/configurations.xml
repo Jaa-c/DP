@@ -60,6 +60,7 @@
             <pElem>src</pElem>
           </incDir>
           <commandLine>-std=c++0x -lX11 -lGL -lGLEW -lglfw -lassimp -ljpeg</commandLine>
+          <warningLevel>2</warningLevel>
         </ccTool>
         <linkerTool>
           <linkerAddLib>

@@ -43,7 +43,7 @@ public:
 		data.resize(filePaths.size()); //same number of images as cameras
 	}
 		
-	ImageData * getImage(int camID) {
+	ImageData * getImage(uint camID) {
 		if(camID > data.size()) {
 			return NULL;
 		}
