@@ -19,6 +19,7 @@
 #include "glm/core/type.hpp"
 
 typedef unsigned char rgb;
+typedef std::vector<rgb> Image;
 
 class DataLoader {
 	

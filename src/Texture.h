@@ -8,8 +8,15 @@
 #ifndef TEXTURE_H
 #define	TEXTURE_H
 
+
+struct ImageData {
+	Image image;
+	glm::ivec2 size;
+};
+
+
 class Texture {
-	std::vector<unsigned char> image;
+	ImageData* image;
 	
 public:
 	const GLenum target;
@@ -18,7 +25,6 @@ public:
 	GLuint textureID;
 	GLuint samplerID;
 	
-	glm::vec2 size;
 	CameraPosition *cameraPosition;
 	
 	Texture(const GLenum target, const GLuint unit) : target(target), unit(unit), 
@@ -27,21 +33,29 @@ public:
 	
 	}
 	
-	void setImage(std::vector<unsigned char> *image, const int w, const int h, CameraPosition *cp) {
-		textureID = GL_ID_NONE;
-		this->image = *image;
-		size.x = w;
-		size.y = h;
-		cameraPosition = cp;
+	void setImage(ImageData *image, CameraPosition *cp) {
+		if(image && image != this->image) {
+			if(glIsTexture(textureID)) { //TODO
+				glDeleteTextures(1, &textureID);
+			}
+			textureID = GL_ID_NONE;
+			this->image = image;
+			cameraPosition = cp;
+		}
 	};
 	
-	const unsigned char *getImageStart() {
-		assert(image.size() == size.x * size.y * 3);
-		return &image[0];
+	const rgb *getImageStart() {
+		if(image->image.empty()) {
+			return NULL;
+		}
+		assert(image->image.size() == image->size.x * image->size.y * 3);
+		return &image->image[0];
 	}
 	
+	const glm::ivec2 getSize() {
+		return image->size;
+	}
 	
-
 };
 
 

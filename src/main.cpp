@@ -26,8 +26,9 @@ const unsigned GL_ID_NONE = (unsigned)~(unsigned(0));
 #include "ObjectData.h"
 #include "ShaderHandler.h"
 #include "Camera.h"
-#include "Renderer.h"
 #include "Controlls.h"
+#include "TextureHandler.h"
+#include "Renderer.h"
 
 #include "RenderPass/RenderPass.h"
 #include "RenderPass/TexturingRenderPass.h"
@@ -56,28 +57,28 @@ class Main {
 	Camera camera;
 	ShaderHandler shaderHandler;
 	Renderer renderer;
+	TextureHandler textureHandler;
 	
 	ObjectData *object;
+	Controlls * constrolls;
 	
 public:
-	Main(int windowWidth, int windowHeight) : camera(windowWidth, windowHeight), renderer(&camera)	{		
+	Main(int windowWidth, int windowHeight) : 
+		camera(windowWidth, windowHeight), renderer(&camera), 
+		textureHandler("/home/jaa/Documents/FEL/DP/data/visualize/") 
+	{		
 		
 		bp.parseFile("/home/jaa/Dokumenty/FEL/DP/data/bundle.rd.out");
-		Controlls::getInstance().setPointers(&bp, &camera, &shaderHandler);
+		constrolls = &Controlls::getInstance();
+		constrolls->setPointers(&bp, &camera, &shaderHandler);
 		
 		renderPassHandler.add(RenderPass::TEXTURING_PASS, new TexturingRenderPass(&renderer, &shaderHandler));
 		renderPassHandler.add(RenderPass::BUNDLER_POINTS_PASS, new BundlerPointsRenderPass(&renderer, &shaderHandler, &bp));
 
 		object = new ObjectData(std::string("/home/jaa/Documents/FEL/DP/data/statue.obj"));
-		
-		Image image;
-		int width, height;
-		DataLoader::loadJPEG("/home/jaa/Documents/FEL/DP/data/visualize/00000000.jpg", image, width, height);
-		assert(image.size() == width * height * 3);
-		
+				
 		object->texture = new Texture(GL_TEXTURE_RECTANGLE, 0);
-		object->texture->setImage(&image, width, height, &bp.getCameras()->at(0));
-
+		
 	}
 	
 	~Main() {
@@ -90,7 +91,12 @@ public:
 		glPolygonMode(GL_FRONT_AND_BACK, g_WireMode ? GL_LINE : GL_FILL);
 
 		camera.updateCameraViewMatrix();
-
+		
+		const int camID = constrolls->getCameraId();
+		ImageData *id = textureHandler.getImage(camID);
+		
+		object->texture->setImage(id, &bp.getCameras()->at(camID));
+		
 		renderPassHandler.draw(object);
 
 	//	glDepthFunc(GL_LESS);     // We want to get the nearest pixels
@@ -130,10 +136,9 @@ public:
 };
 
 int main(int argc, char** argv) {
-	
 	const char *window_title = "Titulek";
-	int width = 1000;
-	int height = 800;
+	const int width = 1000;
+	const int height = 800;
 	
 	Main main(width, height);
 			

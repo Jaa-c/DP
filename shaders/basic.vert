@@ -5,7 +5,7 @@ uniform mat4 u_ProjectionMatrix;
 uniform mat3 u_NormalMatrix;
 
 uniform mat4	u_TextureRt;
-uniform vec2	u_TextureSize;
+uniform ivec2	u_TextureSize;
 uniform float	u_TextureFL;
 
 layout(location = 0) in vec3 a_position;

@@ -35,7 +35,7 @@ public:
 		
 		CameraPosition * c = object->texture->cameraPosition;
 		glUniformMatrix4fv(glGetUniformLocation(programID, "u_TextureRt"), 1, GL_FALSE, &c->Rt[0][0]);
-		glUniform2fv(glGetUniformLocation(programID, "u_TextureSize"), 1, &object->texture->size[0]);
+		glUniform2iv(glGetUniformLocation(programID, "u_TextureSize"), 1, &object->texture->getSize()[0]);
 		glUniform1f(glGetUniformLocation(programID, "u_TextureFL"), c->focalL);
 		
 		renderer->bindCameraMatrices(programID);
