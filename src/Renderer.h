@@ -75,32 +75,33 @@ public:
 		
 		if(points->pointsVBO == GL_ID_NONE) {
 			glGenBuffers(1, &points->pointsVBO);
+			glBindBuffer(GL_ARRAY_BUFFER, points->pointsVBO);
+			glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * points->getPointData().size(), &points->getPointData()[0], GL_STATIC_DRAW); 
+			
 			glGenBuffers(1, &points->camPosVBO);
+			glBindBuffer(GL_ARRAY_BUFFER, points->camPosVBO);
+			glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * points->getCameraPositions().size(), &points->getCameraPositions()[0], GL_STATIC_DRAW); 
+		
 		}
 		glm::vec3 color(1.0f, 0.0f, 0.0f);
 		glUniform3fv(glGetUniformLocation(programID, "u_color"), 1, &color[0]);
 		
-		///TODO: use renderer to draw this
+		
 		glBindBuffer(GL_ARRAY_BUFFER, points->pointsVBO);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * points->getPointData().size(), &points->getPointData()[0], GL_STATIC_DRAW); 
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0); //index 0, 3 floats per vertex
 		glEnableVertexAttribArray(0);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-
 		glDrawArrays(GL_POINTS, 0, points->getPointData().size());
 		
 		color = glm::vec3(1.0f, 1.0f, 0.0f);
 		glUniform3fv(glGetUniformLocation(programID, "u_color"), 1, &color[0]);
 		
-		///TODO: use renderer to draw this
 		glBindBuffer(GL_ARRAY_BUFFER, points->camPosVBO);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * points->getCameraPositions().size(), &points->getCameraPositions()[0], GL_STATIC_DRAW); 
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0); //index 0, 3 floats per vertex
-		glEnableVertexAttribArray(0);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-
 		glDrawArrays(GL_POINTS, 0, points->getCameraPositions().size());
-	
+		
+		glDisableVertexAttribArray(0);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		
 	}
 	
 	void drawObject(const GLuint programID, ObjectData &data) {
