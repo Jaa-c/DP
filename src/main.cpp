@@ -151,21 +151,6 @@ public:
 	//	glDrawArrays(GL_POINTS, 0, bp.getPoints()->size());
 	//	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-
-
-	//	shader = ShaderHandler::SHADER_CAMERAS;
-	//	glUseProgram(shaderHandler->getProgramId(shader));    // Active shader program
-	//	renderer->bindCameraMatrices(programID);
-	//	
-	//	glGenBuffers(1, &camPosVBO);
-	//	glBindBuffer(GL_ARRAY_BUFFER, camPosVBO);
-	//	glBufferData(GL_ARRAY_BUFFER, sizeof(float) *  bp.getCameras()->size() * 3, cameraPos, GL_STATIC_DRAW);
-	//    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0); //index 0, 3 floats per vertex
-	//    glEnableVertexAttribArray(0);//Enable attribute index 0 as being used 
-	//	
-	//	glDrawArrays(GL_POINTS, 0, bp.getCameras()->size());
-	//	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
 		glUseProgram(0);
 
 	}
