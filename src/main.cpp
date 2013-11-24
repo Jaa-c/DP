@@ -6,7 +6,8 @@
  */
 
 #include <GL/glew.h>
-#include <GL/glfw.h>
+//#include <GL/glfw.h>
+#include <GLFW/glfw3.h>
 
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
@@ -69,7 +70,7 @@ public:
 
 		object = new ObjectData(std::string("/home/jaa/Documents/FEL/DP/data/statue.obj"));
 		
-		std::vector<rgb> image;
+		Image image;
 		int width, height;
 		DataLoader::loadJPEG("/home/jaa/Documents/FEL/DP/data/visualize/00000000.jpg", image, width, height);
 		assert(image.size() == width * height * 3);
@@ -135,34 +136,35 @@ int main(int argc, char** argv) {
 	int height = 800;
 	
 	Main main(width, height);
-	
+			
 	// Intialize GLFW   
-	glfwInit();
+	if(!glfwInit()) {
+		Log::e("Unable to init GLFW.");
+		return 1;
+	}
 
     // Create a window
-    glfwOpenWindow(width, height, 0, 0, 0, 0, 32, 0, GLFW_WINDOW);
-    glfwSetWindowTitle(window_title);
-    glfwSetWindowPos(100, 100);
+    GLFWwindow* window = glfwCreateWindow(width, height, window_title, NULL, NULL);
+    glfwSetWindowPos(window, 100, 100);
+    /* Make the window's context current */
+    glfwMakeContextCurrent(window);
 
-    glfwEnable(GLFW_MOUSE_CURSOR);
-    glfwEnable(GLFW_KEY_REPEAT);
-
-    GLenum err = glewInit();
-    if (GLEW_OK != err) {
-        Log::e("Error: %s", glewGetErrorString(err));
-        assert(0);
+	GLuint err = glewInit();
+    if (err != GLEW_OK) {
+        Log::e("Unable to init glew.");
         return 1;
     }
 	
+    // Set GLFW event callbacks
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+    glfwSetWindowSizeCallback(window, Controlls::windowSizeChanged);
+    //glfwSetCharCallback(window, Controlls::keyboardAction);
+    glfwSetKeyCallback(window, Controlls::keyboardAction);
+    glfwSetMouseButtonCallback(window, Controlls::mouseButtonChanged);
+    glfwSetCursorPosCallback(window, Controlls::mousePositionChanged);
+	
 	// Set OpenGL state variables
     glClearColor(0.4f, 0.4f, 0.7f, 0);
-	
-    // Set GLFW event callbacks
-    glfwSetWindowSizeCallback(Controlls::windowSizeChanged);
-    glfwSetCharCallback(Controlls::keyboardAction);
-    glfwSetKeyCallback(Controlls::keyboardAction);
-    glfwSetMouseButtonCallback(Controlls::mouseButtonChanged);
-    glfwSetMousePosCallback(Controlls::mousePositionChanged);
 	
 	struct timeval start, end;
 	int fps = 0;
@@ -170,7 +172,7 @@ int main(int argc, char** argv) {
 	gettimeofday(&start, NULL);
 	
    // Main loop
-    while(glfwGetWindowParam(GLFW_OPENED) && !glfwGetKey(GLFW_KEY_ESC)) {
+    while(!glfwWindowShouldClose(window) && !glfwGetKey(window, GLFW_KEY_ESCAPE)) {
 
 		main.main_loop();
 
@@ -183,11 +185,12 @@ int main(int argc, char** argv) {
 		fps++;
         
         // Present frame buffer
-        glfwSwapBuffers();
+        glfwSwapBuffers(window);
+		/// Poll for and process events
+        glfwPollEvents();
     }
 	
     glfwTerminate();    // Terminate GLFW
-	
     return 0;
 }
 

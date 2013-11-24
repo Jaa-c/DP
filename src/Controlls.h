@@ -21,10 +21,8 @@ private:
 	int ox, oy;
 	
 	int cameraId;
-
 	
-	Controlls() : cameraId(0), mouseRotationEnabled(false) {
-	}
+	Controlls() : cameraId(0), mouseRotationEnabled(false) {}
     Controlls(Controlls const&);
     void operator=(Controlls const&);
 	
@@ -34,19 +32,19 @@ public:
 		return instance;
 	}
 	
-	static void keyboardAction(int key, int action) {
+	static void keyboardAction(GLFWwindow* window, int key, int scancode, int action, int mods) {
 		getInstance().keyboardActionImpl(key, action);
 	}
 	
-	static void mouseButtonChanged(int button, int action) {
+	static void mouseButtonChanged(GLFWwindow* window, int button, int action, int mods) {
 		getInstance().mouseButtonChangedImpl(button, action);
 	}
 	
-	static void mousePositionChanged(int x, int y) {
-		getInstance().mousePositionChangedImpl(x, y);
+	static void mousePositionChanged(GLFWwindow* window, double x, double y) {
+		getInstance().mousePositionChangedImpl(floor(x), floor(y));
 	}
 	
-	static void windowSizeChanged(int width, int height) {
+	static void windowSizeChanged(GLFWwindow* window, int width, int height) {
 		getInstance().windowSizeChangedImpl(width, height);
 	}	
 	
