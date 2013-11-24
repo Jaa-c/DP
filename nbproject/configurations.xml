@@ -5,6 +5,7 @@
                    displayName="Header Files"
                    projectFiles="true">
       <logicalFolder name="f1" displayName="RenderPass" projectFiles="true">
+        <itemPath>src/RenderPass/BundlerPointsRenderPass.h</itemPath>
         <itemPath>../../../../../Dokumenty/FEL/DP/trunk/dp/src/RenderPass/RenderPass.h</itemPath>
         <itemPath>../../../../../Dokumenty/FEL/DP/trunk/dp/src/RenderPass/TexturingRenderPass.h</itemPath>
       </logicalFolder>
@@ -131,6 +132,11 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="src/RenderPass/BundlerPointsRenderPass.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="src/main.cpp" ex="false" tool="1" flavor2="0">
       </item>
     </conf>
@@ -219,6 +225,11 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="src/RenderPass/BundlerPointsRenderPass.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="src/main.cpp" ex="false" tool="1" flavor2="0">
       </item>
     </conf>
@@ -297,6 +308,11 @@
             flavor2="0">
       </item>
       <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/cube.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/RenderPass/BundlerPointsRenderPass.h"
             ex="false"
             tool="3"
             flavor2="0">

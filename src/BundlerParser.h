@@ -17,28 +17,6 @@
 
 #include "glm/core/type_mat3x3.hpp"
 
-struct Point {
-	float x;
-	float y;
-	float z;
-	
-	Point() {};
-	Point(int _x, int _y, int _z) : x(_x), y(_y), z(_z) {}
-	
-	float & operator[] (int i) {
-		switch(i) {
-			case 0:
-				return x;
-			case 1:
-				return y;
-			case 2:
-				return z;
-			default:
-				throw std::out_of_range("");
-		}
-	}
-};
-
 struct CameraPosition {
 	glm::mat3 rotate;
 	glm::vec3 translate;
@@ -49,7 +27,7 @@ struct CameraPosition {
 };
 
 class BundlerParser {
-	std::vector<Point> points;
+	std::vector<glm::vec3> points;
 	std::vector<CameraPosition> cameras;
 	
 	// trim from start
@@ -133,7 +111,7 @@ public:
 		
 		//parse points
 		for(int i = 0; i < p; ++i) {
-			Point point;
+			glm::vec3 point;
 			std::getline(infile, line);
 			ss.str(line);
 			
@@ -153,7 +131,7 @@ public:
 		return &cameras;
 	}
 	
-	std::vector<Point> * getPoints()  {
+	std::vector<glm::vec3> * getPoints()  {
 		return &points;
 	}
 	

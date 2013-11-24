@@ -30,6 +30,7 @@ const unsigned GL_ID_NONE = (unsigned)~(unsigned(0));
 
 #include "RenderPass/RenderPass.h"
 #include "RenderPass/TexturingRenderPass.h"
+#include "RenderPass/BundlerPointsRenderPass.h"
 #include "RenderPassHandler.h"
 
 
@@ -39,7 +40,6 @@ GLuint pointsVBO = 0;
 GLuint camPosVBO = 0;
 GLuint pboId = 0;
 
-float * cameraPos;
 
 void printMat(glm::mat4 m) {
 	std::cout <<m[0][0]<<" "<<m[0][1]<<" "<<m[0][2]<<" "<<m[0][3]<<"\n";
@@ -65,6 +65,7 @@ public:
 		Controlls::getInstance().setPointers(&bp, &camera, &shaderHandler);
 		
 		renderPassHandler.add(RenderPass::TEXTURING_PASS, new TexturingRenderPass(&renderer, &shaderHandler));
+		renderPassHandler.add(RenderPass::BUNDLER_POINTS_PASS, new BundlerPointsRenderPass(&renderer, &shaderHandler, &bp));
 
 		object = new ObjectData(std::string("/home/jaa/Documents/FEL/DP/data/statue.obj"));
 		
@@ -75,21 +76,7 @@ public:
 		
 		object->texture = new Texture(GL_TEXTURE_RECTANGLE, 0);
 		object->texture->setImage(&image, width, height, &bp.getCameras()->at(0));
-		
-		//	//TODO
-		//	glGenBuffers(1, &pointsVBO);
-		//	glGenBuffers(1, &camPosVBO);
-		//	
-		//	int cams = bp.getCameras()->size();
-		//	cameraPos = new float[cams * 3];
-		//	
-		//	for(int i = 0; i < cams; i++) {
-		//		CameraPosition * c = &bp.getCameras()->at(i);
-		//		glm::vec3 v = -1 * glm::transpose(c->rotate) * c->translate;
-		//		cameraPos[i*3] = v[0];
-		//		cameraPos[i*3+1] = v[1];
-		//		cameraPos[i*3+2] = v[2];
-		//	}
+
 	}
 	
 	~Main() {
@@ -135,22 +122,6 @@ public:
 
 		//renderer.draw(*object);
 
-
-
-	//	
-	//	programID = shaderHandler->getProgramId(ShaderHandler::SHADER_POINTS);
-	//	glEnable(GL_PROGRAM_POINT_SIZE );
-	//	glUseProgram(programID);
-	//	renderer->bindCameraMatrices(programID);
-	//	glBindBuffer(GL_ARRAY_BUFFER, pointsVBO);
-	//	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 3 * bp.getPoints()->size(), &bp.getPoints()->at(0).x, GL_STATIC_DRAW); 
-	//    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0); //index 0, 3 floats per vertex
-	//    glEnableVertexAttribArray(0);//Enable attribute index 0 as being used 
-	//	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	//	
-	//	glDrawArrays(GL_POINTS, 0, bp.getPoints()->size());
-	//	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
 		glUseProgram(0);
 
 	}
@@ -178,7 +149,7 @@ int main(int argc, char** argv) {
 
     GLenum err = glewInit();
     if (GLEW_OK != err) {
-        printf("Error: %s\n", glewGetErrorString(err));
+        Log::e("Error: %s", glewGetErrorString(err));
         assert(0);
         return 1;
     }
@@ -217,7 +188,6 @@ int main(int argc, char** argv) {
 	
     glfwTerminate();    // Terminate GLFW
 	
-	delete cameraPos;
     return 0;
 }
 

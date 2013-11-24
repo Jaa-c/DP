@@ -61,7 +61,7 @@ public:
 private:
 	
 	void compileShaderProgram(ShaderType shader, bool vert, bool geom, bool frag) {
-		std::string name = "shaders/basic";// + SHADER_SRC[shader]; //FIXME!!
+		std::string name = SHADER_PATH + SHADER_SRC[shader];
 		
 		// Delete shader program if exists
 		if (g_ProgramId[shader] != 0) {
