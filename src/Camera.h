@@ -33,10 +33,9 @@ public:
 		RIGHT
 	};
 	
-	
 	Camera(int winWidth, int winHeight) : freeWalk(true) {
-		cameraPos = glm::vec3(0.0f, -2.0f, -4.0f);
-		cameraRot = glm::vec3(0.0f, 250.0f, 0.0f);
+		cameraPos = glm::vec3(0.0f, 0.0f, 0.0f);
+		cameraRot = glm::vec3(0.0f, 0.0f, 0.0f);
 
 		cameraPosLag = cameraPos;
 		cameraRotLag = cameraRot;
@@ -106,11 +105,15 @@ public:
 		freeWalk = !freeWalk;
 	}
 	
-	glm::mat4 * getModelViewMatrix() {
+	bool isCameraStatic() const {
+		return !freeWalk;
+	}
+	
+	const glm::mat4 * getModelViewMatrix() const {
 		return &g_CameraViewMatrix;
 	}
 
-	glm::mat4 * getProjectionMatrix() {
+	const glm::mat4 * getProjectionMatrix() const {
 		return &g_CameraProjectionMatrix;
 	}
 

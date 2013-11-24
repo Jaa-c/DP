@@ -36,12 +36,8 @@ const unsigned GL_ID_NONE = (unsigned)~(unsigned(0));
 #include "RenderPassHandler.h"
 
 
-// GLSL variables
+// GLSL variables todo
 GLuint g_WireMode = 0;
-GLuint pointsVBO = 0;
-GLuint camPosVBO = 0;
-GLuint pboId = 0;
-
 
 void printMat(glm::mat4 m) {
 	std::cout <<m[0][0]<<" "<<m[0][1]<<" "<<m[0][2]<<" "<<m[0][3]<<"\n";
@@ -60,25 +56,28 @@ class Main {
 	TextureHandler textureHandler;
 	
 	ObjectData *object;
-	Controlls * constrolls;
+	Controlls * controlls;
 	
 public:
 	Main(int windowWidth, int windowHeight) : 
 		camera(windowWidth, windowHeight), renderer(&camera), 
 		textureHandler("/home/jaa/Documents/FEL/DP/data/visualize/") 
-	{		
+	{
+		const int defaultCameraID = 20;
+		
 		
 		bp.parseFile("/home/jaa/Dokumenty/FEL/DP/data/bundle.rd.out");
-		constrolls = &Controlls::getInstance();
-		constrolls->setPointers(&bp, &camera, &shaderHandler);
+		controlls = &Controlls::getInstance();
+		controlls->setPointers(&bp, &camera, &shaderHandler);
+		controlls->setCameraId(defaultCameraID);
 		
 		renderPassHandler.add(RenderPass::TEXTURING_PASS, new TexturingRenderPass(&renderer, &shaderHandler));
-		//renderPassHandler.add(RenderPass::BUNDLER_POINTS_PASS, new BundlerPointsRenderPass(&renderer, &shaderHandler, &bp));
+		renderPassHandler.add(RenderPass::BUNDLER_POINTS_PASS, new BundlerPointsRenderPass(&renderer, &shaderHandler, &bp));
 
 		object = new ObjectData(std::string("/home/jaa/Documents/FEL/DP/data/statue.obj"));
+		object->mvm = glm::rotate(object->mvm, 180.f, glm::vec3(1.0f, 0.0f, 0.0f));
 				
 		object->texture = new Texture(GL_TEXTURE_RECTANGLE, 0);
-		
 	}
 	
 	~Main() {
@@ -92,7 +91,7 @@ public:
 
 		camera.updateCameraViewMatrix();
 		
-		const int camID = constrolls->getCameraId();		
+		const int camID = controlls->getCameraId();		
 		object->texture->setImage(textureHandler.getImage(camID), &bp.getCameras()->at(camID));
 		
 		renderPassHandler.draw(object);

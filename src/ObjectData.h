@@ -27,16 +27,21 @@ public:
 	
 	Texture *texture;
 	
+	glm::mat4 mvm;
+	
 	ObjectData(std::string file) : ok(true),
 		vaoID(GL_ID_NONE), texCoordsID(GL_ID_NONE), verticesID(GL_ID_NONE), 
 		normalsID(GL_ID_NONE), indicesID(GL_ID_NONE)
 	{
+		glm::vec3 offset;
 		try {
-			DataLoader::importModel(file, indices, vertices, normals);
+			DataLoader::importModel(file, indices, vertices, normals, offset);
 		}
 		catch(const char* c) {
 			ok = false;
 		}
+		///move center to the origin
+		mvm = glm::translate(glm::mat4(1.0f), offset);
 	}
 	
 	~ObjectData() {

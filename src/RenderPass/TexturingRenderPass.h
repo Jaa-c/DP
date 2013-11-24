@@ -40,7 +40,7 @@ public:
 		
 		renderer->bindCameraMatrices(programID);
 		renderer->drawTexture(programID, *object->texture);
-		renderer->drawObject(*object);
+		renderer->drawObject(programID, *object);
 		glUseProgram(0);
 	}
 

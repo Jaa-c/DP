@@ -13,6 +13,7 @@
 #include "ObjectData.h"
 #include "Controlls.h"
 #include "Texture.h"
+#include "Camera.h"
 
 
 class Renderer {
@@ -26,8 +27,8 @@ public:
 	}
 	
 	void bindCameraMatrices(const GLuint programID) {
-		glm::mat4 * modelView = camera->getModelViewMatrix();
-		glm::mat4 * projection = camera->getProjectionMatrix();
+		const glm::mat4 * modelView = camera->getModelViewMatrix();
+		const glm::mat4 * projection = camera->getProjectionMatrix();
 
 		glUniformMatrix4fv(glGetUniformLocation(programID, "u_ModelViewMatrix"), 1, GL_FALSE, &(*modelView)[0][0]);
 		glUniformMatrix4fv(glGetUniformLocation(programID, "u_ProjectionMatrix"), 1, GL_FALSE, &(*projection)[0][0]);	
@@ -61,11 +62,15 @@ public:
 		glBindTexture(texture.target, texture.textureID);	
 	}
 	
-	void drawObject(ObjectData &data) {
+	void drawObject(const GLuint programID, ObjectData &data) {
 		if(!data.isOK()) {
 			return;
 		}
 		
+		if(!camera->isCameraStatic()) { //if we are moving
+			glm::mat4 modelView =  *camera->getModelViewMatrix() * data.mvm;
+			glUniformMatrix4fv(glGetUniformLocation(programID, "u_ModelViewMatrix"), 1, GL_FALSE, &modelView[0][0]);		
+		}
 		//initialize buffers
 		if (data.vaoID == GL_ID_NONE) {
 			glGenVertexArrays(1, &data.vaoID);
@@ -156,6 +161,10 @@ public:
 		glBindVertexArray(0);
 	}
 	
+	
+	const Camera * getCamera() const{
+		return camera;
+	}
 };
 
 

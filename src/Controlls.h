@@ -143,6 +143,10 @@ public:
 		return cameraId;
 	}
 	
+	void setCameraId(const int id) {
+		cameraId = id % bp->getCameras()->size();
+	}
+	
 
 };
 

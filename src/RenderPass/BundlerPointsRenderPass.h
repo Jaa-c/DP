@@ -52,6 +52,11 @@ public:
 		glUseProgram(programID);
 		renderer->bindCameraMatrices(programID);
 		
+		if(!renderer->getCamera()->isCameraStatic()) { //if we are moving
+			glm::mat4 modelView =  *renderer->getCamera()->getModelViewMatrix() * object->mvm;
+			glUniformMatrix4fv(glGetUniformLocation(programID, "u_ModelViewMatrix"), 1, GL_FALSE, &modelView[0][0]);		
+		}
+		
 		///TODO: use renderer to draw this
 		glBindBuffer(GL_ARRAY_BUFFER, pointsVBO);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * pointData->size(), &pointData->at(0).x, GL_STATIC_DRAW); 

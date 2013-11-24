@@ -23,6 +23,16 @@ typedef std::vector<rgb> Image;
 
 class DataLoader {
 	
+	static inline void updateBB(const aiVector3D &vert, glm::vec3 &max, glm::vec3 &min) {
+		if(vert.x > max.x) max.x = vert.x;
+		if(vert.y > max.y) max.y = vert.y;
+		if(vert.z > max.z) max.z = vert.z;
+		
+		if(vert.x < min.x) min.x = vert.x;
+		if(vert.y < min.y) min.y = vert.y;
+		if(vert.z < min.z) min.z = vert.z;
+	}
+	
 public:	
 	/**
 	 * Imports model from varios formats
@@ -36,7 +46,8 @@ public:
 		const std::string &file,
 		std::vector<unsigned int> &outIndices,
 		std::vector<glm::vec3> &outVertices,
-		std::vector<glm::vec3> &outNormals
+		std::vector<glm::vec3> &outNormals,
+		glm::vec3 &offset
 	) {
 		Assimp::Importer importer;
 		const aiScene* scene = importer.ReadFile(file,
@@ -60,8 +71,11 @@ public:
 
 		outVertices.resize(mesh->mNumVertices);
 		outNormals.resize(mesh->mNumVertices);
+		glm::vec3 min = outVertices[0], max = min;
+		
 		for (uint i = 0; i < mesh->mNumVertices; ++i) {
 			if (mesh->HasPositions()) {
+				updateBB(mesh->mVertices[i], max, min);
 				outVertices[i] = glm::vec3(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z);
 			}
 
@@ -69,6 +83,7 @@ public:
 				outNormals[i] = glm::vec3(mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z);
 			}
 		}
+		offset = -(max + min)/2.0f;
 		
 		Log::i("[ModelLoader] Loaded mesh with %d faces and %d vertices.", mesh->mNumFaces, mesh->mNumVertices);
 	}
