@@ -18,9 +18,6 @@
 
 #include "glm/core/type.hpp"
 
-typedef unsigned char rgb;
-typedef std::vector<rgb> Image;
-
 class DataLoader {
 	
 	static inline void updateBB(const aiVector3D &vert, glm::vec3 &max, glm::vec3 &min) {

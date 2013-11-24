@@ -18,8 +18,13 @@
 #include <cassert>
 #include <ctime>
 #include <sys/time.h>
+#include <vector>
 
 const unsigned GL_ID_NONE = (unsigned)~(unsigned(0));
+
+typedef unsigned char rgb;
+typedef std::vector<rgb> Image;
+typedef std::vector<glm::vec3> Points;
 
 #include "Log.h"
 #include "BundlerParser.h"
@@ -76,7 +81,7 @@ public:
 
 		object = new ObjectData(std::string("/home/jaa/Documents/FEL/DP/data/statue.obj"));
 		object->mvm = glm::rotate(object->mvm, 180.f, glm::vec3(1.0f, 0.0f, 0.0f));
-				
+		object->pointData = new PointData(&bp);
 		object->texture = new Texture(GL_TEXTURE_RECTANGLE, 0);
 	}
 	

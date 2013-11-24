@@ -11,7 +11,36 @@
 #include "DataLoader.h"
 #include "Texture.h"
 
+struct PointData {
+private:
+	/// Positions of cameras
+	Points cameraPos;
+	
+	/// Point data from bundler
+	Points *pointData;
+public:
+	GLuint pointsVBO;
+	GLuint camPosVBO;
+	PointData(BundlerParser *bp) : pointsVBO(GL_ID_NONE), camPosVBO(GL_ID_NONE) {
+		for(std::vector<CameraPosition>::iterator it = bp->getCameras()->begin(); it != bp->getCameras()->end(); ++it) {
+			glm::vec3 v = -1 * glm::transpose((*it).rotate) * (*it).translate;
+			cameraPos.push_back(v);
+		}
+		pointData = bp->getPoints();
+	}
+	
+	const Points &getPointData() const {
+		return *pointData;
+	}
+	
+	const Points &getCameraPositions() const {
+		return cameraPos;
+	}
+	
+};
+
 struct ObjectData {
+private:
 	std::vector<GLuint> indices;
 	std::vector<glm::vec3> vertices;
 	std::vector<glm::vec3> normals;
@@ -26,6 +55,7 @@ public:
 	GLuint indicesID;
 	
 	Texture *texture;
+	PointData * pointData;
 	
 	glm::mat4 mvm;
 	
@@ -46,6 +76,7 @@ public:
 	
 	~ObjectData() {
 		if(texture) delete texture;
+		if(pointData) delete pointData;
 	}
 	
 	const std::vector<GLuint> & getIndices() const {
