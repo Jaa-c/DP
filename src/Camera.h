@@ -44,7 +44,7 @@ public:
 	}
 	
 	void resizeWindow(int winWidth, int winHeight) {
-		g_CameraProjectionMatrix = glm::perspective(65.0f, GLfloat(winWidth) / GLfloat(winHeight), 0.10f, 1000.0f);
+		g_CameraProjectionMatrix = glm::perspective(75.0f, GLfloat(winWidth) / GLfloat(winHeight), 0.10f, 1000.0f);
 	}
 	
 	/**

@@ -73,7 +73,7 @@ public:
 		constrolls->setPointers(&bp, &camera, &shaderHandler);
 		
 		renderPassHandler.add(RenderPass::TEXTURING_PASS, new TexturingRenderPass(&renderer, &shaderHandler));
-		renderPassHandler.add(RenderPass::BUNDLER_POINTS_PASS, new BundlerPointsRenderPass(&renderer, &shaderHandler, &bp));
+		//renderPassHandler.add(RenderPass::BUNDLER_POINTS_PASS, new BundlerPointsRenderPass(&renderer, &shaderHandler, &bp));
 
 		object = new ObjectData(std::string("/home/jaa/Documents/FEL/DP/data/statue.obj"));
 				
@@ -92,10 +92,8 @@ public:
 
 		camera.updateCameraViewMatrix();
 		
-		const int camID = constrolls->getCameraId();
-		ImageData *id = textureHandler.getImage(camID);
-		
-		object->texture->setImage(id, &bp.getCameras()->at(camID));
+		const int camID = constrolls->getCameraId();		
+		object->texture->setImage(textureHandler.getImage(camID), &bp.getCameras()->at(camID));
 		
 		renderPassHandler.draw(object);
 

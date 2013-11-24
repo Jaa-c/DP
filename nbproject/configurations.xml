@@ -20,7 +20,6 @@
       <itemPath>../../../../../Dokumenty/FEL/DP/trunk/dp/src/ShaderHandler.h</itemPath>
       <itemPath>../../../../../Dokumenty/FEL/DP/trunk/dp/src/Texture.h</itemPath>
       <itemPath>../../../../../Dokumenty/FEL/DP/trunk/dp/src/TextureHandler.h</itemPath>
-      <itemPath>../../../../../Dokumenty/FEL/DP/trunk/dp/src/cube.h</itemPath>
     </logicalFolder>
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
@@ -133,11 +132,6 @@
             tool="3"
             flavor2="0">
       </item>
-      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/cube.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
       <item path="src/RenderPass/BundlerPointsRenderPass.h"
             ex="false"
             tool="3"
@@ -231,11 +225,6 @@
             tool="3"
             flavor2="0">
       </item>
-      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/cube.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
       <item path="src/RenderPass/BundlerPointsRenderPass.h"
             ex="false"
             tool="3"
@@ -319,11 +308,6 @@
             flavor2="0">
       </item>
       <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/TextureHandler.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/cube.h"
             ex="false"
             tool="3"
             flavor2="0">

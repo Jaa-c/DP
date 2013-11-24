@@ -38,7 +38,7 @@ public:
 			return; //no texture avaiable!
 		}
 		if(texture.textureID == GL_ID_NONE) {
-				
+			Log::d("camera focal length: %f", texture.cameraPosition->focalL);
 			glGenTextures(1, &texture.textureID);
 			glBindTexture(texture.target, texture.textureID);
 			glTexImage2D(texture.target, 0, GL_RGB, texture.getSize().x, texture.getSize().y, 0, GL_RGB, GL_UNSIGNED_BYTE, texture.getImageStart());

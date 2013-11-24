@@ -101,7 +101,7 @@ public:
 			ss >> cam.translate[1];
 			ss >> cam.translate[2];
 			
-			cam.Rt = glm::mat4(cam.rotate);
+			cam.Rt = glm::mat4(glm::transpose(cam.rotate));
 			cam.Rt[3][0] = cam.translate[0];
 			cam.Rt[3][1] = cam.translate[1];
 			cam.Rt[3][2] = cam.translate[2];

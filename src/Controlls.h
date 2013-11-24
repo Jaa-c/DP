@@ -58,7 +58,7 @@ public:
 	 * Callback for keyboard actions
 	 */
 	void keyboardActionImpl(int key, int action) {
-		if(action != GLFW_PRESS) {
+		if(action == GLFW_RELEASE) {
 			return;
 		}
 		switch (key) {
@@ -125,6 +125,7 @@ public:
 	
 	void setCameraParams() {
 		if(bp) {
+			Log::d("using camera: %d", cameraId);
 			CameraPosition * cam = &bp->getCameras()->at(cameraId);
 			camera->setCameraParams(cam->rotate, cam->translate);
 		}

@@ -44,7 +44,7 @@ public:
 		}
 	};
 	
-	const rgb *getImageStart() {
+	const rgb *getImageStart() const {
 		if(image->image.empty()) {
 			return NULL;
 		}
@@ -52,7 +52,7 @@ public:
 		return &image->image[0];
 	}
 	
-	const glm::ivec2 getSize() {
+	const glm::ivec2 getSize() const {
 		return image->size;
 	}
 	
