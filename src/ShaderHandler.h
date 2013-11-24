@@ -39,19 +39,32 @@ private:
 public:
 
 	ShaderHandler() {
-		for(int i = 0; i < SIZE; i++) {
-			g_ProgramId[i] = GL_ID_NONE;
-		}
+		resetShaders();
 	}
 	
 	~ShaderHandler() {}
 	
+	
+	GLuint getProgramId(ShaderType shader) {
+		if(g_ProgramId[shader] == 0) {
+			compileShaderProgram(shader, true, false, true); //TODO
+		}
+		return g_ProgramId[shader];
+	}
+	
+	void resetShaders() {
+		for(int i = 0; i < SIZE; i++) {
+			g_ProgramId[i] = 0;
+		}
+	}
+
+private:
+	
 	void compileShaderProgram(ShaderType shader, bool vert, bool geom, bool frag) {
-		
-		std::string name = SHADER_PATH + SHADER_SRC[shader];
+		std::string name = "shaders/basic";// + SHADER_SRC[shader]; //FIXME!!
 		
 		// Delete shader program if exists
-		if (g_ProgramId[shader] != GL_ID_NONE) {
+		if (g_ProgramId[shader] != 0) {
 			glDeleteProgram(g_ProgramId[shader]);
 		}
 
@@ -92,22 +105,6 @@ public:
 			Log::i("Shader program compiled successfully.");
 		}
 	}
-	
-	GLuint getProgramId(ShaderType shader) {
-		if(g_ProgramId[shader] == GL_ID_NONE) {
-			compileShaderProgram(shader, true, false, true); //TODO
-		}
-				
-		return g_ProgramId[shader];
-	}
-	
-	void resetShaders() {
-		for(int i = 0; i < SIZE; i++) {
-			g_ProgramId[i] = GL_ID_NONE;
-		}
-	}
-
-private:
 	
 	GLuint createShaderFromSource(GLenum shader_type, const char* source) {
 		if (source == NULL) {

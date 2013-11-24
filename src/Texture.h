@@ -9,7 +9,7 @@
 #define	TEXTURE_H
 
 class Texture {
-	const std::vector<unsigned char> *image;
+	std::vector<unsigned char> image;
 	
 public:
 	const GLenum target;
@@ -19,6 +19,7 @@ public:
 	GLuint samplerID;
 	
 	glm::vec2 size;
+	CameraPosition *cameraPosition;
 	
 	Texture(const GLenum target, const GLuint unit) : target(target), unit(unit), 
 		textureID(GL_ID_NONE), samplerID(GL_ID_NONE) 
@@ -26,15 +27,17 @@ public:
 	
 	}
 	
-	void setImage(const std::vector<unsigned char> *image, const int w, const int h) {
+	void setImage(std::vector<unsigned char> *image, const int w, const int h, CameraPosition *cp) {
 		textureID = GL_ID_NONE;
-		this->image = image;
+		this->image = *image;
 		size.x = w;
 		size.y = h;
+		cameraPosition = cp;
 	};
 	
 	const unsigned char *getImageStart() {
-		return &(*image)[0];
+		assert(image.size() == size.x * size.y * 3);
+		return &image[0];
 	}
 	
 	

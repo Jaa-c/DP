@@ -17,17 +17,17 @@
 
 class Renderer {
 	GLuint planeVao;
-	Controlls *controlls;
+	Camera *camera;
 
 public:
 	
-	Renderer(Controlls *controlls) : planeVao(GL_ID_NONE), controlls(controlls) {
+	Renderer(Camera *camera) : planeVao(GL_ID_NONE), camera(camera) {
 	
 	}
 	
 	void bindCameraMatrices(const GLuint programID) {
-		glm::mat4 * modelView = controlls->getModelViewMatrix();
-		glm::mat4 * projection = controlls->getProjectionMatrix();
+		glm::mat4 * modelView = camera->getModelViewMatrix();
+		glm::mat4 * projection = camera->getProjectionMatrix();
 
 		glUniformMatrix4fv(glGetUniformLocation(programID, "u_ModelViewMatrix"), 1, GL_FALSE, &(*modelView)[0][0]);
 		glUniformMatrix4fv(glGetUniformLocation(programID, "u_ProjectionMatrix"), 1, GL_FALSE, &(*projection)[0][0]);	
@@ -153,10 +153,6 @@ public:
 		glBindVertexArray(0);
 	}
 	
-	const Controlls *getControlls() {
-		return controlls;
-	}
-
 };
 
 

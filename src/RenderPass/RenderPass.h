@@ -18,7 +18,7 @@ public:
 		PASS_SIZE	
 	};
 	
-	virtual void draw(ObjectData *object) const = 0;
+	virtual void draw(ObjectData *object) = 0;
 	
 	virtual ~RenderPass() {}
 	

@@ -9,6 +9,7 @@
         <itemPath>../../../../../Dokumenty/FEL/DP/trunk/dp/src/RenderPass/TexturingRenderPass.h</itemPath>
       </logicalFolder>
       <itemPath>../../../../../Dokumenty/FEL/DP/trunk/dp/src/BundlerParser.h</itemPath>
+      <itemPath>../../../../../Dokumenty/FEL/DP/trunk/dp/src/Camera.h</itemPath>
       <itemPath>../../../../../Dokumenty/FEL/DP/trunk/dp/src/Controlls.h</itemPath>
       <itemPath>../../../../../Dokumenty/FEL/DP/trunk/dp/src/DataLoader.h</itemPath>
       <itemPath>../../../../../Dokumenty/FEL/DP/trunk/dp/src/Log.h</itemPath>
@@ -66,6 +67,11 @@
         </linkerTool>
       </compileType>
       <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/BundlerParser.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/Camera.h"
             ex="false"
             tool="3"
             flavor2="0">
@@ -153,6 +159,11 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/Camera.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/Controlls.h"
             ex="false"
             tool="3"
@@ -226,6 +237,11 @@
         </ccTool>
       </compileType>
       <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/BundlerParser.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/Camera.h"
             ex="false"
             tool="3"
             flavor2="0">

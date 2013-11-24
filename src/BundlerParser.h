@@ -39,7 +39,7 @@ struct Point {
 	}
 };
 
-struct Camera {
+struct CameraPosition {
 	glm::mat3 rotate;
 	glm::vec3 translate;
 	glm::mat4 Rt;
@@ -50,7 +50,7 @@ struct Camera {
 
 class BundlerParser {
 	std::vector<Point> points;
-	std::vector<Camera> cameras;
+	std::vector<CameraPosition> cameras;
 	
 	// trim from start
     static inline std::string &ltrim(std::string &s) {
@@ -103,7 +103,7 @@ public:
 			std::getline(infile, line);
 			std::istringstream ss(line);
 			
-			Camera cam;
+			CameraPosition cam;
 			ss >> cam.focalL;
 			ss >> cam.d1;
 			ss >> cam.d2;
@@ -149,7 +149,7 @@ public:
 					
 	}
 	
-	std::vector<Camera> * getCameras() {
+	std::vector<CameraPosition> * getCameras() {
 		return &cameras;
 	}
 	
