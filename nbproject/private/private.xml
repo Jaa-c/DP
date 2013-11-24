@@ -6,15 +6,6 @@
     </data>
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group name="DP">
-            <file>file:/home/jaa/Documents/FEL/DP/trunk/dp/src/main.cpp</file>
-            <file>file:/home/jaa/Dokumenty/FEL/DP/trunk/dp/src/Renderer.h</file>
-            <file>file:/home/jaa/Dokumenty/FEL/DP/trunk/dp/src/ObjectData.h</file>
-            <file>file:/home/jaa/Dokumenty/FEL/DP/trunk/dp/src/RenderPass/TexturingRenderPass.h</file>
-            <file>file:/home/jaa/Dokumenty/FEL/DP/trunk/dp/src/ShaderHandler.h</file>
-            <file>file:/home/jaa/Dokumenty/FEL/DP/trunk/dp/src/RenderPass/RenderPass.h</file>
-            <file>file:/home/jaa/Dokumenty/FEL/DP/trunk/dp/src/Texture.h</file>
-            <file>file:/home/jaa/Dokumenty/FEL/DP/trunk/dp/src/RenderPassHandler.h</file>
-        </group>
+        <group name="DP"/>
     </open-files>
 </project-private>
