@@ -15,7 +15,7 @@ class ShaderHandler {
 public:
 	/// list of avaiable shaders
 	enum ShaderType {
-		SHADER_TEST,
+		SHADER_TEST = 0,
 		SHADER_POINTS,
 		SHADER_CAMERAS,
 		SHADER_BASIC,

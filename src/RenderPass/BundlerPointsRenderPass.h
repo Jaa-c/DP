@@ -25,13 +25,21 @@ public:
 	}
 	
 	void draw(ObjectData *object) {
-		GLuint programID = shaderHandler->getProgramId(shader);
+		if(programID == GL_ID_NONE) {
+			programID = shaderHandler->getProgramId(shader);
+			getDefaultUniformLocations();
+		}
 		
 		glEnable(GL_PROGRAM_POINT_SIZE );
 		glUseProgram(programID);
-		renderer->bindCameraMatrices(programID);
-		renderer->drawPointData(programID, *object);
+		
+		renderer->setUniformLocations(&uniformLocations);
+		
+		renderer->bindCameraMatrices();
+		renderer->drawPointData(*object);
+		
 		glUseProgram(0);
+		glDisable(GL_PROGRAM_POINT_SIZE );
 	}
 };
 

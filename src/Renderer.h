@@ -14,11 +14,14 @@
 #include "Controlls.h"
 #include "Texture.h"
 #include "Camera.h"
+#include "RenderPass/RenderPass.h"
 
 
 class Renderer {
 	GLuint planeVao;
 	Camera *camera;
+	
+	std::vector<GLuint> *ulocs;
 
 public:
 	
@@ -26,15 +29,19 @@ public:
 	
 	}
 	
-	void bindCameraMatrices(const GLuint programID) {
+	void setUniformLocations(std::vector<GLuint> * locs) {
+		ulocs = locs;
+	}
+	
+	void bindCameraMatrices() {
 		const glm::mat4 * modelView = camera->getModelViewMatrix();
 		const glm::mat4 * projection = camera->getProjectionMatrix();
 
-		glUniformMatrix4fv(glGetUniformLocation(programID, "u_ModelViewMatrix"), 1, GL_FALSE, &(*modelView)[0][0]);
-		glUniformMatrix4fv(glGetUniformLocation(programID, "u_ProjectionMatrix"), 1, GL_FALSE, &(*projection)[0][0]);	
+		glUniformMatrix4fv(ulocs->at(RenderPass::MODELVIEW_MATRIX), 1, GL_FALSE, &(*modelView)[0][0]);
+		glUniformMatrix4fv(ulocs->at(RenderPass::PROJECTION_MATRIX), 1, GL_FALSE, &(*projection)[0][0]);	
 	}
 	
-	void drawTexture(const GLuint programID, Texture &texture) {
+	void drawTexture(Texture &texture) {
 		if(texture.getImageStart() == NULL) {
 			return; //no texture avaiable!
 		}
@@ -54,7 +61,7 @@ public:
 		assert(texture.samplerID);
 		assert(texture.textureID);
 		
-		glUniform1i(glGetUniformLocation(programID, "texture0"), 0);
+		glUniform1i(ulocs->at(RenderPass::TEXTURE0), 0);
 		
 		glBindSampler(0, texture.samplerID);
 		glActiveTexture(GL_TEXTURE0 + texture.unit);
@@ -62,7 +69,7 @@ public:
 		glBindTexture(texture.target, texture.textureID);	
 	}
 	
-	void drawPointData(const GLuint programID, ObjectData &data) {
+	void drawPointData(ObjectData &data) {
 		PointData * points = data.pointData;
 		if(!points) {
 			return; 
@@ -70,7 +77,7 @@ public:
 		
 		if(!camera->isCameraStatic()) { //if we are moving
 			glm::mat4 modelView =  *camera->getModelViewMatrix() * data.mvm;
-			glUniformMatrix4fv(glGetUniformLocation(programID, "u_ModelViewMatrix"), 1, GL_FALSE, &modelView[0][0]);		
+			glUniformMatrix4fv(ulocs->at(RenderPass::MODELVIEW_MATRIX), 1, GL_FALSE, &modelView[0][0]);		
 		}
 		
 		if(points->pointsVBO == GL_ID_NONE) {
@@ -84,7 +91,7 @@ public:
 		
 		}
 		glm::vec3 color(1.0f, 0.0f, 0.0f);
-		glUniform3fv(glGetUniformLocation(programID, "u_color"), 1, &color[0]);
+		glUniform3fv(ulocs->at(RenderPass::COLOR), 1, &color[0]);
 		
 		
 		glBindBuffer(GL_ARRAY_BUFFER, points->pointsVBO);
@@ -93,7 +100,7 @@ public:
 		glDrawArrays(GL_POINTS, 0, points->getPointData().size());
 		
 		color = glm::vec3(1.0f, 1.0f, 0.0f);
-		glUniform3fv(glGetUniformLocation(programID, "u_color"), 1, &color[0]);
+		glUniform3fv(ulocs->at(RenderPass::COLOR), 1, &color[0]);
 		
 		glBindBuffer(GL_ARRAY_BUFFER, points->camPosVBO);
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0); //index 0, 3 floats per vertex
@@ -104,14 +111,14 @@ public:
 		
 	}
 	
-	void drawObject(const GLuint programID, ObjectData &data) {
+	void drawObject(ObjectData &data) {
 		if(!data.isOK()) {
 			return;
 		}
 		
 		if(!camera->isCameraStatic()) { //if we are moving
 			glm::mat4 modelView =  *camera->getModelViewMatrix() * data.mvm;
-			glUniformMatrix4fv(glGetUniformLocation(programID, "u_ModelViewMatrix"), 1, GL_FALSE, &modelView[0][0]);		
+			glUniformMatrix4fv(ulocs->at(RenderPass::MODELVIEW_MATRIX), 1, GL_FALSE, &modelView[0][0]);		
 		}
 		//initialize buffers
 		if (data.vaoID == GL_ID_NONE) {

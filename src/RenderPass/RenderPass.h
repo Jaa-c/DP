@@ -10,12 +10,22 @@
 
 #include <GL/glew.h> //ide bug
 
+class Renderer;
+
 class RenderPass {
 public:	
 	enum RenderPassType {
-		TEXTURING_PASS,
+		TEXTURING_PASS = 0,
 		BUNDLER_POINTS_PASS,
 		PASS_SIZE	
+	};
+	
+	enum UniformLocations {
+		PROJECTION_MATRIX = 0,
+		MODELVIEW_MATRIX,
+		TEXTURE0,
+		COLOR,
+		UNIFORM_LOC_SIZE
 	};
 	
 	virtual void draw(ObjectData *object) = 0;
@@ -29,9 +39,23 @@ protected:
 	
 	ShaderHandler::ShaderType shader;
 	
-	RenderPass(RenderPassType type, Renderer *r, ShaderHandler *s) : type(type) {
+	std::vector<GLuint> uniformLocations;
+	
+	GLuint programID;
+	
+	RenderPass(RenderPassType type, Renderer *r, ShaderHandler *s) : type(type), programID(GL_ID_NONE) {
 		shaderHandler = s;
 		renderer = r;
+	}
+	
+	void getDefaultUniformLocations() {
+		assert(programID != GL_ID_NONE);
+		
+		uniformLocations.resize(UNIFORM_LOC_SIZE);
+		uniformLocations[PROJECTION_MATRIX] = glGetUniformLocation(programID, "u_ProjectionMatrix");
+		uniformLocations[MODELVIEW_MATRIX] = glGetUniformLocation(programID, "u_ModelViewMatrix");
+		uniformLocations[TEXTURE0] = glGetUniformLocation(programID, "u_texture0");
+		uniformLocations[COLOR] = glGetUniformLocation(programID, "u_color");
 	}
 	
 };
