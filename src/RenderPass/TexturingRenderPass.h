@@ -41,7 +41,7 @@ public:
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_CULL_FACE);
 		
-		assert(programID);
+		assert(programID != GL_ID_NONE);
 		glUseProgram(programID);
 		
 		CameraPosition * c = object->texture->cameraPosition;
@@ -58,11 +58,6 @@ public:
 		glUseProgram(0);
 	}
 
-
-
 };
 
-
-
 #endif	/* TEXTURINGRENDERPASS_H */
-

@@ -14,6 +14,8 @@
 #include "glm/gtc/matrix_inverse.hpp"
 #include "glm/gtc/type_ptr.hpp"
 
+//#include "AntTweakBar/AntTweakBar.h"
+
 #include <iostream>
 #include <cassert>
 #include <ctime>
@@ -44,13 +46,6 @@ typedef std::vector<glm::vec3> Points;
 // GLSL variables todo
 GLuint g_WireMode = 0;
 
-void printMat(glm::mat4 m) {
-	std::cout <<m[0][0]<<" "<<m[0][1]<<" "<<m[0][2]<<" "<<m[0][3]<<"\n";
-	std::cout <<m[1][0]<<" "<<m[1][1]<<" "<<m[1][2]<<" "<<m[1][3]<<"\n";
-	std::cout <<m[2][0]<<" "<<m[2][1]<<" "<<m[2][2]<<" "<<m[2][3]<<"\n";
-	std::cout <<m[3][0]<<" "<<m[3][1]<<" "<<m[3][2]<<" "<<m[3][3]<<"\n\n";
-}
-
 class Main {
 	
 	BundlerParser bp;
@@ -77,7 +72,7 @@ public:
 		controlls->setCameraId(defaultCameraID);
 		
 		renderPassHandler.add(RenderPass::TEXTURING_PASS, new TexturingRenderPass(&renderer, &shaderHandler));
-		renderPassHandler.add(RenderPass::BUNDLER_POINTS_PASS, new BundlerPointsRenderPass(&renderer, &shaderHandler, &bp));
+		//renderPassHandler.add(RenderPass::BUNDLER_POINTS_PASS, new BundlerPointsRenderPass(&renderer, &shaderHandler, &bp));
 
 		object = new ObjectData(std::string("/home/jaa/Documents/FEL/DP/data/statue.obj"));
 		object->mvm = glm::rotate(object->mvm, 180.f, glm::vec3(1.0f, 0.0f, 0.0f));
