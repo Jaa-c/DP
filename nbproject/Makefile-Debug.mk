@@ -42,8 +42,8 @@ OBJECTFILES= \
 CFLAGS=
 
 # CC Compiler Flags
-CCFLAGS=-std=c++0x -lX11 -lGL -lGLEW -lglfw -lassimp -ljpeg
-CXXFLAGS=-std=c++0x -lX11 -lGL -lGLEW -lglfw -lassimp -ljpeg
+CCFLAGS=-m64 -lGL -lX11 -lGLEW -lglfw -lassimp -ljpeg -lAntTweakBar
+CXXFLAGS=-m64 -lGL -lX11 -lGLEW -lglfw -lassimp -ljpeg -lAntTweakBar
 
 # Fortran Compiler Flags
 FFLAGS=
@@ -64,8 +64,8 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/dp: ${OBJECTFILES}
 
 ${OBJECTDIR}/src/main.o: src/main.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src
-	${RM} $@.d
-	$(COMPILE.cc) -g -Wall -Ilib/ -Isrc -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/main.o src/main.cpp
+	${RM} "$@.d"
+	$(COMPILE.cc) -g -Wall -Ilib/ -Ilib/AntTweakBar/ -std=c++11 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/main.o src/main.cpp
 
 # Subprojects
 .build-subprojects:

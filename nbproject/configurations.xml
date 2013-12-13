@@ -55,11 +55,13 @@
       </toolsSet>
       <compileType>
         <ccTool>
+          <architecture>2</architecture>
+          <standard>8</standard>
           <incDir>
             <pElem>lib/</pElem>
-            <pElem>src</pElem>
+            <pElem>lib/AntTweakBar/</pElem>
           </incDir>
-          <commandLine>-std=c++0x -lX11 -lGL -lGLEW -lglfw -lassimp -ljpeg</commandLine>
+          <commandLine>-lGL -lX11 -lGLEW -lglfw -lassimp -ljpeg -lAntTweakBar</commandLine>
           <warningLevel>2</warningLevel>
         </ccTool>
         <linkerTool>
