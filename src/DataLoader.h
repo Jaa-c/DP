@@ -44,6 +44,7 @@ public:
 		std::vector<unsigned int> &outIndices,
 		std::vector<glm::vec3> &outVertices,
 		std::vector<glm::vec3> &outNormals,
+		glm::vec3 &centroid,
 		glm::vec3 &offset
 	) {
 		Assimp::Importer importer;
@@ -74,6 +75,7 @@ public:
 			if (mesh->HasPositions()) {
 				updateBB(mesh->mVertices[i], max, min);
 				outVertices[i] = glm::vec3(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z);
+				centroid += outVertices[i];
 			}
 
 			if (mesh->HasNormals()) {
@@ -81,6 +83,8 @@ public:
 			}
 		}
 		offset = -(max + min)/2.0f;
+		centroid /= mesh->mNumVertices;
+		printf("centroid: %f, %f, %f\n", centroid.x, centroid.y, centroid.z);
 		
 		Log::i("[ModelLoader] Loaded mesh with %d faces and %d vertices.", mesh->mNumFaces, mesh->mNumVertices);
 	}

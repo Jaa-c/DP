@@ -29,6 +29,7 @@ struct CameraPosition {
 class BundlerParser {
 	std::vector<glm::vec3> points;
 	std::vector<CameraPosition> cameras;
+	std::vector<glm::vec3> cameraDirections;
 	
 	// trim from start
     static inline std::string &ltrim(std::string &s) {
@@ -52,6 +53,8 @@ public:
 	BundlerParser() {}
 	~BundlerParser() {}
 	
+	typedef std::vector<CameraPosition> Cameras;
+	
 	void parseFile(std::string file) {
 		
 		std::ifstream infile(file.c_str());
@@ -74,7 +77,8 @@ public:
 		if(!(ss >> c && ss >> p)) {
 			return;
 		}
-		
+		cameraDirections.reserve(c);
+		cameras.reserve(c);
 		Log::i("[BundlerParser] Loading %d cameras, %d points", c, p);
 		//parse cameras
 		for(int i = 0; i < c; ++i) {
@@ -107,6 +111,7 @@ public:
 			cam.Rt[3][2] = cam.translate[2];
 			
 			cameras.push_back(cam);
+			cameraDirections.push_back(-glm::vec3(cam.rotate[0][2], cam.rotate[1][2], cam.rotate[2][2]));
 		}
 		
 		//parse points
@@ -127,7 +132,7 @@ public:
 					
 	}
 	
-	std::vector<CameraPosition> * getCameras() {
+	Cameras * getCameras() {
 		return &cameras;
 	}
 	
@@ -135,12 +140,15 @@ public:
 		return &points;
 	}
 	
-	
-	
+	const int getClosestCamera(const glm::vec3 & dir) const {
+		auto max = std::max_element(cameraDirections.begin(), cameraDirections.end(), 
+			[dir] (const glm::vec3 &a, const glm::vec3 &b) -> bool {
+				return glm::dot(a, dir) < glm::dot(b, dir);
+			}
+		);
+		return std::distance(cameraDirections.begin(), max);
+	}
 	
 };
 
-
-
 #endif	/* BUNDLERPARSER_H */
-

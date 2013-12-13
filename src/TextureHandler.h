@@ -50,7 +50,7 @@ public:
 		ImageData& id = data[camID];
 		if(id.image.empty()) {
 			DataLoader::loadJPEG(folder + filePaths[camID], id.image, id.size.x, id.size.y);
-			assert(id.image.size() == id.size.x * id.size.y * 3);
+			assert(id.image.size() == (uint) id.size.x * id.size.y * 3);
 		}
 		return &data[camID];
 	}

@@ -44,6 +44,7 @@ private:
 	std::vector<GLuint> indices;
 	std::vector<glm::vec3> vertices;
 	std::vector<glm::vec3> normals;
+	glm::vec3 centroid;
 		
 	bool ok;
 	
@@ -65,7 +66,7 @@ public:
 	{
 		glm::vec3 offset;
 		try {
-			DataLoader::importModel(file, indices, vertices, normals, offset);
+			DataLoader::importModel(file, indices, vertices, normals, centroid, offset);
 		}
 		catch(const char* c) {
 			ok = false;
@@ -93,6 +94,16 @@ public:
 	
 	const bool isOK() const {
 		return ok;
+	}
+	
+	const glm::vec3 & getCentroid() const {
+		return centroid;
+	}
+	
+	const glm::vec3 getCentroidPosition() const {
+		glm::vec4 c(centroid, 1.0);
+		glm::vec4 v = mvm * c;
+		return glm::vec3(v / v.w);
 	}
 
 

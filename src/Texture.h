@@ -48,7 +48,7 @@ public:
 		if(image->image.empty()) {
 			return NULL;
 		}
-		assert(image->image.size() == image->size.x * image->size.y * 3);
+		assert(image->image.size() == (uint) image->size.x * image->size.y * 3);
 		return &image->image[0];
 	}
 	

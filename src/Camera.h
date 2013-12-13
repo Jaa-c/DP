@@ -116,6 +116,10 @@ public:
 	const glm::mat4 * getProjectionMatrix() const {
 		return &g_CameraProjectionMatrix;
 	}
+	
+	const glm::vec3 &getCameraPosition() const {
+		return cameraPos;
+	}
 
 
 };

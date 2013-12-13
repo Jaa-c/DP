@@ -6,7 +6,6 @@
  */
 
 #include <GL/glew.h>
-//#include <GL/glfw.h>
 #include <GLFW/glfw3.h>
 
 #include "glm/glm.hpp"
@@ -14,7 +13,7 @@
 #include "glm/gtc/matrix_inverse.hpp"
 #include "glm/gtc/type_ptr.hpp"
 
-//#include "AntTweakBar/AntTweakBar.h"
+#include "AntTweakBar/AntTweakBar.h"
 
 #include <iostream>
 #include <cassert>
@@ -61,12 +60,12 @@ class Main {
 public:
 	Main(int windowWidth, int windowHeight) : 
 		camera(windowWidth, windowHeight), renderer(&camera), 
-		textureHandler("/home/jaa/Documents/FEL/DP/data/visualize/") 
+		textureHandler("/home/jaa/Documents/FEL/DP/data/statue/photos/") 
 	{
 		const int defaultCameraID = 20;
 		
 		
-		bp.parseFile("/home/jaa/Dokumenty/FEL/DP/data/bundle.rd.out");
+		bp.parseFile("/home/jaa/Documents/FEL/DP/data/statue/bundle.out");
 		controlls = &Controlls::getInstance();
 		controlls->setPointers(&bp, &camera, &shaderHandler);
 		controlls->setCameraId(defaultCameraID);
@@ -74,10 +73,11 @@ public:
 		renderPassHandler.add(RenderPass::TEXTURING_PASS, new TexturingRenderPass(&renderer, &shaderHandler));
 		//renderPassHandler.add(RenderPass::BUNDLER_POINTS_PASS, new BundlerPointsRenderPass(&renderer, &shaderHandler, &bp));
 
-		object = new ObjectData(std::string("/home/jaa/Documents/FEL/DP/data/statue.obj"));
+		object = new ObjectData("/home/jaa/Documents/FEL/DP/data/statue/statue.obj");
 		object->mvm = glm::rotate(object->mvm, 180.f, glm::vec3(1.0f, 0.0f, 0.0f));
 		object->pointData = new PointData(&bp);
 		object->texture = new Texture(GL_TEXTURE_RECTANGLE, 0);
+		
 	}
 	
 	~Main() {
@@ -91,41 +91,20 @@ public:
 
 		camera.updateCameraViewMatrix();
 		
-		const int camID = controlls->getCameraId();		
+		if(!camera.isCameraStatic()) {
+			glm::vec3 viewDir = -object->getCentroidPosition() + camera.getCameraPosition();
+//			viewDir.x = (*camera.getModelViewMatrix())[0][2];
+//			viewDir.y = (*camera.getModelViewMatrix())[1][2];
+//			viewDir.z = (*camera.getModelViewMatrix())[2][2];
+			const int cam = bp.getClosestCamera(viewDir);
+			controlls->setCameraId(cam);
+		}
+		
+		const int camID = controlls->getCameraId();
 		object->texture->setImage(textureHandler.getImage(camID), &bp.getCameras()->at(camID));
 		
 		renderPassHandler.draw(object);
-
-	//	glDepthFunc(GL_LESS);     // We want to get the nearest pixels
-	//	glColorMask(0,0,0,0);     // Disable color, it's useless, we only want depth.
-	//	glDepthMask(GL_TRUE);     // Ask z writing
-	//	
-	//	renderer.draw(*object);
-	//	
-	//	int visible = 0;
-	//
-	//	glReadPixels(0, 0, 1000, 800, GL_DEPTH_COMPONENT, GL_FLOAT, &depth_data);
-	//	typedef  std::vector<glm::vec3>::const_iterator points;
-	//	glm::mat4 mvp = *projection * *modelView;
-	//	for(points it = object->getVertices().begin(); it != object->getVertices().end(); ++it) {
-	//		glm::vec4 v =  mvp * glm::vec4(*it, 1.0);
-	//		v /= v.w;
-	//		int x = (int) (500 * (v.x + 1));
-	//		int y = (int) (400 * (v.y + 1));
-	//		//Log::d("c: %f, depth: %f", (v.z + 1)/2.0f, depth_data[x + 1000 * y]);
-	//		if(x >= 0 && y >= 0 && x < 1000 && y < 800) {
-	//			if((v.z + 1)/2.0f <= depth_data[x + 1000 * y])
-	//				visible++;
-	//		}
-	//	}
-	//	Log::i("visible: %d", visible);
-	//	
-	//	glDepthFunc(GL_LEQUAL);
-	//	glColorMask(1,1,1,1);     // We want color this time
-	//	glDepthMask(GL_FALSE);
-
-		//renderer.draw(*object);
-
+		
 		glUseProgram(0);
 
 	}
@@ -156,6 +135,10 @@ int main(int argc, char** argv) {
         Log::e("Unable to init glew.");
         return 1;
     }
+	
+	GLint texture_units = 0;
+	glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &texture_units);
+	Log::i("Avaiable texture units: %d", texture_units);
 	
     // Set GLFW event callbacks
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
