@@ -141,11 +141,13 @@ public:
 	}
 	
 	const int getClosestCamera(const glm::vec3 & dir) const {
+		glm::vec2 ndir(glm::normalize(dir));
 		auto max = std::max_element(cameraDirections.begin(), cameraDirections.end(), 
-			[dir] (const glm::vec3 &a, const glm::vec3 &b) -> bool {
-				return glm::dot(a, dir) < glm::dot(b, dir);
+			[ndir] (const glm::vec3 &a, const glm::vec3 &b) -> bool {
+				return glm::dot(glm::vec2(glm::normalize(a)), ndir) < glm::dot(glm::vec2(glm::normalize(b)), ndir);
 			}
 		);
+		//printf("dir: %f\n", glm::dot(glm::normalize(*max), ndir));
 		return std::distance(cameraDirections.begin(), max);
 	}
 	

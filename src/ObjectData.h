@@ -21,11 +21,12 @@ private:
 public:
 	GLuint pointsVBO;
 	GLuint camPosVBO;
-	PointData(BundlerParser *bp) : pointsVBO(GL_ID_NONE), camPosVBO(GL_ID_NONE) {
+	PointData(BundlerParser *bp, glm::vec3 centroid) : pointsVBO(GL_ID_NONE), camPosVBO(GL_ID_NONE) {
 		for(std::vector<CameraPosition>::iterator it = bp->getCameras()->begin(); it != bp->getCameras()->end(); ++it) {
 			glm::vec3 v = -1 * glm::transpose((*it).rotate) * (*it).translate;
 			cameraPos.push_back(v);
 		}
+		cameraPos.push_back(centroid);
 		pointData = bp->getPoints();
 	}
 	
@@ -73,6 +74,7 @@ public:
 		}
 		///move center to the origin
 		mvm = glm::translate(glm::mat4(1.0f), offset);
+		
 	}
 	
 	~ObjectData() {
