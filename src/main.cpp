@@ -25,7 +25,10 @@ const unsigned GL_ID_NONE = (unsigned)~(unsigned(0));
 
 typedef unsigned char rgb;
 typedef std::vector<rgb> Image;
-typedef std::vector<glm::vec3> Points;
+typedef glm::vec3 Point;
+typedef glm::vec3 Vector;
+typedef std::vector<Point> Points;
+typedef std::vector<Vector> Vectors;
 
 #include "Log.h"
 #include "BundlerParser.h"
@@ -60,12 +63,12 @@ class Main {
 public:
 	Main(int windowWidth, int windowHeight) : 
 		camera(windowWidth, windowHeight), renderer(&camera), 
-		textureHandler("/home/jaa/Documents/FEL/DP/data/sarkofag/photos/") 
+		textureHandler("/home/jaa/Documents/FEL/DP/data/statue/photos/") 
 	{
 		const int defaultCameraID = 20;
 		
 		
-		bp.parseFile("/home/jaa/Documents/FEL/DP/data/sarkofag/bundle.out");
+		bp.parseFile("/home/jaa/Documents/FEL/DP/data/statue/bundle.out");
 		controlls = &Controlls::getInstance();
 		controlls->setPointers(&bp, &camera, &shaderHandler);
 		controlls->setCameraId(defaultCameraID);
@@ -73,8 +76,8 @@ public:
 		renderPassHandler.add(RenderPass::TEXTURING_PASS, new TexturingRenderPass(&renderer, &shaderHandler));
 		renderPassHandler.add(RenderPass::BUNDLER_POINTS_PASS, new BundlerPointsRenderPass(&renderer, &shaderHandler, &bp));
 
-		object = new ObjectData("/home/jaa/Documents/FEL/DP/data/sarkofag/sarkofag.obj");
-		//object->mvm = glm::rotate(object->mvm, 180.f, glm::vec3(1.0f, 0.0f, 0.0f));
+		object = new ObjectData("/home/jaa/Documents/FEL/DP/data/statue/statue.obj");
+		object->mvm = glm::rotate(object->mvm, 180.f, glm::vec3(1.0f, 0.0f, 0.0f));
 		object->pointData = new PointData(&bp, object->getCentroid());
 		object->texture = new Texture(GL_TEXTURE_RECTANGLE, 0);
 		
@@ -96,7 +99,7 @@ public:
 //			viewDir.x = (*camera.getModelViewMatrix())[0][2];
 //			viewDir.y = (*camera.getModelViewMatrix())[1][2];
 //			viewDir.z = (*camera.getModelViewMatrix())[2][2];
-			const int cam = bp.getClosestCamera(viewDir);
+		const int cam = bp.getClosestCamera(viewDir);
 			controlls->setCameraId(cam);
 		}
 		
@@ -152,11 +155,29 @@ public:
 		k.y = -camera.getCameraPosition().z;
 		
 		const Points &cameras = object->pointData->getCameraPositions();
+		const Vectors &cameraDirections = bp.getCamerDirections();
+		
+		glBegin(GL_LINES);
+			for(uint i = 0; i < cameraDirections.size(); ++i) {
+				glm::vec4 tmp = object->mvm * glm::vec4(cameras.at(i), 1.0f);
+				glm::vec2 p1(tmp.x, tmp.z);
+				tmp = object->mvm * glm::vec4(cameraDirections.at(i), 1.0f);
+				glm::vec2 dir(tmp.x, tmp.z);
+				dir = glm::normalize(dir);
+				dir *= 3;
+				glm::vec2 p2 = p1 + dir;
+				if(computeCoordinates(p1) && computeCoordinates(p2)) {
+					glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
+					glVertex2f(p1.x, p1.y);
+					glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
+					glVertex2f(p2.x, p2.y);
+				}
+			}
+		
+		
+		glEnd();
 		
 		glBegin(GL_POINTS);
-			glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
-			if(computeCoordinates(k)) glVertex2f(k.x, k.y);
-		
 			glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
 			for(auto it = cameras.begin(); it != cameras.end(); ++it) {
 				glm::vec4 tmp = object->mvm * glm::vec4((*it), 1.0f);
@@ -165,10 +186,20 @@ public:
 				v.y = tmp.z;
 				if(computeCoordinates(v)) glVertex2f(v.x, v.y);
 			}
+			
+			glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
+			if(computeCoordinates(k)) glVertex2f(k.x, k.y);
 
 			glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
 			if(computeCoordinates(c)) glVertex2f(c.x, c.y);
-		
+			
+			glColor4f(0.0f, 0.0f, 1.0f, 1.0f);
+			const int camID = controlls->getCameraId();
+			glm::vec4 tmp = object->mvm * glm::vec4(cameras[camID], 1.0f);
+			glm::vec2 v;
+			v.x = tmp.x;
+			v.y = tmp.z;
+			if(computeCoordinates(v)) glVertex2f(v.x, v.y);
 		glEnd();
 		
 		glEnable(GL_LIGHTING);
@@ -181,14 +212,13 @@ public:
 	}
 	
 	bool computeCoordinates(glm::vec2 &p) {
-		const glm::vec2 xr(-5.f, 5.f);
-		const glm::vec2 yr(-10.f, 10.f);
-		const int dx = fabs(xr.x) + fabs(xr.y);
-		const int dy = fabs(yr.x) + fabs(yr.y);
-		p.x = ((p.x + (dx/2.f)) / dx) * 250 + 10;
-		p.y = ((-p.y + (dy/2.f)) / dy) * 250 + 10;
+		const glm::vec2 xr(-20.f, 20.f);
+		const glm::vec2 yr(0.f, 40.f);
 		
-		if(p.x < 10 || p.x > 250 || p.y < 10 || p.x > 250) 
+		p.x = (p.x - xr.x) * (250.f - 10.f) / (xr.y - xr.x) + 10.f;
+		p.y = (p.y - yr.x) * (250.f - 10.f) / (yr.y - yr.x) + 250.f;
+		
+		if(p.x < 10 || p.x > 250 || p.y < 10 || p.y > 250) 
 			return false;
 		return true;
 	}
