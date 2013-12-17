@@ -108,11 +108,11 @@ public:
 		glUseProgram(0);
 		
 		
-		pgr2ShowTexture(0, 10, 10, 250, 250);
+		drawRadar(0, 10, 10, 250, 250);
 
 	}
 	
-	inline void pgr2ShowTexture(GLuint tex_id, GLint x, GLint y, GLsizei width, GLsizei height)
+	inline void drawRadar(GLuint tex_id, GLint x, GLint y, GLsizei width, GLsizei height)
 	{
 		GLint viewport[4] = {0};
 		glGetIntegerv(GL_VIEWPORT, viewport);
@@ -131,7 +131,6 @@ public:
 		glEnable( GL_BLEND );
 		
 		glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
-		
 		glBegin(GL_QUADS);
 			glVertex2i(x, y);
 			glVertex2i(x+width, y);
@@ -141,100 +140,102 @@ public:
 		
 		glEnable(GL_POINT);
 		glEnable(GL_POINT_SIZE);
-		glPointSize( 4.0 );
-				
-		glm::vec2 c, k;
-		c.x= object->getCentroidPosition().x;	
-		c.y= object->getCentroidPosition().z;
-		computeCoordinates(c);
-				
-		k.x = -camera.getCameraPosition().x;
-		k.y = -camera.getCameraPosition().z;
+		glPointSize(4.0);
+		
+		glm::vec4 tmp, p1, p2, dir;
+		glm::vec3 c, k;
+		c = object->getCentroidPosition();
+		k = -camera.getCameraPosition();
 		
 		const Points &cameras = object->pointData->getCameraPositions();
 		const Vectors &cameraDirections = bp.getCamerDirections();
 		const glm::mat4 vecMat = glm::inverse(glm::transpose(object->mvm));
-		glBegin(GL_LINES);
-			for(uint i = 0; i < cameraDirections.size(); ++i) {
-				glm::vec4 tmp =  object->mvm * glm::vec4(cameras.at(i), 1.0f);
-				glm::vec2 p1(tmp.x, tmp.z);
-				tmp = vecMat * glm::vec4(cameraDirections.at(i), 1.0f);
-				glm::vec2 dir(tmp.x, tmp.z);
-				dir = glm::normalize(dir);
-				dir *= 3;
-				glm::vec2 p2 = p1 + dir;
-				if(computeCoordinates(p1) && computeCoordinates(p2)) {
-					glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
-					glVertex2f(p1.x, p1.y);
-					glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
-					glVertex2f(p2.x, p2.y);
-				}
-			}
 		
-			const Vector cv = camera.getCameraViewDirection();
-			glm::vec2 dir(cv.x, cv.z);
-			dir = glm::normalize(dir);
-			dir *= 3;
-			glm::vec2 p2 = k - dir;
-			glm::vec2 kam(k);
-			if(computeCoordinates(kam) && computeCoordinates(p2)) {
-				glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
-				glVertex2f(kam.x, kam.y);
-				glVertex2f(p2.x, p2.y);
+		glBegin(GL_LINES);
+			glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
+			for(uint i = 0; i < cameraDirections.size(); ++i) {
+				p1 =  object->mvm * glm::vec4(cameras.at(i), 1.0f);
+				dir = vecMat * glm::vec4(cameraDirections.at(i), 1.0f);
+				drawLine(p1, dir);
 			}
 			
+			glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
+			glm::vec3 viewDir = -camera.getCameraViewDirection();
+			drawLine(k, viewDir);
+			
 			glColor4f(0.0f, 0.0f, 0.0f, 0.5f);
-			glVertex2f(kam.x, kam.y);
-			glVertex2f(c.x, c.y);
-		
+			drawPoint(k);
+			drawPoint(c);
 		glEnd();
 		
 		glBegin(GL_POINTS);
 			glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
 			for(auto it = cameras.begin(); it != cameras.end(); ++it) {
-				glm::vec4 tmp = object->mvm * glm::vec4((*it), 1.0f);
-				glm::vec2 v;
-				v.x = tmp.x;
-				v.y = tmp.z;
-				if(computeCoordinates(v)) glVertex2f(v.x, v.y);
+				tmp = object->mvm * glm::vec4((*it), 1.0f);
+				drawPoint(tmp);
 			}
 			
 			glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
-			if(computeCoordinates(k)) glVertex2f(k.x, k.y);
+			drawPoint(k);
 
 			glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
-			glVertex2f(c.x, c.y);
+			drawPoint(c);
 			
 			glColor4f(0.0f, 0.0f, 1.0f, 1.0f);
 			const int camID = controlls->getCameraId();
-			glm::vec4 tmp =  object->mvm * glm::vec4(cameras[camID], 1.0f);
-			glm::vec2 v;
-			v.x = tmp.x;
-			v.y = tmp.z;
-			if(computeCoordinates(v)) glVertex2f(v.x, v.y);
+			tmp =  object->mvm * glm::vec4(cameras[camID], 1.0f);
+			drawPoint(tmp);
 		glEnd();
 		
-		glEnable(GL_LIGHTING);
-		glEnable(GL_DEPTH_TEST);
-
 		glMatrixMode(GL_PROJECTION);
 		glPopMatrix();
 		glMatrixMode(GL_MODELVIEW);
 		glPopMatrix();
 	}
 	
-	bool computeCoordinates(glm::vec2 &p) {
+	void drawPoint(glm::vec4 &p) {
+		glm::vec2 tmp(p.x, p.z);
+		drawPoint(tmp);
+	}
+	void drawPoint(glm::vec3 &p) {
+		glm::vec2 tmp(p.x, p.z);
+		drawPoint(tmp);
+	}
+	void drawPoint(glm::vec2 &p) {
+		if(cmpCoords(p)) {
+			glVertex2f(p.x, p.y);
+		}
+	}
+	void drawLine(glm::vec4 &point, glm::vec4 &dir) {
+		glm::vec3 p(point);
+		glm::vec3 d(dir);
+		drawLine(p, d);
+	}
+	void drawLine(glm::vec3 &point, glm::vec3 &dir) {
+		glm::vec2 d(dir.x, dir.z);
+		d = glm::normalize(d);
+		d *= 3;
+		glm::vec2 p1(point.x, point.z);
+		glm::vec2 p2 = p1 + d;
+		if(cmpCoords(p1) && cmpCoords(p2)) {
+			glVertex2f(p1.x, p1.y);
+			glVertex2f(p2.x, p2.y);
+		}	
+	}
+	
+	bool cmpCoords(glm::vec2 &p) {
 		const glm::vec2 xr(-20.f, 20.f);
 		const glm::vec2 yr(5.f, 45.f);
 		
 		p.x = (p.x - xr.x) * (260.f - 10.f) / (xr.y - xr.x) + 10.f;
 		p.y = (p.y - yr.x) * (260.f - 10.f) / (yr.y - yr.x) + 260.f;
 		
-		if(p.x < 10 || p.x > 260 || p.y < 10 || p.y > 260) 
+		if(p.x < 10 || p.x > 260 || p.y < 10 || p.y > 260) {
 			return false;
+		}
 		return true;
 	}
-	
+		
 };
 
 int main(int argc, char** argv) {
