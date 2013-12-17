@@ -140,17 +140,19 @@ public:
 		return &points;
 	}
 	
-	const int getClosestCamera(const glm::vec3 & dir) const {
+	const int getClosestCamera(const glm::vec3 & dir, const glm::mat4 &mvm) const {
 		glm::vec2 ndir(dir.x, dir.z);
 		ndir = glm::normalize(ndir);
+		const glm::mat4 vecMat = glm::inverse(glm::transpose(mvm));
 		auto max = std::max_element(cameraDirections.begin(), cameraDirections.end(), 
-			[ndir] (const glm::vec3 &a, const glm::vec3 &b) -> bool {
-				glm::vec2 v1(a.x, a.z);
-				glm::vec2 v2(b.x, b.z);
+			[ndir, vecMat] (const glm::vec3 &a, const glm::vec3 &b) -> bool {
+				const glm::vec4 ta = vecMat * glm::vec4(a, 1.0f);
+				const glm::vec4 tb = vecMat * glm::vec4(b, 1.0f);
+				const glm::vec2 v1(ta.x, ta.z);
+				const glm::vec2 v2(tb.x, tb.z);
 				return glm::dot(glm::normalize(v1), ndir) < glm::dot(glm::normalize(v2), ndir);
 			}
 		);
-		//printf("dir: %f\n", glm::dot(glm::normalize(*max), ndir));
 		return std::distance(cameraDirections.begin(), max);
 	}
 	

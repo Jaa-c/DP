@@ -74,7 +74,7 @@ public:
 		controlls->setCameraId(defaultCameraID);
 		
 		renderPassHandler.add(RenderPass::TEXTURING_PASS, new TexturingRenderPass(&renderer, &shaderHandler));
-		renderPassHandler.add(RenderPass::BUNDLER_POINTS_PASS, new BundlerPointsRenderPass(&renderer, &shaderHandler, &bp));
+//		renderPassHandler.add(RenderPass::BUNDLER_POINTS_PASS, new BundlerPointsRenderPass(&renderer, &shaderHandler, &bp));
 
 		object = new ObjectData("/home/jaa/Documents/FEL/DP/data/statue/statue.obj");
 		object->mvm = glm::rotate(object->mvm, 180.f, glm::vec3(1.0f, 0.0f, 0.0f));
@@ -95,11 +95,8 @@ public:
 		camera.updateCameraViewMatrix();
 		
 		if(!camera.isCameraStatic()) {
-			glm::vec3 viewDir = object->getCentroidPosition() - camera.getCameraPosition();
-//			viewDir.x = (*camera.getModelViewMatrix())[0][2];
-//			viewDir.y = (*camera.getModelViewMatrix())[1][2];
-//			viewDir.z = (*camera.getModelViewMatrix())[2][2];
-			const int cam = bp.getClosestCamera(viewDir);
+			glm::vec3 viewDir = object->getCentroidPosition() + camera.getCameraPosition();
+			const int cam = bp.getClosestCamera(viewDir, object->mvm);
 			controlls->setCameraId(cam);
 		}
 		
@@ -124,7 +121,6 @@ public:
 		glPushMatrix();
 		glLoadIdentity();
 		glOrtho(0, viewport[2], 0, viewport[3], -1.0, 1.0);
-		//glOrtho(10.f, 260.f, 10.f, 260.f, -1.f, 1.f);
 		glMatrixMode(GL_MODELVIEW);
 		glPushMatrix();
 		glLoadIdentity();
@@ -150,18 +146,19 @@ public:
 		glm::vec2 c, k;
 		c.x= object->getCentroidPosition().x;	
 		c.y= object->getCentroidPosition().z;
+		computeCoordinates(c);
 				
 		k.x = -camera.getCameraPosition().x;
 		k.y = -camera.getCameraPosition().z;
 		
 		const Points &cameras = object->pointData->getCameraPositions();
 		const Vectors &cameraDirections = bp.getCamerDirections();
-		
+		const glm::mat4 vecMat = glm::inverse(glm::transpose(object->mvm));
 		glBegin(GL_LINES);
 			for(uint i = 0; i < cameraDirections.size(); ++i) {
 				glm::vec4 tmp =  object->mvm * glm::vec4(cameras.at(i), 1.0f);
 				glm::vec2 p1(tmp.x, tmp.z);
-				tmp = glm::inverse(glm::transpose(object->mvm)) * glm::vec4(cameraDirections.at(i), 1.0f);
+				tmp = vecMat * glm::vec4(cameraDirections.at(i), 1.0f);
 				glm::vec2 dir(tmp.x, tmp.z);
 				dir = glm::normalize(dir);
 				dir *= 3;
@@ -169,7 +166,7 @@ public:
 				if(computeCoordinates(p1) && computeCoordinates(p2)) {
 					glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
 					glVertex2f(p1.x, p1.y);
-					glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
+					glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
 					glVertex2f(p2.x, p2.y);
 				}
 			}
@@ -181,11 +178,14 @@ public:
 			glm::vec2 p2 = k - dir;
 			glm::vec2 kam(k);
 			if(computeCoordinates(kam) && computeCoordinates(p2)) {
-				glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
+				glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
 				glVertex2f(kam.x, kam.y);
-				glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
 				glVertex2f(p2.x, p2.y);
 			}
+			
+			glColor4f(0.0f, 0.0f, 0.0f, 0.5f);
+			glVertex2f(kam.x, kam.y);
+			glVertex2f(c.x, c.y);
 		
 		glEnd();
 		
@@ -203,7 +203,7 @@ public:
 			if(computeCoordinates(k)) glVertex2f(k.x, k.y);
 
 			glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
-			if(computeCoordinates(c)) glVertex2f(c.x, c.y);
+			glVertex2f(c.x, c.y);
 			
 			glColor4f(0.0f, 0.0f, 1.0f, 1.0f);
 			const int camID = controlls->getCameraId();
