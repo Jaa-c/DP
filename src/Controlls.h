@@ -127,7 +127,7 @@ public:
 		if(bp) {
 			Log::d("using camera: %d", cameraId);
 			CameraPosition * cam = &bp->getCameras()->at(cameraId);
-			camera->setCameraParams(cam->rotate, cam->translate);
+			camera->setCameraParams(cam->rotate, cam->translate);	
 		}
 	}
 	

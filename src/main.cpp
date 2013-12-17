@@ -99,7 +99,7 @@ public:
 //			viewDir.x = (*camera.getModelViewMatrix())[0][2];
 //			viewDir.y = (*camera.getModelViewMatrix())[1][2];
 //			viewDir.z = (*camera.getModelViewMatrix())[2][2];
-		const int cam = bp.getClosestCamera(viewDir);
+			const int cam = bp.getClosestCamera(viewDir);
 			controlls->setCameraId(cam);
 		}
 		
@@ -150,7 +150,7 @@ public:
 		glm::vec2 c, k;
 		c.x= object->getCentroidPosition().x;	
 		c.y= object->getCentroidPosition().z;
-		
+				
 		k.x = -camera.getCameraPosition().x;
 		k.y = -camera.getCameraPosition().z;
 		
@@ -159,9 +159,9 @@ public:
 		
 		glBegin(GL_LINES);
 			for(uint i = 0; i < cameraDirections.size(); ++i) {
-				glm::vec4 tmp = object->mvm * glm::vec4(cameras.at(i), 1.0f);
+				glm::vec4 tmp =  object->mvm * glm::vec4(cameras.at(i), 1.0f);
 				glm::vec2 p1(tmp.x, tmp.z);
-				tmp = object->mvm * glm::vec4(cameraDirections.at(i), 1.0f);
+				tmp = glm::inverse(glm::transpose(object->mvm)) * glm::vec4(cameraDirections.at(i), 1.0f);
 				glm::vec2 dir(tmp.x, tmp.z);
 				dir = glm::normalize(dir);
 				dir *= 3;
@@ -174,6 +174,18 @@ public:
 				}
 			}
 		
+			const Vector cv = camera.getCameraViewDirection();
+			glm::vec2 dir(cv.x, cv.z);
+			dir = glm::normalize(dir);
+			dir *= 3;
+			glm::vec2 p2 = k - dir;
+			glm::vec2 kam(k);
+			if(computeCoordinates(kam) && computeCoordinates(p2)) {
+				glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
+				glVertex2f(kam.x, kam.y);
+				glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
+				glVertex2f(p2.x, p2.y);
+			}
 		
 		glEnd();
 		
@@ -195,7 +207,7 @@ public:
 			
 			glColor4f(0.0f, 0.0f, 1.0f, 1.0f);
 			const int camID = controlls->getCameraId();
-			glm::vec4 tmp = object->mvm * glm::vec4(cameras[camID], 1.0f);
+			glm::vec4 tmp =  object->mvm * glm::vec4(cameras[camID], 1.0f);
 			glm::vec2 v;
 			v.x = tmp.x;
 			v.y = tmp.z;
@@ -213,12 +225,12 @@ public:
 	
 	bool computeCoordinates(glm::vec2 &p) {
 		const glm::vec2 xr(-20.f, 20.f);
-		const glm::vec2 yr(0.f, 40.f);
+		const glm::vec2 yr(5.f, 45.f);
 		
-		p.x = (p.x - xr.x) * (250.f - 10.f) / (xr.y - xr.x) + 10.f;
-		p.y = (p.y - yr.x) * (250.f - 10.f) / (yr.y - yr.x) + 250.f;
+		p.x = (p.x - xr.x) * (260.f - 10.f) / (xr.y - xr.x) + 10.f;
+		p.y = (p.y - yr.x) * (260.f - 10.f) / (yr.y - yr.x) + 260.f;
 		
-		if(p.x < 10 || p.x > 250 || p.y < 10 || p.y > 250) 
+		if(p.x < 10 || p.x > 260 || p.y < 10 || p.y > 260) 
 			return false;
 		return true;
 	}

@@ -117,8 +117,12 @@ public:
 		return &g_CameraProjectionMatrix;
 	}
 	
-	const glm::vec3 &getCameraPosition() const {
+	const Vector &getCameraPosition() const {
 		return cameraPos;
+	}
+	
+	const Vector getCameraViewDirection() const {
+		return glm::vec3(g_CameraViewMatrix[0][2], g_CameraViewMatrix[1][2], g_CameraViewMatrix[2][2]);
 	}
 
 

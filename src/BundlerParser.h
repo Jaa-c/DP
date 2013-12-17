@@ -111,7 +111,7 @@ public:
 			cam.Rt[3][2] = cam.translate[2];
 			
 			cameras.push_back(cam);
-			cameraDirections.push_back(-glm::vec3(cam.rotate[0][2], cam.rotate[1][2], cam.rotate[2][2]));
+			cameraDirections.push_back(glm::vec3(-cam.rotate[2]));
 		}
 		
 		//parse points
