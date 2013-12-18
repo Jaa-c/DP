@@ -24,6 +24,7 @@
 const unsigned GL_ID_NONE = (unsigned)~(unsigned(0));
 
 typedef unsigned char rgb;
+/// std::vector < unsigned char > 
 typedef std::vector<rgb> Image;
 typedef glm::vec3 Point;
 typedef glm::vec3 Vector;

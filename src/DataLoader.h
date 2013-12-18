@@ -29,7 +29,7 @@ class DataLoader {
 		if(vert.y < min.y) min.y = vert.y;
 		if(vert.z < min.z) min.z = vert.z;
 	}
-	
+		
 public:	
 	/**
 	 * Imports model from varios formats
@@ -143,6 +143,38 @@ public:
         delete [] row[0];
 		Log::i("Loaded image " + filename);
         return true;
+	}
+	
+	/**
+	 * Loads raw image to rgb array
+     * @param filename path to the image
+     * @param reference to vector of rgb data
+	 * @return true if loaded OK
+     */
+	static void loadRAW(const std::string &filename, std::vector<rgb> &raw, int &width, int &height) {
+		// Read input file
+		if (fileExists(filename)) {
+			std::ifstream input(filename, std::ios::in | std::ifstream::binary);
+			input.read(reinterpret_cast<char*> (&width), sizeof(int));
+			input.read((char*) (&height), sizeof(int));
+			const size_t size = width * height * 3;
+			raw.resize(size);
+			input.read((char*) &raw[0], raw.size() * sizeof(rgb));
+			
+			Log::i("Loaded image: " + filename + " %d x %d", width, height);
+		}
+		else {
+			Log::e("File does not exist: " + filename);
+		}
+	}
+	
+	static inline bool fileExists (const std::string& name) {
+		if (FILE *file = fopen(name.c_str(), "r")) {
+			fclose(file);
+			return true;
+		} else {
+			return false;
+		}   
 	}
 
 };
