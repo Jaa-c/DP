@@ -153,7 +153,7 @@ public:
 		const glm::mat4 vecMat = glm::inverse(glm::transpose(object->mvm));
 		
 		glBegin(GL_LINES);
-			glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
+			glColor4f(0.3f, 0.3f, 0.3f, 1.0f);
 			for(uint i = 0; i < cameraDirections.size(); ++i) {
 				p1 =  object->mvm * glm::vec4(cameras.at(i), 1.0f);
 				dir = vecMat * glm::vec4(cameraDirections.at(i), 1.0f);
@@ -169,13 +169,17 @@ public:
 			drawPoint(c);
 		glEnd();
 		
+		
+		glColor4f(0.3f, 0.3f, 0.3f, 1.0f);
 		glBegin(GL_POINTS);
-			glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
 			for(auto it = cameras.begin(); it != cameras.end(); ++it) {
 				tmp = object->mvm * glm::vec4((*it), 1.0f);
 				drawPoint(tmp);
 			}
+		glEnd();
 			
+		glPointSize(5.0);
+		glBegin(GL_POINTS);
 			glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
 			drawPoint(k);
 
@@ -225,7 +229,7 @@ public:
 	}
 	
 	bool cmpCoords(glm::vec2 &p) {
-		const glm::vec2 xr(-20.f, 20.f);
+		const glm::vec2 xr(-22.f, 18.f);
 		const glm::vec2 yr(5.f, 45.f);
 		
 		p.x = (p.x - xr.x) * (260.f - 10.f) / (xr.y - xr.x) + 10.f;
