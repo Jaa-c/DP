@@ -13,7 +13,7 @@
 #include "glm/gtc/matrix_inverse.hpp"
 #include "glm/gtc/type_ptr.hpp"
 
-#include "AntTweakBar/AntTweakBar.h"
+#include "AntTweakBar/AntTweakBar.h" //??
 
 #include <iostream>
 #include <cassert>
@@ -89,7 +89,7 @@ public:
 	}
 
 	void main_loop() {
-
+		
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glPolygonMode(GL_FRONT_AND_BACK, g_WireMode ? GL_LINE : GL_FILL);
 

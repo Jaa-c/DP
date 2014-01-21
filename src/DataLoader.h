@@ -84,7 +84,6 @@ public:
 		}
 		offset = -(max + min)/2.0f;
 		centroid /= mesh->mNumVertices;
-		printf("centroid: %f, %f, %f\n", centroid.x, centroid.y, centroid.z);
 		
 		Log::i("[ModelLoader] Loaded mesh with %d faces and %d vertices.", mesh->mNumFaces, mesh->mNumVertices);
 	}
