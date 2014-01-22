@@ -46,11 +46,12 @@ public:
 			return; //no texture avaiable!
 		}
 		if(texture.textureID == GL_ID_NONE) {
+			
 			glGenTextures(1, &texture.textureID);
 			glBindTexture(texture.target, texture.textureID);
 			glTexImage2D(texture.target, 0, GL_RGB, texture.getSize().x, texture.getSize().y, 0, GL_RGB, GL_UNSIGNED_BYTE, texture.getImageStart());
 			glBindTexture(texture.target, 0);
-
+			
 			glGenSamplers(1, &texture.samplerID);
 			glSamplerParameteri(texture.samplerID, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 			glSamplerParameteri(texture.samplerID, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -66,6 +67,7 @@ public:
 		glBindSampler(0, texture.samplerID);
 		glActiveTexture(GL_TEXTURE0 + texture.unit);
 		
+
 		glBindTexture(texture.target, texture.textureID);	
 	}
 	

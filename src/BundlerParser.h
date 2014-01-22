@@ -140,7 +140,7 @@ public:
 		return &points;
 	}
 	
-	const int getClosestCamera(const glm::vec3 & dir, const glm::mat4 &mvm) const {
+	int getClosestCamera(const glm::vec3 & dir, const glm::mat4 &mvm) const {
 		glm::vec2 ndir(dir.x, dir.z);
 		ndir = glm::normalize(ndir);
 		const glm::mat4 vecMat = glm::inverse(glm::transpose(mvm));

@@ -4,22 +4,27 @@
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
-      <logicalFolder name="f1" displayName="RenderPass" projectFiles="true">
-        <itemPath>src/RenderPass/BundlerPointsRenderPass.h</itemPath>
-        <itemPath>../../../../../Dokumenty/FEL/DP/trunk/dp/src/RenderPass/RenderPass.h</itemPath>
-        <itemPath>../../../../../Dokumenty/FEL/DP/trunk/dp/src/RenderPass/TexturingRenderPass.h</itemPath>
+      <logicalFolder name="RenderPass" displayName="RenderPass" projectFiles="true">
+        <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/RenderPass/BundlerPointsRenderPass.h</itemPath>
+        <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/RenderPass/RenderPass.h</itemPath>
+        <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/RenderPass/TexturingRenderPass.h</itemPath>
       </logicalFolder>
-      <itemPath>../../../../../Dokumenty/FEL/DP/trunk/dp/src/BundlerParser.h</itemPath>
-      <itemPath>../../../../../Dokumenty/FEL/DP/trunk/dp/src/Camera.h</itemPath>
-      <itemPath>../../../../../Dokumenty/FEL/DP/trunk/dp/src/Controlls.h</itemPath>
-      <itemPath>../../../../../Dokumenty/FEL/DP/trunk/dp/src/DataLoader.h</itemPath>
-      <itemPath>../../../../../Dokumenty/FEL/DP/trunk/dp/src/Log.h</itemPath>
-      <itemPath>../../../../../Dokumenty/FEL/DP/trunk/dp/src/ObjectData.h</itemPath>
-      <itemPath>../../../../../Dokumenty/FEL/DP/trunk/dp/src/RenderPassHandler.h</itemPath>
-      <itemPath>../../../../../Dokumenty/FEL/DP/trunk/dp/src/Renderer.h</itemPath>
-      <itemPath>../../../../../Dokumenty/FEL/DP/trunk/dp/src/ShaderHandler.h</itemPath>
-      <itemPath>../../../../../Dokumenty/FEL/DP/trunk/dp/src/Texture.h</itemPath>
-      <itemPath>../../../../../Dokumenty/FEL/DP/trunk/dp/src/TextureHandler.h</itemPath>
+      <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/BundlerParser.h</itemPath>
+      <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/Camera.h</itemPath>
+      <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/Controlls.h</itemPath>
+      <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/DataLoader.h</itemPath>
+      <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/GLWidget.h</itemPath>
+      <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/Log.h</itemPath>
+      <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/ObjectData.h</itemPath>
+      <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/RenderPassHandler.h</itemPath>
+      <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/Renderer.h</itemPath>
+      <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/ShaderHandler.h</itemPath>
+      <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/Texture.h</itemPath>
+      <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/TextureHandler.h</itemPath>
+    </logicalFolder>
+    <logicalFolder name="ResourceFiles"
+                   displayName="Resource Files"
+                   projectFiles="true">
     </logicalFolder>
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
@@ -36,106 +41,104 @@
                    projectFiles="false"
                    kind="IMPORTANT_FILES_FOLDER">
       <itemPath>Makefile</itemPath>
-      <itemPath>shaders/basic.frag</itemPath>
-      <itemPath>shaders/basic.vert</itemPath>
-      <itemPath>shaders/points.frag</itemPath>
-      <itemPath>../../../../../Dokumenty/FEL/DP/trunk/dp/shaders/points.vert</itemPath>
     </logicalFolder>
   </logicalFolder>
   <sourceRootList>
-    <Elem>../../../../../Dokumenty/FEL/DP/trunk/dp/src</Elem>
+    <Elem>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src</Elem>
   </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
-    <conf name="Debug" type="1">
+    <conf name="Debug" type="4">
       <toolsSet>
         <compilerSet>default</compilerSet>
         <dependencyChecking>true</dependencyChecking>
         <rebuildPropChanged>false</rebuildPropChanged>
       </toolsSet>
+      <qt>
+        <modules>core gui widgets opengl</modules>
+        <defs>
+          <Elem>LIBS += -lGL -lX11 -lGLEW -lglfw -lassimp -ljpeg</Elem>
+        </defs>
+      </qt>
       <compileType>
         <ccTool>
-          <architecture>2</architecture>
           <standard>8</standard>
           <incDir>
             <pElem>lib/</pElem>
-            <pElem>lib/AntTweakBar/</pElem>
           </incDir>
-          <commandLine>-lGL -lX11 -lGLEW -lglfw -lassimp -ljpeg -lAntTweakBar</commandLine>
-          <warningLevel>2</warningLevel>
         </ccTool>
-        <linkerTool>
-          <linkerAddLib>
-            <pElem>../../../../../Dokumenty/FEL/DP/trunk/dp/lib</pElem>
-          </linkerAddLib>
-        </linkerTool>
       </compileType>
-      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/BundlerParser.h"
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/BundlerParser.h"
             ex="false"
             tool="3"
             flavor2="0">
       </item>
-      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/Camera.h"
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/Camera.h"
             ex="false"
             tool="3"
             flavor2="0">
       </item>
-      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/Controlls.h"
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/Controlls.h"
             ex="false"
             tool="3"
             flavor2="0">
       </item>
-      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/DataLoader.h"
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/DataLoader.h"
             ex="false"
             tool="3"
             flavor2="0">
       </item>
-      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/Log.h"
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/GLWidget.h"
             ex="false"
             tool="3"
             flavor2="0">
       </item>
-      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/ObjectData.h"
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/Log.h"
             ex="false"
             tool="3"
             flavor2="0">
       </item>
-      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/RenderPass/RenderPass.h"
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/ObjectData.h"
             ex="false"
             tool="3"
             flavor2="0">
       </item>
-      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/RenderPass/TexturingRenderPass.h"
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/RenderPass/BundlerPointsRenderPass.h"
             ex="false"
             tool="3"
             flavor2="0">
       </item>
-      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/RenderPassHandler.h"
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/RenderPass/RenderPass.h"
             ex="false"
             tool="3"
             flavor2="0">
       </item>
-      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/Renderer.h"
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/RenderPass/TexturingRenderPass.h"
             ex="false"
             tool="3"
             flavor2="0">
       </item>
-      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/ShaderHandler.h"
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/RenderPassHandler.h"
             ex="false"
             tool="3"
             flavor2="0">
       </item>
-      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/Texture.h"
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/Renderer.h"
             ex="false"
             tool="3"
             flavor2="0">
       </item>
-      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/TextureHandler.h"
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/ShaderHandler.h"
             ex="false"
             tool="3"
             flavor2="0">
       </item>
-      <item path="src/RenderPass/BundlerPointsRenderPass.h"
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/Texture.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/TextureHandler.h"
             ex="false"
             tool="3"
             flavor2="0">
@@ -143,12 +146,16 @@
       <item path="src/main.cpp" ex="false" tool="1" flavor2="0">
       </item>
     </conf>
-    <conf name="Release" type="1">
+    <conf name="Release" type="4">
       <toolsSet>
         <compilerSet>default</compilerSet>
         <dependencyChecking>true</dependencyChecking>
         <rebuildPropChanged>false</rebuildPropChanged>
       </toolsSet>
+      <qt>
+        <buildMode>1</buildMode>
+        <modules>core gui widgets</modules>
+      </qt>
       <compileType>
         <cTool>
           <developmentMode>5</developmentMode>
@@ -163,72 +170,77 @@
           <developmentMode>5</developmentMode>
         </asmTool>
       </compileType>
-      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/BundlerParser.h"
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/BundlerParser.h"
             ex="false"
             tool="3"
             flavor2="0">
       </item>
-      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/Camera.h"
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/Camera.h"
             ex="false"
             tool="3"
             flavor2="0">
       </item>
-      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/Controlls.h"
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/Controlls.h"
             ex="false"
             tool="3"
             flavor2="0">
       </item>
-      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/DataLoader.h"
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/DataLoader.h"
             ex="false"
             tool="3"
             flavor2="0">
       </item>
-      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/Log.h"
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/GLWidget.h"
             ex="false"
             tool="3"
             flavor2="0">
       </item>
-      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/ObjectData.h"
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/Log.h"
             ex="false"
             tool="3"
             flavor2="0">
       </item>
-      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/RenderPass/RenderPass.h"
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/ObjectData.h"
             ex="false"
             tool="3"
             flavor2="0">
       </item>
-      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/RenderPass/TexturingRenderPass.h"
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/RenderPass/BundlerPointsRenderPass.h"
             ex="false"
             tool="3"
             flavor2="0">
       </item>
-      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/RenderPassHandler.h"
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/RenderPass/RenderPass.h"
             ex="false"
             tool="3"
             flavor2="0">
       </item>
-      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/Renderer.h"
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/RenderPass/TexturingRenderPass.h"
             ex="false"
             tool="3"
             flavor2="0">
       </item>
-      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/ShaderHandler.h"
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/RenderPassHandler.h"
             ex="false"
             tool="3"
             flavor2="0">
       </item>
-      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/Texture.h"
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/Renderer.h"
             ex="false"
             tool="3"
             flavor2="0">
       </item>
-      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/TextureHandler.h"
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/ShaderHandler.h"
             ex="false"
             tool="3"
             flavor2="0">
       </item>
-      <item path="src/RenderPass/BundlerPointsRenderPass.h"
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/Texture.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/TextureHandler.h"
             ex="false"
             tool="3"
             flavor2="0">
@@ -236,86 +248,97 @@
       <item path="src/main.cpp" ex="false" tool="1" flavor2="0">
       </item>
     </conf>
-    <conf name="no_optirun" type="1">
+    <conf name="debug-no-optirun" type="4">
       <toolsSet>
         <compilerSet>default</compilerSet>
         <dependencyChecking>true</dependencyChecking>
         <rebuildPropChanged>false</rebuildPropChanged>
       </toolsSet>
+      <qt>
+        <modules>core gui widgets opengl</modules>
+        <defs>
+          <Elem>LIBS += -lGL -lX11 -lGLEW -lglfw -lassimp -ljpeg</Elem>
+        </defs>
+      </qt>
       <compileType>
         <ccTool>
+          <standard>8</standard>
           <incDir>
-            <pElem>lib</pElem>
+            <pElem>lib/</pElem>
           </incDir>
-          <commandLine>-std=c++0x -lX11 -lGL -lGLEW -lglfw -lassimp -ljpeg</commandLine>
         </ccTool>
       </compileType>
-      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/BundlerParser.h"
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/BundlerParser.h"
             ex="false"
             tool="3"
             flavor2="0">
       </item>
-      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/Camera.h"
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/Camera.h"
             ex="false"
             tool="3"
             flavor2="0">
       </item>
-      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/Controlls.h"
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/Controlls.h"
             ex="false"
             tool="3"
             flavor2="0">
       </item>
-      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/DataLoader.h"
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/DataLoader.h"
             ex="false"
             tool="3"
             flavor2="0">
       </item>
-      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/Log.h"
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/GLWidget.h"
             ex="false"
             tool="3"
             flavor2="0">
       </item>
-      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/ObjectData.h"
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/Log.h"
             ex="false"
             tool="3"
             flavor2="0">
       </item>
-      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/RenderPass/RenderPass.h"
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/ObjectData.h"
             ex="false"
             tool="3"
             flavor2="0">
       </item>
-      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/RenderPass/TexturingRenderPass.h"
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/RenderPass/BundlerPointsRenderPass.h"
             ex="false"
             tool="3"
             flavor2="0">
       </item>
-      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/RenderPassHandler.h"
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/RenderPass/RenderPass.h"
             ex="false"
             tool="3"
             flavor2="0">
       </item>
-      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/Renderer.h"
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/RenderPass/TexturingRenderPass.h"
             ex="false"
             tool="3"
             flavor2="0">
       </item>
-      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/ShaderHandler.h"
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/RenderPassHandler.h"
             ex="false"
             tool="3"
             flavor2="0">
       </item>
-      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/Texture.h"
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/Renderer.h"
             ex="false"
             tool="3"
             flavor2="0">
       </item>
-      <item path="../../../../../Dokumenty/FEL/DP/trunk/dp/src/TextureHandler.h"
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/ShaderHandler.h"
             ex="false"
             tool="3"
             flavor2="0">
       </item>
-      <item path="src/RenderPass/BundlerPointsRenderPass.h"
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/Texture.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/TextureHandler.h"
             ex="false"
             tool="3"
             flavor2="0">

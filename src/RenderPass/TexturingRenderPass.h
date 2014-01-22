@@ -52,6 +52,7 @@ public:
 		renderer->setUniformLocations(&uniformLocations);
 		
 		renderer->bindCameraMatrices();
+		
 		renderer->drawTexture(*object->texture);
 		renderer->drawObject(*object);
 		

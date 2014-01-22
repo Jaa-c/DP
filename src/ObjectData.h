@@ -94,7 +94,7 @@ public:
 		return normals;
 	}
 	
-	const bool isOK() const {
+	bool isOK() const {
 		return ok;
 	}
 	

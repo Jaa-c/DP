@@ -9,27 +9,27 @@ CND_DISTDIR=dist
 # Debug configuration
 CND_PLATFORM_Debug=GNU-Linux-x86
 CND_ARTIFACT_DIR_Debug=dist/Debug/GNU-Linux-x86
-CND_ARTIFACT_NAME_Debug=dp
-CND_ARTIFACT_PATH_Debug=dist/Debug/GNU-Linux-x86/dp
+CND_ARTIFACT_NAME_Debug=qtDP
+CND_ARTIFACT_PATH_Debug=dist/Debug/GNU-Linux-x86/qtDP
 CND_PACKAGE_DIR_Debug=dist/Debug/GNU-Linux-x86/package
-CND_PACKAGE_NAME_Debug=dp.tar
-CND_PACKAGE_PATH_Debug=dist/Debug/GNU-Linux-x86/package/dp.tar
+CND_PACKAGE_NAME_Debug=qtDP.tar
+CND_PACKAGE_PATH_Debug=dist/Debug/GNU-Linux-x86/package/qtDP.tar
 # Release configuration
 CND_PLATFORM_Release=GNU-Linux-x86
 CND_ARTIFACT_DIR_Release=dist/Release/GNU-Linux-x86
-CND_ARTIFACT_NAME_Release=dp
-CND_ARTIFACT_PATH_Release=dist/Release/GNU-Linux-x86/dp
+CND_ARTIFACT_NAME_Release=qtDP
+CND_ARTIFACT_PATH_Release=dist/Release/GNU-Linux-x86/qtDP
 CND_PACKAGE_DIR_Release=dist/Release/GNU-Linux-x86/package
-CND_PACKAGE_NAME_Release=dp.tar
-CND_PACKAGE_PATH_Release=dist/Release/GNU-Linux-x86/package/dp.tar
-# no_optirun configuration
-CND_PLATFORM_no_optirun=GNU-Linux-x86
-CND_ARTIFACT_DIR_no_optirun=dist/no_optirun/GNU-Linux-x86
-CND_ARTIFACT_NAME_no_optirun=dp
-CND_ARTIFACT_PATH_no_optirun=dist/no_optirun/GNU-Linux-x86/dp
-CND_PACKAGE_DIR_no_optirun=dist/no_optirun/GNU-Linux-x86/package
-CND_PACKAGE_NAME_no_optirun=dp.tar
-CND_PACKAGE_PATH_no_optirun=dist/no_optirun/GNU-Linux-x86/package/dp.tar
+CND_PACKAGE_NAME_Release=qtDP.tar
+CND_PACKAGE_PATH_Release=dist/Release/GNU-Linux-x86/package/qtDP.tar
+# debug-no-optirun configuration
+CND_PLATFORM_debug-no-optirun=GNU-Linux-x86
+CND_ARTIFACT_DIR_debug-no-optirun=dist/debug-no-optirun/GNU-Linux-x86
+CND_ARTIFACT_NAME_debug-no-optirun=qtDP
+CND_ARTIFACT_PATH_debug-no-optirun=dist/debug-no-optirun/GNU-Linux-x86/qtDP
+CND_PACKAGE_DIR_debug-no-optirun=dist/debug-no-optirun/GNU-Linux-x86/package
+CND_PACKAGE_NAME_debug-no-optirun=qtDP.tar
+CND_PACKAGE_PATH_debug-no-optirun=dist/debug-no-optirun/GNU-Linux-x86/package/qtDP.tar
 #
 # include compiler specific variables
 #

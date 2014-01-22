@@ -6,14 +6,20 @@
  */
 
 #include <GL/glew.h>
-#include <GLFW/glfw3.h>
+
+#include <QtGlobal>
+#include <QtOpenGL/QGLWidget>
+#include <QtOpenGL/QGLContext>
+#include <QtGui/QMouseEvent>
+#include <QtGui/QtGui>
+
+#include "GLWidget.h"
+
 
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/matrix_inverse.hpp"
 #include "glm/gtc/type_ptr.hpp"
-
-#include "AntTweakBar/AntTweakBar.h" //??
 
 #include <iostream>
 #include <cassert>
@@ -31,6 +37,27 @@ typedef glm::vec3 Vector;
 typedef std::vector<Point> Points;
 typedef std::vector<Vector> Vectors;
 
+
+#define glCheckError() glError(__FILE__,__LINE__)
+void glError(const char *file, int line) {
+        GLenum err (glGetError());
+
+        while(err!=GL_NO_ERROR) {
+                std::string error;
+
+                switch(err) {
+                        case GL_INVALID_OPERATION: error="INVALID_OPERATION"; break;
+                        case GL_INVALID_ENUM: error="INVALID_ENUM"; break;
+                        case GL_INVALID_VALUE: error="INVALID_VALUE"; break;
+                        case GL_OUT_OF_MEMORY: error="OUT_OF_MEMORY"; break;
+                        case GL_INVALID_FRAMEBUFFER_OPERATION: error="INVALID_FRAMEBUFFER_OPERATION"; break;
+                }
+
+                std::cerr<<"GL_"<<error<<" - "<<file<<':'<<line<<endl;
+                err=glGetError();
+        }
+}
+
 #include "Log.h"
 #include "BundlerParser.h"
 #include "ObjectData.h"
@@ -44,6 +71,7 @@ typedef std::vector<Vector> Vectors;
 #include "RenderPass/TexturingRenderPass.h"
 #include "RenderPass/BundlerPointsRenderPass.h"
 #include "RenderPassHandler.h"
+
 
 
 // GLSL variables todo
@@ -75,7 +103,7 @@ public:
 		controlls->setCameraId(defaultCameraID);
 		
 		renderPassHandler.add(RenderPass::TEXTURING_PASS, new TexturingRenderPass(&renderer, &shaderHandler));
-//		renderPassHandler.add(RenderPass::BUNDLER_POINTS_PASS, new BundlerPointsRenderPass(&renderer, &shaderHandler, &bp));
+//		renderPassHandler.add(RenderPass::BUNDLER_POINTS_PASS, new BundlerPointsRenderPass(&renderer, &shaderHandler));
 
 		object = new ObjectData("/home/jaa/Documents/FEL/DP/data/statue/statue.obj");
 		object->mvm = glm::rotate(object->mvm, 180.f, glm::vec3(1.0f, 0.0f, 0.0f));
@@ -103,17 +131,16 @@ public:
 		
 		const int camID = controlls->getCameraId();
 		object->texture->setImage(textureHandler.getImage(camID), &bp.getCameras()->at(camID));
-		
+
 		renderPassHandler.draw(object);
 		
 		glUseProgram(0);
 		
-		
-		drawRadar(0, 10, 10, 250, 250);
+		drawRadar(10, 10, 250, 250);
 
 	}
 	
-	inline void drawRadar(GLuint tex_id, GLint x, GLint y, GLsizei width, GLsizei height)
+	inline void drawRadar(GLint x, GLint y, GLsizei width, GLsizei height)
 	{
 		GLint viewport[4] = {0};
 		glGetIntegerv(GL_VIEWPORT, viewport);
@@ -243,71 +270,121 @@ public:
 		
 };
 
+
+GLWidget::GLWidget( Main * main, const QGLFormat& format, QWidget* parent) : 
+	QGLWidget( format, parent ),
+	main(main)
+{
+}
+
+
+
+void GLWidget::initializeGL()
+{
+	GLuint err = glewInit();
+	if (err != GLEW_OK) {
+		Log::e("Unable to init glew.");
+		fprintf(stderr, "Error: %s\n", glewGetErrorString(err));
+		return;
+	}
+
+	// Set OpenGL state variables
+	glClearColor(0.4f, 0.4f, 0.7f, 0);
+}
+
+void GLWidget::resizeGL( int w, int h )
+{
+	// Set the viewport to window dimensions
+	//glViewport( 0, 0, w, qMax( h, 1 ) );
+}
+
+void GLWidget::paintGL()
+{
+	main->main_loop();
+}
+
+
 int main(int argc, char** argv) {
 	const char *window_title = "Titulek";
 	const int width = 1000;
 	const int height = 800;
 	
 	Main main(width, height);
-			
-	// Intialize GLFW   
-	if(!glfwInit()) {
-		Log::e("Unable to init GLFW.");
-		return 1;
-	}
+	
+	
+	QApplication a( argc, argv );
 
-    // Create a window
-    GLFWwindow* window = glfwCreateWindow(width, height, window_title, NULL, NULL);
-    glfwSetWindowPos(window, 100, 100);
-    /* Make the window's context current */
-    glfwMakeContextCurrent(window);
+    QGLFormat glFormat;
+    glFormat.setVersion(3, 2);
+    glFormat.setProfile(QGLFormat::CompatibilityProfile);
+    glFormat.setSampleBuffers( true );
 
-	GLuint err = glewInit();
-    if (err != GLEW_OK) {
-        Log::e("Unable to init glew.");
-        return 1;
-    }
+    GLWidget w(&main, glFormat);
+    w.show();
+	w.resize(width, height);
 	
 	GLint texture_units = 0;
 	glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &texture_units);
 	Log::i("Avaiable texture units for FS: %d", texture_units);
 	
-    // Set GLFW event callbacks
-	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-    glfwSetWindowSizeCallback(window, Controlls::windowSizeChanged);
-    //glfwSetCharCallback(window, Controlls::keyboardAction);
-    glfwSetKeyCallback(window, Controlls::keyboardAction);
-    glfwSetMouseButtonCallback(window, Controlls::mouseButtonChanged);
-    glfwSetCursorPosCallback(window, Controlls::mousePositionChanged);
-	
-	// Set OpenGL state variables
-    glClearColor(0.4f, 0.4f, 0.7f, 0);
-	
-	struct timeval start, end;
-	int fps = 0;
-    srand((unsigned)std::time(0)); 
-	gettimeofday(&start, NULL);
-	
-   // Main loop
-    while(!glfwWindowShouldClose(window) && !glfwGetKey(window, GLFW_KEY_ESCAPE)) {
+    return a.exec();
+			
+//	// Intialize GLFW   
+//	if(!glfwInit()) {
+//		Log::e("Unable to init GLFW.");
+//		return 1;
+//	}
+//
+//    // Create a window
+//    GLFWwindow* window = glfwCreateWindow(width, height, window_title, NULL, NULL);
+//    glfwSetWindowPos(window, 100, 100);
+//    /* Make the window's context current */
+//    glfwMakeContextCurrent(window);
+//
+//	GLuint err = glewInit();
+//    if (err != GLEW_OK) {
+//        Log::e("Unable to init glew.");
+//        return 1;
+//    }
+//	
 
-		main.main_loop();
-
-		gettimeofday(&end, NULL);
-		if(((end.tv_sec - start.tv_sec) * 1000 + (end.tv_usec - start.tv_usec)/1000.0) > 5000) {
-			Log::i("fps ~ %d", (int)(fps/5.0f + .5f));
-			fps = 0;
-			gettimeofday(&start, NULL);
-		}
-		fps++;
-        
-        // Present frame buffer
-        glfwSwapBuffers(window);
-		/// Poll for and process events
-        glfwPollEvents();
-    }
-	
-    glfwTerminate();    // Terminate GLFW
-    return 0;
+//	
+//    // Set GLFW event callbacks
+//	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+//    glfwSetWindowSizeCallback(window, Controlls::windowSizeChanged);
+//    //glfwSetCharCallback(window, Controlls::keyboardAction);
+//    glfwSetKeyCallback(window, Controlls::keyboardAction);
+//    glfwSetMouseButtonCallback(window, Controlls::mouseButtonChanged);
+//    glfwSetCursorPosCallback(window, Controlls::mousePositionChanged);
+//	
+//	// Set OpenGL state variables
+//    glClearColor(0.4f, 0.4f, 0.7f, 0);
+//	
+//	struct timeval start, end;
+//	int fps = 0;
+//    srand((unsigned)std::time(0)); 
+//	gettimeofday(&start, NULL);
+//	
+//   // Main loop
+//    while(!glfwWindowShouldClose(window) && !glfwGetKey(window, GLFW_KEY_ESCAPE)) {
+//
+//		main.main_loop();
+//
+//		gettimeofday(&end, NULL);
+//		if(((end.tv_sec - start.tv_sec) * 1000 + (end.tv_usec - start.tv_usec)/1000.0) > 5000) {
+//			Log::i("fps ~ %d", (int)(fps/5.0f + .5f));
+//			fps = 0;
+//			gettimeofday(&start, NULL);
+//		}
+//		fps++;
+//        
+//        // Present frame buffer
+//        glfwSwapBuffers(window);
+//		/// Poll for and process events
+//        glfwPollEvents();
+//    }
+//	
+//    glfwTerminate();    // Terminate GLFW
+//    return 0;
 }
 

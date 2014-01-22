@@ -5,4 +5,4 @@
 #
 # Debug configuration
 # Release configuration
-# no_optirun configuration
+# debug-no-optirun configuration
