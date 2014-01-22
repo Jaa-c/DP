@@ -33,23 +33,7 @@ public:
 		static Controlls instance;
 		return instance;
 	}
-	
-//	static void keyboardAction(GLFWwindow* window, int key, int scancode, int action, int mods) {
-//		getInstance().keyboardActionImpl(key, action);
-//	}
-//	
-//	static void mouseButtonChanged(GLFWwindow* window, int button, int action, int mods) {
-//		getInstance().mouseButtonChangedImpl(button, action);
-//	}
-//	
-//	static void mousePositionChanged(GLFWwindow* window, double x, double y) {
-//		getInstance().mousePositionChangedImpl(floor(x), floor(y));
-//	}
-//	
-//	static void windowSizeChanged(GLFWwindow* window, int width, int height) {
-//		getInstance().windowSizeChangedImpl(width, height);
-//	}	
-	
+
 	void setPointers(BundlerParser * bp, Camera * cam, ShaderHandler *shaderHandler) {
 		this->bp = bp;
 		this->camera = cam;
@@ -59,10 +43,7 @@ public:
 	/**
 	 * Callback for keyboard actions
 	 */
-	void keyboardActionImpl(int key, int action) {
-//		if(action == Qt::?) {
-//			return;
-//		}
+	void keyboardAction(int key) {
 		switch (key) {
 			case 'S':// backwards
 				camera->move(Camera::BACK);
@@ -100,14 +81,14 @@ public:
 	/**
 	 * Callback for mouse click, rotation enabled while holding left button
 	 */
-	void mouseButtonChangedImpl(int button) {
+	void mouseButtonChanged(int button) {
 		mouseRotationEnabled = (button == Qt::LeftButton);
 	}
 	
 	/**
 	 * Handles rotation with mouse
 	 */
-	void mousePositionChangedImpl(int x, int y) {
+	void mousePositionChanged(int x, int y) {
 		float dx, dy;
 		dx = (float) (x - ox);
 		dy = (float) (y - oy);
@@ -149,10 +130,7 @@ public:
 		cameraId = id % bp->getCameras()->size();
 	}
 	
-
 };
 
 
-
 #endif	/* CONTROLLS_H */
-

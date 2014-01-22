@@ -37,6 +37,8 @@ class GLWidget : public QGLWidget
 	ObjectData *object;
 	Controlls * controlls;
 	
+	struct timeval start, end;
+	int fps;
     
 public:
     GLWidget(const QGLFormat& format, int w, int h, QWidget* parent = 0 );
@@ -47,7 +49,6 @@ public:
 protected:
     virtual void initializeGL();
     virtual void paintGL();
-	
 	
 	virtual void resizeGL(int w, int h);
 	

@@ -16,19 +16,9 @@
 
 #include "GLWidget.h"
 
-
-#include "glm/glm.hpp"
-#include "glm/gtc/matrix_inverse.hpp"
-#include "glm/gtc/type_ptr.hpp"
-
-#include <iostream>
-#include <cassert>
 #include <ctime>
 #include <sys/time.h>
-#include <vector>
 
-
-#include "RenderPass/RenderPass.h"
 #include "RenderPass/TexturingRenderPass.h"
 #include "RenderPass/BundlerPointsRenderPass.h"
 
@@ -59,15 +49,16 @@ GLWidget::GLWidget(const QGLFormat& format, int w, int h, QWidget* parent) :
 	object->mvm = glm::rotate(object->mvm, 180.f, glm::vec3(1.0f, 0.0f, 0.0f));
 	object->pointData = new PointData(&bp, object->getCentroid());
 	object->texture = new Texture(GL_TEXTURE_RECTANGLE, 0);
+	
+	fps = 0;
+    srand((unsigned)std::time(0)); 
+	gettimeofday(&start, NULL);
 
 }
-
 
 GLWidget::~GLWidget() {
 	if(object) delete object;
 }
-
-
 
 void GLWidget::initializeGL()
 {
@@ -103,6 +94,14 @@ void GLWidget::paintGL() {
 	drawRadar(10, 10, 250, 250);
 	
 	
+	
+	gettimeofday(&end, NULL);
+	if(((end.tv_sec - start.tv_sec) * 1000 + (end.tv_usec - start.tv_usec)/1000.0) > 5000) {
+		Log::i("fps ~ %d", (int)(fps/5.0f + .5f));
+		fps = 0;
+		gettimeofday(&start, NULL);
+	}
+	fps++;
 	this->update(); //TODO
 }
 
@@ -112,19 +111,19 @@ bool GLWidget::eventFilter(QObject *obj, QEvent *event) {
 		case QEvent::MouseMove:
 		{
 			QMouseEvent *e = (QMouseEvent *) event;
-			controlls->mousePositionChangedImpl(e->x(), e->y());
+			controlls->mousePositionChanged(e->x(), e->y());
 			break;
 		}
 		case QEvent::MouseButtonPress:
 		case QEvent::MouseButtonRelease:
 		{
 			QMouseEvent *e = (QMouseEvent *) event;
-			controlls->mouseButtonChangedImpl(e->buttons());
+			controlls->mouseButtonChanged(e->buttons());
 		}
 		case QEvent::KeyPress:
 		{
 			QKeyEvent *e = (QKeyEvent *) event;
-			controlls->keyboardActionImpl(e->key(), e->type());
+			controlls->keyboardAction(e->key());
 		}
 		default:
 			return false;
@@ -148,7 +147,7 @@ int main(int argc, char** argv) {
     QGLFormat glFormat;
     glFormat.setVersion(3, 2);
     glFormat.setProfile(QGLFormat::CompatibilityProfile);
-    glFormat.setSampleBuffers(true);
+    //glFormat.setSampleBuffers(true);
 
     GLWidget window(glFormat, width, height);
 	window.setWindowTitle(window_title);
@@ -162,63 +161,5 @@ int main(int argc, char** argv) {
 	Log::i("Avaiable texture units for FS: %d", texture_units);
 	
     return app.exec();
-			
-//	// Intialize GLFW   
-//	if(!glfwInit()) {
-//		Log::e("Unable to init GLFW.");
-//		return 1;
-//	}
-//
-//    // Create a window
-//    GLFWwindow* window = glfwCreateWindow(width, height, window_title, NULL, NULL);
-//    glfwSetWindowPos(window, 100, 100);
-//    /* Make the window's context current */
-//    glfwMakeContextCurrent(window);
-//
-//	GLuint err = glewInit();
-//    if (err != GLEW_OK) {
-//        Log::e("Unable to init glew.");
-//        return 1;
-//    }
-//	
-
-//	
-//    // Set GLFW event callbacks
-//	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-//    glfwSetWindowSizeCallback(window, Controlls::windowSizeChanged);
-//    //glfwSetCharCallback(window, Controlls::keyboardAction);
-//    glfwSetKeyCallback(window, Controlls::keyboardAction);
-//    glfwSetMouseButtonCallback(window, Controlls::mouseButtonChanged);
-//    glfwSetCursorPosCallback(window, Controlls::mousePositionChanged);
-//	
-//	// Set OpenGL state variables
-//    glClearColor(0.4f, 0.4f, 0.7f, 0);
-//	
-//	struct timeval start, end;
-//	int fps = 0;
-//    srand((unsigned)std::time(0)); 
-//	gettimeofday(&start, NULL);
-//	
-//   // Main loop
-//    while(!glfwWindowShouldClose(window) && !glfwGetKey(window, GLFW_KEY_ESCAPE)) {
-//
-//		main.main_loop();
-//
-//		gettimeofday(&end, NULL);
-//		if(((end.tv_sec - start.tv_sec) * 1000 + (end.tv_usec - start.tv_usec)/1000.0) > 5000) {
-//			Log::i("fps ~ %d", (int)(fps/5.0f + .5f));
-//			fps = 0;
-//			gettimeofday(&start, NULL);
-//		}
-//		fps++;
-//        
-//        // Present frame buffer
-//        glfwSwapBuffers(window);
-//		/// Poll for and process events
-//        glfwPollEvents();
-//    }
-//	
-//    glfwTerminate();    // Terminate GLFW
-//    return 0;
 }
 
