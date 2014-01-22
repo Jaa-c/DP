@@ -44,7 +44,7 @@ GLWidget::GLWidget(const QGLFormat& format, int w, int h, QWidget* parent) :
 	camera(w, h), 
 	renderer(&camera), 
 	textureHandler("/home/jaa/Documents/FEL/DP/data/statue/photos/") 
-{
+{		
 	const int defaultCameraID = 20;
 
 	bp.parseFile("/home/jaa/Documents/FEL/DP/data/statue/bundle.out");
@@ -101,10 +101,39 @@ void GLWidget::paintGL() {
 	glUseProgram(0);
 
 	drawRadar(10, 10, 250, 250);
+	
+	
+	this->update(); //TODO
 }
 
-void GLWidget::resizeGL( int w, int h )
-{
+bool GLWidget::eventFilter(QObject *obj, QEvent *event) {
+	
+	switch(event->type()) {
+		case QEvent::MouseMove:
+		{
+			QMouseEvent *e = (QMouseEvent *) event;
+			controlls->mousePositionChangedImpl(e->x(), e->y());
+			break;
+		}
+		case QEvent::MouseButtonPress:
+		case QEvent::MouseButtonRelease:
+		{
+			QMouseEvent *e = (QMouseEvent *) event;
+			controlls->mouseButtonChangedImpl(e->buttons());
+		}
+		case QEvent::KeyPress:
+		{
+			QKeyEvent *e = (QKeyEvent *) event;
+			controlls->keyboardActionImpl(e->key(), e->type());
+		}
+		default:
+			return false;
+	}
+	return false;
+}
+
+
+void GLWidget::resizeGL(int w, int h) {
 	controlls->windowSizeChangedImpl(w, h);
 }
 
@@ -114,24 +143,25 @@ int main(int argc, char** argv) {
 	const int width = 1000;
 	const int height = 800;
 		
-	QApplication a(argc, argv );
+	QApplication app(argc, argv );
 
     QGLFormat glFormat;
     glFormat.setVersion(3, 2);
     glFormat.setProfile(QGLFormat::CompatibilityProfile);
-    glFormat.setSampleBuffers( true );
+    glFormat.setSampleBuffers(true);
 
-    GLWidget w(glFormat, width, height);
-	w.setWindowTitle(window_title);
-	w.resize(width, height);
-    w.show();
+    GLWidget window(glFormat, width, height);
+	window.setWindowTitle(window_title);
+	window.resize(width, height);
+    window.show();
 	
-	
+	app.installEventFilter(&window);
+		
 	GLint texture_units = 0;
 	glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &texture_units);
 	Log::i("Avaiable texture units for FS: %d", texture_units);
 	
-    return a.exec();
+    return app.exec();
 			
 //	// Intialize GLFW   
 //	if(!glfwInit()) {

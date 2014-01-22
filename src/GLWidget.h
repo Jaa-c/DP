@@ -42,10 +42,13 @@ public:
     GLWidget(const QGLFormat& format, int w, int h, QWidget* parent = 0 );
 	~GLWidget();
 	
+	virtual bool eventFilter(QObject *obj, QEvent *event);
 
 protected:
     virtual void initializeGL();
     virtual void paintGL();
+	
+	
 	virtual void resizeGL(int w, int h);
 	
 	

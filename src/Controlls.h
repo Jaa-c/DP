@@ -11,6 +11,8 @@
 #include "BundlerParser.h"
 #include "glm/core/type_mat4x4.hpp"
 
+#include <Qt> 
+
 class Controlls {
 private:
 	BundlerParser * bp;
@@ -58,48 +60,48 @@ public:
 	 * Callback for keyboard actions
 	 */
 	void keyboardActionImpl(int key, int action) {
-//		if(action == GLFW_RELEASE) {
+//		if(action == Qt::?) {
 //			return;
 //		}
-//		switch (key) {
-//			case 'S':// backwards
-//				camera->move(Camera::BACK);
-//				break;
-//			case 'W':// forwards
-//				camera->move(Camera::FORWARD);
-//				break;
-//			case 'A'://left
-//				camera->move(Camera::LEFT);
-//				break;
-//			case 'D'://right
-//				camera->move(Camera::RIGHT);
-//				break;
-//			case 'P':
-//				camera->switchFreewalk();
-//				setCameraParams();
-//				break;
-//			case 'R':// recompile shaders
-//				shaderHandler->resetShaders();
-//				break;
-//			case GLFW_KEY_LEFT:
-//				cameraId--;
-//				if(cameraId < 0) {
-//					cameraId = bp->getCameras()->size()-1;
-//				}
-//				setCameraParams();
-//				break;
-//			case GLFW_KEY_RIGHT:
-//				cameraId = (cameraId + 1) % bp->getCameras()->size();
-//				setCameraParams();
-//				break;
-//		}
+		switch (key) {
+			case 'S':// backwards
+				camera->move(Camera::BACK);
+				break;
+			case 'W':// forwards
+				camera->move(Camera::FORWARD);
+				break;
+			case 'A'://left
+				camera->move(Camera::LEFT);
+				break;
+			case 'D'://right
+				camera->move(Camera::RIGHT);
+				break;
+			case 'P':
+				camera->switchFreewalk();
+				setCameraParams();
+				break;
+			case 'R':// recompile shaders
+				shaderHandler->resetShaders();
+				break;
+			case Qt::Key_Left:
+				cameraId--;
+				if(cameraId < 0) {
+					cameraId = bp->getCameras()->size()-1;
+				}
+				setCameraParams();
+				break;
+			case Qt::Key_Right:
+				cameraId = (cameraId + 1) % bp->getCameras()->size();
+				setCameraParams();
+				break;
+		}
 	}
 	
 	/**
 	 * Callback for mouse click, rotation enabled while holding left button
 	 */
-	void mouseButtonChangedImpl(int button, int action) {
-//		mouseRotationEnabled = ((button == GLFW_MOUSE_BUTTON_LEFT) && (action == GLFW_PRESS));
+	void mouseButtonChangedImpl(int button) {
+		mouseRotationEnabled = (button == Qt::LeftButton);
 	}
 	
 	/**
