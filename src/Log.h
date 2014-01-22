@@ -10,6 +10,7 @@
 
 #include <memory>
 #include <cstdarg>
+#include <cstring>
 
 using std::cout;
 using std::string;
@@ -73,17 +74,6 @@ public:
 		va_start(argptr, msg);
 		log(string_format(msg, argptr), LOG_ERROR);
 		va_end(argptr);
-	}
-	
-	static void checkGLError() {
-		GLenum err;
-		if((err = glGetError()) != GL_NO_ERROR) {
-			Log::d("opengl error: %d", err);
-		}
-		else {
-			Log::d("no error");
-		}
-	
 	}
 
 };

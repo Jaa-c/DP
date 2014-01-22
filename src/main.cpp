@@ -6,6 +6,7 @@
  */
 
 #include <GL/glew.h>
+#include "globals.h"
 
 #include <QtGlobal>
 #include <QtOpenGL/QGLWidget>
@@ -17,7 +18,6 @@
 
 
 #include "glm/glm.hpp"
-#include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/matrix_inverse.hpp"
 #include "glm/gtc/type_ptr.hpp"
 
@@ -27,254 +27,44 @@
 #include <sys/time.h>
 #include <vector>
 
-const unsigned GL_ID_NONE = (unsigned)~(unsigned(0));
-
-typedef unsigned char rgb;
-/// std::vector < unsigned char > 
-typedef std::vector<rgb> Image;
-typedef glm::vec3 Point;
-typedef glm::vec3 Vector;
-typedef std::vector<Point> Points;
-typedef std::vector<Vector> Vectors;
-
-
-#define glCheckError() glError(__FILE__,__LINE__)
-void glError(const char *file, int line) {
-        GLenum err (glGetError());
-
-        while(err!=GL_NO_ERROR) {
-                std::string error;
-
-                switch(err) {
-                        case GL_INVALID_OPERATION: error="INVALID_OPERATION"; break;
-                        case GL_INVALID_ENUM: error="INVALID_ENUM"; break;
-                        case GL_INVALID_VALUE: error="INVALID_VALUE"; break;
-                        case GL_OUT_OF_MEMORY: error="OUT_OF_MEMORY"; break;
-                        case GL_INVALID_FRAMEBUFFER_OPERATION: error="INVALID_FRAMEBUFFER_OPERATION"; break;
-                }
-
-                std::cerr<<"GL_"<<error<<" - "<<file<<':'<<line<<endl;
-                err=glGetError();
-        }
-}
-
-#include "Log.h"
-#include "BundlerParser.h"
-#include "ObjectData.h"
-#include "ShaderHandler.h"
-#include "Camera.h"
-#include "Controlls.h"
-#include "TextureHandler.h"
-#include "Renderer.h"
 
 #include "RenderPass/RenderPass.h"
 #include "RenderPass/TexturingRenderPass.h"
 #include "RenderPass/BundlerPointsRenderPass.h"
-#include "RenderPassHandler.h"
+
+
 
 
 
 // GLSL variables todo
 GLuint g_WireMode = 0;
 
-class Main {
-	
-	BundlerParser bp;
-	RenderPassHandler renderPassHandler;
-	Camera camera;
-	ShaderHandler shaderHandler;
-	Renderer renderer;
-	TextureHandler textureHandler;
-	
-	ObjectData *object;
-	Controlls * controlls;
-	
-public:
-	Main(int windowWidth, int windowHeight) : 
-		camera(windowWidth, windowHeight), renderer(&camera), 
-		textureHandler("/home/jaa/Documents/FEL/DP/data/statue/photos/") 
-	{
-		const int defaultCameraID = 20;
-		
-		
-		bp.parseFile("/home/jaa/Documents/FEL/DP/data/statue/bundle.out");
-		controlls = &Controlls::getInstance();
-		controlls->setPointers(&bp, &camera, &shaderHandler);
-		controlls->setCameraId(defaultCameraID);
-		
-		renderPassHandler.add(RenderPass::TEXTURING_PASS, new TexturingRenderPass(&renderer, &shaderHandler));
+GLWidget::GLWidget(const QGLFormat& format, int w, int h, QWidget* parent) : 
+	QGLWidget( format, parent ),
+	camera(w, h), 
+	renderer(&camera), 
+	textureHandler("/home/jaa/Documents/FEL/DP/data/statue/photos/") 
+{
+	const int defaultCameraID = 20;
+
+	bp.parseFile("/home/jaa/Documents/FEL/DP/data/statue/bundle.out");
+	controlls = &Controlls::getInstance();
+	controlls->setPointers(&bp, &camera, &shaderHandler);
+	controlls->setCameraId(defaultCameraID);
+
+	renderPassHandler.add(RenderPass::TEXTURING_PASS, new TexturingRenderPass(&renderer, &shaderHandler));
 //		renderPassHandler.add(RenderPass::BUNDLER_POINTS_PASS, new BundlerPointsRenderPass(&renderer, &shaderHandler));
 
-		object = new ObjectData("/home/jaa/Documents/FEL/DP/data/statue/statue.obj");
-		object->mvm = glm::rotate(object->mvm, 180.f, glm::vec3(1.0f, 0.0f, 0.0f));
-		object->pointData = new PointData(&bp, object->getCentroid());
-		object->texture = new Texture(GL_TEXTURE_RECTANGLE, 0);
-		
-	}
-	
-	~Main() {
-		if(object) delete object;
-	}
+	object = new ObjectData("/home/jaa/Documents/FEL/DP/data/statue/statue.obj");
+	object->mvm = glm::rotate(object->mvm, 180.f, glm::vec3(1.0f, 0.0f, 0.0f));
+	object->pointData = new PointData(&bp, object->getCentroid());
+	object->texture = new Texture(GL_TEXTURE_RECTANGLE, 0);
 
-	void main_loop() {
-		
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glPolygonMode(GL_FRONT_AND_BACK, g_WireMode ? GL_LINE : GL_FILL);
-
-		camera.updateCameraViewMatrix();
-		
-		if(!camera.isCameraStatic()) {
-			glm::vec3 viewDir = object->getCentroidPosition() + camera.getCameraPosition();
-			const int cam = bp.getClosestCamera(viewDir, object->mvm);
-			controlls->setCameraId(cam);
-		}
-		
-		const int camID = controlls->getCameraId();
-		object->texture->setImage(textureHandler.getImage(camID), &bp.getCameras()->at(camID));
-
-		renderPassHandler.draw(object);
-		
-		glUseProgram(0);
-		
-		drawRadar(10, 10, 250, 250);
-
-	}
-	
-	inline void drawRadar(GLint x, GLint y, GLsizei width, GLsizei height)
-	{
-		GLint viewport[4] = {0};
-		glGetIntegerv(GL_VIEWPORT, viewport);
-
-		glMatrixMode(GL_PROJECTION);
-		glPushMatrix();
-		glLoadIdentity();
-		glOrtho(0, viewport[2], 0, viewport[3], -1.0, 1.0);
-		glMatrixMode(GL_MODELVIEW);
-		glPushMatrix();
-		glLoadIdentity();
-
-		glDisable(GL_DEPTH_TEST);
-		glDisable(GL_LIGHTING);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		glEnable( GL_BLEND );
-		
-		glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
-		glBegin(GL_QUADS);
-			glVertex2i(x, y);
-			glVertex2i(x+width, y);
-			glVertex2i(x+width, y+height);
-			glVertex2i(x, y+height);
-		glEnd();
-		
-		glEnable(GL_POINT);
-		glEnable(GL_POINT_SIZE);
-		glPointSize(4.0);
-		
-		glm::vec4 tmp, p1, p2, dir;
-		glm::vec3 c, k;
-		c = object->getCentroidPosition();
-		k = -camera.getCameraPosition();
-		
-		const Points &cameras = object->pointData->getCameraPositions();
-		const Vectors &cameraDirections = bp.getCamerDirections();
-		const glm::mat4 vecMat = glm::inverse(glm::transpose(object->mvm));
-		
-		glBegin(GL_LINES);
-			glColor4f(0.3f, 0.3f, 0.3f, 1.0f);
-			for(uint i = 0; i < cameraDirections.size(); ++i) {
-				p1 =  object->mvm * glm::vec4(cameras.at(i), 1.0f);
-				dir = vecMat * glm::vec4(cameraDirections.at(i), 1.0f);
-				drawLine(p1, dir);
-			}
-			
-			glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
-			glm::vec3 viewDir = -camera.getCameraViewDirection();
-			drawLine(k, viewDir);
-			
-			glColor4f(0.0f, 0.0f, 0.0f, 0.5f);
-			drawPoint(k);
-			drawPoint(c);
-		glEnd();
-		
-		
-		glColor4f(0.3f, 0.3f, 0.3f, 1.0f);
-		glBegin(GL_POINTS);
-			for(auto it = cameras.begin(); it != cameras.end(); ++it) {
-				tmp = object->mvm * glm::vec4((*it), 1.0f);
-				drawPoint(tmp);
-			}
-		glEnd();
-			
-		glPointSize(5.0);
-		glBegin(GL_POINTS);
-			glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
-			drawPoint(k);
-
-			glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
-			drawPoint(c);
-			
-			glColor4f(0.0f, 0.0f, 1.0f, 1.0f);
-			const int camID = controlls->getCameraId();
-			tmp =  object->mvm * glm::vec4(cameras[camID], 1.0f);
-			drawPoint(tmp);
-		glEnd();
-		
-		glMatrixMode(GL_PROJECTION);
-		glPopMatrix();
-		glMatrixMode(GL_MODELVIEW);
-		glPopMatrix();
-	}
-	
-	void drawPoint(glm::vec4 &p) {
-		glm::vec2 tmp(p.x, p.z);
-		drawPoint(tmp);
-	}
-	void drawPoint(glm::vec3 &p) {
-		glm::vec2 tmp(p.x, p.z);
-		drawPoint(tmp);
-	}
-	void drawPoint(glm::vec2 &p) {
-		if(cmpCoords(p)) {
-			glVertex2f(p.x, p.y);
-		}
-	}
-	void drawLine(glm::vec4 &point, glm::vec4 &dir) {
-		glm::vec3 p(point);
-		glm::vec3 d(dir);
-		drawLine(p, d);
-	}
-	void drawLine(glm::vec3 &point, glm::vec3 &dir) {
-		glm::vec2 d(dir.x, dir.z);
-		d = glm::normalize(d);
-		d *= 3;
-		glm::vec2 p1(point.x, point.z);
-		glm::vec2 p2 = p1 + d;
-		if(cmpCoords(p1) && cmpCoords(p2)) {
-			glVertex2f(p1.x, p1.y);
-			glVertex2f(p2.x, p2.y);
-		}	
-	}
-	
-	bool cmpCoords(glm::vec2 &p) {
-		const glm::vec2 xr(-22.f, 18.f);
-		const glm::vec2 yr(5.f, 45.f);
-		
-		p.x = (p.x - xr.x) * (260.f - 10.f) / (xr.y - xr.x) + 10.f;
-		p.y = (p.y - yr.x) * (260.f - 10.f) / (yr.y - yr.x) + 260.f;
-		
-		if(p.x < 10 || p.x > 260 || p.y < 10 || p.y > 260) {
-			return false;
-		}
-		return true;
-	}
-		
-};
+}
 
 
-GLWidget::GLWidget( Main * main, const QGLFormat& format, QWidget* parent) : 
-	QGLWidget( format, parent ),
-	main(main)
-{
+GLWidget::~GLWidget() {
+	if(object) delete object;
 }
 
 
@@ -283,8 +73,7 @@ void GLWidget::initializeGL()
 {
 	GLuint err = glewInit();
 	if (err != GLEW_OK) {
-		Log::e("Unable to init glew.");
-		fprintf(stderr, "Error: %s\n", glewGetErrorString(err));
+		Log::e("Unable to init glew: %s", glewGetErrorString(err));
 		return;
 	}
 
@@ -292,15 +81,31 @@ void GLWidget::initializeGL()
 	glClearColor(0.4f, 0.4f, 0.7f, 0);
 }
 
-void GLWidget::resizeGL( int w, int h )
-{
-	// Set the viewport to window dimensions
-	//glViewport( 0, 0, w, qMax( h, 1 ) );
+void GLWidget::paintGL() {
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glPolygonMode(GL_FRONT_AND_BACK, g_WireMode ? GL_LINE : GL_FILL);
+
+	camera.updateCameraViewMatrix();
+
+	if(!camera.isCameraStatic()) {
+		glm::vec3 viewDir = object->getCentroidPosition() + camera.getCameraPosition();
+		const int cam = bp.getClosestCamera(viewDir, object->mvm);
+		controlls->setCameraId(cam);
+	}
+
+	const int camID = controlls->getCameraId();
+	object->texture->setImage(textureHandler.getImage(camID), &bp.getCameras()->at(camID));
+
+	renderPassHandler.draw(object);
+
+	glUseProgram(0);
+
+	drawRadar(10, 10, 250, 250);
 }
 
-void GLWidget::paintGL()
+void GLWidget::resizeGL( int w, int h )
 {
-	main->main_loop();
+	controlls->windowSizeChangedImpl(w, h);
 }
 
 
@@ -308,20 +113,19 @@ int main(int argc, char** argv) {
 	const char *window_title = "Titulek";
 	const int width = 1000;
 	const int height = 800;
-	
-	Main main(width, height);
-	
-	
-	QApplication a( argc, argv );
+		
+	QApplication a(argc, argv );
 
     QGLFormat glFormat;
     glFormat.setVersion(3, 2);
     glFormat.setProfile(QGLFormat::CompatibilityProfile);
     glFormat.setSampleBuffers( true );
 
-    GLWidget w(&main, glFormat);
-    w.show();
+    GLWidget w(glFormat, width, height);
+	w.setWindowTitle(window_title);
 	w.resize(width, height);
+    w.show();
+	
 	
 	GLint texture_units = 0;
 	glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &texture_units);

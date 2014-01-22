@@ -8,8 +8,6 @@
 #ifndef RENDERPASS_H
 #define	RENDERPASS_H
 
-#include <GL/glew.h> //ide bug
-
 class Renderer;
 
 class RenderPass {

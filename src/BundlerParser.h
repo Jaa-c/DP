@@ -15,6 +15,9 @@
 #include <algorithm>
 #include <stdexcept>
 
+#include "Log.h"
+
+#include "glm/glm.hpp"
 #include "glm/core/type_mat3x3.hpp"
 
 struct CameraPosition {

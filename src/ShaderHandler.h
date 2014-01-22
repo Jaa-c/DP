@@ -8,6 +8,7 @@
 #ifndef SHADERHANDLER_H
 #define	SHADERHANDLER_H
 
+#include <GL/glew.h>
 #include <iostream>
 
 

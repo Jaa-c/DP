@@ -8,7 +8,7 @@
 #ifndef RENDERER_H
 #define	RENDERER_H
 
-#include <GL/glew.h> //stupid IDE :)
+#include <GL/glew.h>
 
 #include "ObjectData.h"
 #include "Controlls.h"
