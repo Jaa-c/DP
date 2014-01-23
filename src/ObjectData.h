@@ -10,11 +10,15 @@
 
 #include "DataLoader.h"
 #include "Texture.h"
+#include "BundlerParser.h"
 
 struct PointData {
 private:
 	/// Positions of cameras
 	Points cameraPos;
+	
+	/// viewing directions of cameras
+	const Points *cameraDirections;
 	
 	/// Point data from bundler
 	Points *pointData;
@@ -28,12 +32,16 @@ public:
 		}
 		cameraPos.push_back(centroid);
 		pointData = bp->getPoints();
+		cameraDirections = &bp->getCamerDirections();
 	}
 	
 	const Points &getPointData() const {
 		return *pointData;
 	}
 	
+	const Points &getCameraDirections() const {
+		return *cameraDirections;
+	}
 	const Points &getCameraPositions() const {
 		return cameraPos;
 	}

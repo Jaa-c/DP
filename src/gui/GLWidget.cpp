@@ -23,13 +23,13 @@ GLWidget::GLWidget(const QGLFormat& format, int w, int h, QWidget* parent) :
 	controlls->setPointers(&bp, &camera, &shaderHandler);
 	controlls->setCameraId(defaultCameraID);
 
-//	renderPassHandler.add(RenderPass::TEXTURING_PASS, new TexturingRenderPass(&renderer, &shaderHandler));
-//	renderPassHandler.add(RenderPass::BUNDLER_POINTS_PASS, new BundlerPointsRenderPass(&renderer, &shaderHandler));
-
 	object = new ObjectData("/home/jaa/Documents/FEL/DP/data/statue/statue.obj");
 	object->mvm = glm::rotate(object->mvm, 180.f, glm::vec3(1.0f, 0.0f, 0.0f));
 	object->pointData = new PointData(&bp, object->getCentroid());
 	object->texture = new Texture(GL_TEXTURE_RECTANGLE, 0);
+	
+	radar = new Radar(object, &camera, controlls);
+	radar->setPosition(10, 10, 250, 250);
 	
 	fps = 0;
     srand((unsigned)std::time(0)); 
@@ -56,6 +56,7 @@ void GLWidget::removeRenderPass(RenderPass::RenderPassType pass) {
 
 GLWidget::~GLWidget() {
 	if(object) delete object;
+	if(radar) delete radar;
 }
 
 void GLWidget::initializeGL()
@@ -90,7 +91,7 @@ void GLWidget::paintGL() {
 	glUseProgram(0);
 
 	if(displayRadar) {
-		drawRadar(10, 10, 250, 250);
+		radar->draw();
 	}
 	
 	
