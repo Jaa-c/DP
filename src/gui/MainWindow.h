@@ -23,21 +23,29 @@ public:
 	virtual bool eventFilter(QObject *obj, QEvent *event);
 
 private slots:
-	void texturingPass();
-	void bundlerPointsPass();
+	void quitCB();
+	void texturingPassCB();
+	void bundlerPointsPassCB();
+	void displayRadarCB();
 
-	void quit();
 
 
 private:
+	void initAppState();
+	
+	void createActions();
+	void createMenus();
+	
 	GLWidget *glWidget;
 
 	QMenu *file;
 	QMenu *renderPass;
+	QMenu *view;
 	
 	QAction *quitAct;
 	QAction *texturingRP;
 	QAction *bundlerPointsRP;
+	QAction *displayRadar;
 
 };
 

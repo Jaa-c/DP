@@ -38,6 +38,8 @@ class GLWidget : public QGLWidget
 	
 	struct timeval start, end;
 	int fps;
+	
+	bool displayRadar;
     
 public:
     GLWidget(const QGLFormat& format, int w, int h, QWidget* parent = 0 );
@@ -47,6 +49,8 @@ public:
 	
 	void addRenderPass(RenderPass::RenderPassType pass);
 	void removeRenderPass(RenderPass::RenderPassType pass);
+	
+	void setDisplayRadar(bool value);
 
 protected:
     virtual void initializeGL();

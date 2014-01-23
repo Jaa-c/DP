@@ -13,7 +13,8 @@ GLWidget::GLWidget(const QGLFormat& format, int w, int h, QWidget* parent) :
 	QGLWidget(format, parent),
 	camera(w, h), 
 	renderer(&camera), 
-	textureHandler("/home/jaa/Documents/FEL/DP/data/statue/photos/") 
+	textureHandler("/home/jaa/Documents/FEL/DP/data/statue/photos/"),
+	displayRadar(false)
 {		
 	const int defaultCameraID = 20;
 
@@ -88,7 +89,9 @@ void GLWidget::paintGL() {
 
 	glUseProgram(0);
 
-	drawRadar(10, 10, 250, 250);
+	if(displayRadar) {
+		drawRadar(10, 10, 250, 250);
+	}
 	
 	
 	
@@ -131,4 +134,8 @@ bool GLWidget::eventFilter(QObject *obj, QEvent *event) {
 
 void GLWidget::resizeGL(int w, int h) {
 	controlls->windowSizeChangedImpl(w, h);
+}
+
+void GLWidget::setDisplayRadar(bool value) {
+	displayRadar = value;
 }

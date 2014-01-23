@@ -5,28 +5,10 @@
 #include <QApplication>
 #include <QtGui/QtGui>
 
-
 MainWindow::MainWindow(QApplication *app, int w, int h) {
-	
 	//Menu
-	quitAct = new QAction(tr("&Quit"), this);
-	quitAct->setStatusTip(tr("Exit application"));
-	connect(quitAct, SIGNAL(triggered()), this, SLOT(quit()));
-	
-	texturingRP = new QAction(tr("&Texturing Pass"), this);
-	texturingRP->setCheckable(true);
-	connect(texturingRP, SIGNAL(changed()), this, SLOT(texturingPass()));
-	
-	bundlerPointsRP = new QAction(tr("&Bundler Points Pass"), this);
-	bundlerPointsRP->setCheckable(true);
-	connect(bundlerPointsRP, SIGNAL(changed()), this, SLOT(bundlerPointsPass()));
-
-	file = menuBar()->addMenu(tr("&File"));
-	file->addAction(quitAct);
-	
-	renderPass = menuBar()->addMenu(tr("&Render Passes"));
-	renderPass->addAction(texturingRP);
-	renderPass->addAction(bundlerPointsRP);
+	createActions();
+	createMenus();
 	
 	//OpenGL context format
 	QGLFormat glFormat;
@@ -41,26 +23,50 @@ MainWindow::MainWindow(QApplication *app, int w, int h) {
 	app->installEventFilter(glWidget);	//only opengl controlls
 	app->installEventFilter(this);		//other application controlls
 	
-	
+	initAppState();
+}
+
+void MainWindow::initAppState() {
 	//Initial state of application
 	texturingRP->setChecked(true);
+	displayRadar->setChecked(true);
 }
 
-MainWindow::~MainWindow() {
-	if(glWidget) delete glWidget;
-	if(file) delete file;
-	if(renderPass) delete renderPass;
-
-	if(quitAct) delete quitAct;
-	if(texturingRP) delete texturingRP;
-	if(bundlerPointsRP) delete bundlerPointsRP;
+void MainWindow::createActions() {
+	quitAct = new QAction(tr("&Quit"), this);
+	quitAct->setStatusTip(tr("Exit application"));
+	connect(quitAct, SIGNAL(triggered()), this, SLOT(quitCB()));
+	
+	texturingRP = new QAction(tr("&Texturing Pass"), this);
+	texturingRP->setCheckable(true);
+	connect(texturingRP, SIGNAL(changed()), this, SLOT(texturingPassCB()));
+	
+	bundlerPointsRP = new QAction(tr("&Bundler Points Pass"), this);
+	bundlerPointsRP->setCheckable(true);
+	connect(bundlerPointsRP, SIGNAL(changed()), this, SLOT(bundlerPointsPassCB()));
+	
+	displayRadar = new QAction(tr("Display &Radar"), this);
+	displayRadar->setCheckable(true);
+	connect(displayRadar, SIGNAL(changed()), this, SLOT(displayRadarCB()));
 }
 
- void MainWindow::quit() {
+void MainWindow::createMenus() {
+	file = menuBar()->addMenu(tr("File"));
+	file->addAction(quitAct);
+	
+	renderPass = menuBar()->addMenu(tr("&Render Passes"));
+	renderPass->addAction(texturingRP);
+	renderPass->addAction(bundlerPointsRP);
+	
+	view = menuBar()->addMenu(tr("&View"));
+	view->addAction(displayRadar);
+}
+
+ void MainWindow::quitCB() {
 	 QApplication::quit();
  }
  
-void MainWindow::texturingPass() {
+void MainWindow::texturingPassCB() {
 	if(texturingRP->isChecked()) {
 		glWidget->addRenderPass(RenderPass::TEXTURING_PASS);
 	}
@@ -69,13 +75,17 @@ void MainWindow::texturingPass() {
 	}
 }
 
-void MainWindow::bundlerPointsPass() {
+void MainWindow::bundlerPointsPassCB() {
 	if(bundlerPointsRP->isChecked()) {
 		glWidget->addRenderPass(RenderPass::BUNDLER_POINTS_PASS);
 	}
 	else {
 		glWidget->removeRenderPass(RenderPass::BUNDLER_POINTS_PASS);
 	}
+}
+
+void MainWindow::displayRadarCB() {
+	glWidget->setDisplayRadar(displayRadar->isChecked());
 }
 
  bool MainWindow::eventFilter(QObject *obj, QEvent *event) {
@@ -86,7 +96,7 @@ void MainWindow::bundlerPointsPass() {
 			switch(e->key()) {
 				case Qt::Key_Q:
 				case Qt::Key_Escape:
-					quit();
+					quitCB();
 					break;
 			}
 		}
@@ -94,4 +104,17 @@ void MainWindow::bundlerPointsPass() {
 			return false;
 	}
 	return false;
+}
+ 
+MainWindow::~MainWindow() {
+	if(glWidget) delete glWidget;
+	
+	if(file) delete file;
+	if(renderPass) delete renderPass;
+	if(view) delete view;
+
+	if(quitAct) delete quitAct;
+	if(texturingRP) delete texturingRP;
+	if(bundlerPointsRP) delete bundlerPointsRP;
+	if(displayRadar) delete displayRadar;
 }
