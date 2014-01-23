@@ -15,12 +15,43 @@ class Radar {
 	ObjectData *object;
 	Camera *camera;
 	Controlls *controlls;
+	
 	GLint x, y;
 	GLsizei width, height;
 	
+	//coordinates mapped on radar
+	glm::vec2 xr, yr;
+	
 public:
 	Radar(ObjectData *object, Camera *camera, Controlls *controlls) : 
-		object(object), camera(camera), controlls(controlls) {}
+		object(object), camera(camera), controlls(controlls) {
+		
+		//compute which coordinates should map on radar (xr, yr)
+		const Points &cameras = object->pointData->getCameraPositions();
+		glm::vec2 xlimits(10e5, -10e5);
+		glm::vec2 ylimits(10e5, -10e5);
+		glm::vec4 tmp;
+		
+		for(auto it = cameras.begin(); it != cameras.end(); ++it) {
+			tmp = object->mvm * glm::vec4((*it), 1.0f);
+			if(tmp.x < xlimits.s) xlimits.s = tmp.x;
+			if(tmp.x > xlimits.t) xlimits.t = tmp.x;
+			if(tmp.z < ylimits.s) ylimits.s = tmp.z;
+			if(tmp.z > ylimits.t) ylimits.t = tmp.z;
+		}
+		float diffx = fabs(xlimits.y - xlimits.x);
+		float diffy = fabs(ylimits.y - ylimits.x);
+		
+		float size = diffx > diffy ? diffx : diffy;
+		size *= 0.7f;
+		
+		xr.x = (xlimits.y + xlimits.x) / 2.0f - size;
+		xr.y = (xlimits.y + xlimits.x) / 2.0f + size;
+		yr.x = (ylimits.y + ylimits.x) / 2.0f - size;
+		yr.y = (ylimits.y + ylimits.x) / 2.0f + size;
+		
+
+	}
 	
 	void setPosition(GLint x, GLint y, GLsizei width, GLsizei height) {
 		this->x = x;
@@ -61,7 +92,7 @@ public:
 		glEnable(GL_POINT_SIZE);
 		glPointSize(4.0);
 
-		glm::vec4 tmp, p1, p2, dir;
+		glm::vec4 tmp, p1, dir;
 		glm::vec3 c, k;
 		c = object->getCentroidPosition();
 		k = -camera->getCameraPosition();
@@ -107,6 +138,7 @@ public:
 			glColor4f(0.0f, 0.0f, 1.0f, 1.0f);
 			const int camID = controlls->getCameraId();
 			tmp =  object->mvm * glm::vec4(cameras[camID], 1.0f);
+			
 			drawPoint(tmp);
 		glEnd();
 
@@ -149,11 +181,8 @@ private:
 	}
 
 	bool cmpCoords(glm::vec2 &p) {
-		const glm::vec2 xr(-22.f, 18.f);
-		const glm::vec2 yr(5.f, 45.f);
-
-		p.x = (p.x - xr.x) * (260.f - 10.f) / (xr.y - xr.x) + 10.f;
-		p.y = (p.y - yr.x) * (260.f - 10.f) / (yr.y - yr.x) + 260.f;
+		p.x = (p.x - xr.x) * (width) / (xr.y - xr.x) + x;
+		p.y = (p.y - yr.x) * (height) / (yr.y - yr.x) + y;
 
 		if(p.x < 10 || p.x > 260 || p.y < 10 || p.y > 260) {
 			return false;
