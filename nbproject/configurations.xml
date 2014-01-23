@@ -4,6 +4,9 @@
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
+      <logicalFolder name="f1" displayName="gui" projectFiles="true">
+        <itemPath>src/gui/GLWidget.h</itemPath>
+      </logicalFolder>
       <logicalFolder name="RenderPass" displayName="RenderPass" projectFiles="true">
         <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/RenderPass/BundlerPointsRenderPass.h</itemPath>
         <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/RenderPass/RenderPass.h</itemPath>
@@ -13,7 +16,6 @@
       <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/Camera.h</itemPath>
       <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/Controlls.h</itemPath>
       <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/DataLoader.h</itemPath>
-      <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/GLWidget.h</itemPath>
       <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/Log.h</itemPath>
       <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/ObjectData.h</itemPath>
       <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/RenderPassHandler.h</itemPath>
@@ -30,6 +32,9 @@
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
+      <logicalFolder name="f1" displayName="gui" projectFiles="true">
+        <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/gui/GLWidget.cpp</itemPath>
+      </logicalFolder>
       <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/globals.cpp</itemPath>
       <itemPath>src/main.cpp</itemPath>
     </logicalFolder>
@@ -90,11 +95,6 @@
             tool="3"
             flavor2="0">
       </item>
-      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/GLWidget.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
       <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/Log.h"
             ex="false"
             tool="3"
@@ -154,6 +154,13 @@
             ex="false"
             tool="3"
             flavor2="0">
+      </item>
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/gui/GLWidget.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="src/gui/GLWidget.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/main.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -202,11 +209,6 @@
             tool="3"
             flavor2="0">
       </item>
-      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/GLWidget.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
       <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/Log.h"
             ex="false"
             tool="3"
@@ -266,6 +268,13 @@
             ex="false"
             tool="3"
             flavor2="0">
+      </item>
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/gui/GLWidget.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="src/gui/GLWidget.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/main.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -310,11 +319,6 @@
             tool="3"
             flavor2="0">
       </item>
-      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/GLWidget.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
       <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/Log.h"
             ex="false"
             tool="3"
@@ -374,6 +378,13 @@
             ex="false"
             tool="3"
             flavor2="0">
+      </item>
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/gui/GLWidget.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="src/gui/GLWidget.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/main.cpp" ex="false" tool="1" flavor2="0">
       </item>

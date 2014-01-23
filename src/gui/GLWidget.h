@@ -9,16 +9,15 @@
 #define	GLWIDGET_H
 
 
-#include "BundlerParser.h"
-#include "ShaderHandler.h"
-#include "Camera.h"
-#include "ObjectData.h"
-#include "TextureHandler.h"
-#include "Renderer.h"
-#include "Controlls.h"
+#include "../BundlerParser.h"
+#include "../ShaderHandler.h"
+#include "../Camera.h"
+#include "../ObjectData.h"
+#include "../TextureHandler.h"
+#include "../Renderer.h"
+#include "../Controlls.h"
 
-#include "RenderPassHandler.h"
-
+#include "../RenderPassHandler.h"
 
 #include <QtOpenGL/QGLContext>
 #include <QtOpenGL/QGLWidget>
