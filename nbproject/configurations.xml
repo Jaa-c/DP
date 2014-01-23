@@ -35,6 +35,7 @@
                    projectFiles="true">
       <logicalFolder name="f1" displayName="gui" projectFiles="true">
         <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/gui/GLWidget.cpp</itemPath>
+        <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/gui/MainWindow.cpp</itemPath>
       </logicalFolder>
       <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/globals.cpp</itemPath>
       <itemPath>src/main.cpp</itemPath>
@@ -161,6 +162,11 @@
             tool="1"
             flavor2="0">
       </item>
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/gui/MainWindow.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
       <item path="src/gui/GLWidget.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/gui/MainWindow.h" ex="false" tool="3" flavor2="0">
@@ -277,6 +283,11 @@
             tool="1"
             flavor2="0">
       </item>
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/gui/MainWindow.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
       <item path="src/gui/GLWidget.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/gui/MainWindow.h" ex="false" tool="3" flavor2="0">
@@ -385,6 +396,11 @@
             flavor2="0">
       </item>
       <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/gui/GLWidget.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/gui/MainWindow.cpp"
             ex="false"
             tool="1"
             flavor2="0">
