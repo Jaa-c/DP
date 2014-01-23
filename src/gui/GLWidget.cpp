@@ -10,7 +10,7 @@
 #include <sys/time.h>
 
 GLWidget::GLWidget(const QGLFormat& format, int w, int h, QWidget* parent) : 
-	QGLWidget( format, parent ),
+	QGLWidget(format, parent),
 	camera(w, h), 
 	renderer(&camera), 
 	textureHandler("/home/jaa/Documents/FEL/DP/data/statue/photos/") 
@@ -22,8 +22,8 @@ GLWidget::GLWidget(const QGLFormat& format, int w, int h, QWidget* parent) :
 	controlls->setPointers(&bp, &camera, &shaderHandler);
 	controlls->setCameraId(defaultCameraID);
 
-	renderPassHandler.add(RenderPass::TEXTURING_PASS, new TexturingRenderPass(&renderer, &shaderHandler));
-	renderPassHandler.add(RenderPass::BUNDLER_POINTS_PASS, new BundlerPointsRenderPass(&renderer, &shaderHandler));
+//	renderPassHandler.add(RenderPass::TEXTURING_PASS, new TexturingRenderPass(&renderer, &shaderHandler));
+//	renderPassHandler.add(RenderPass::BUNDLER_POINTS_PASS, new BundlerPointsRenderPass(&renderer, &shaderHandler));
 
 	object = new ObjectData("/home/jaa/Documents/FEL/DP/data/statue/statue.obj");
 	object->mvm = glm::rotate(object->mvm, 180.f, glm::vec3(1.0f, 0.0f, 0.0f));
@@ -34,6 +34,23 @@ GLWidget::GLWidget(const QGLFormat& format, int w, int h, QWidget* parent) :
     srand((unsigned)std::time(0)); 
 	gettimeofday(&start, NULL);
 
+}
+
+void GLWidget::addRenderPass(RenderPass::RenderPassType pass) {
+	switch(pass) {
+		case RenderPass::TEXTURING_PASS:
+			renderPassHandler.add(RenderPass::TEXTURING_PASS, new TexturingRenderPass(&renderer, &shaderHandler));
+			break;
+		case RenderPass::BUNDLER_POINTS_PASS:
+			renderPassHandler.add(RenderPass::BUNDLER_POINTS_PASS, new BundlerPointsRenderPass(&renderer, &shaderHandler));
+			break;
+		default:
+			return;
+	}
+}
+
+void GLWidget::removeRenderPass(RenderPass::RenderPassType pass) {
+	renderPassHandler.remove(pass);
 }
 
 GLWidget::~GLWidget() {

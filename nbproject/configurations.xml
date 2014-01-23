@@ -6,6 +6,7 @@
                    projectFiles="true">
       <logicalFolder name="f1" displayName="gui" projectFiles="true">
         <itemPath>src/gui/GLWidget.h</itemPath>
+        <itemPath>src/gui/MainWindow.h</itemPath>
       </logicalFolder>
       <logicalFolder name="RenderPass" displayName="RenderPass" projectFiles="true">
         <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/RenderPass/BundlerPointsRenderPass.h</itemPath>
@@ -162,6 +163,8 @@
       </item>
       <item path="src/gui/GLWidget.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="src/gui/MainWindow.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="src/main.cpp" ex="false" tool="1" flavor2="0">
       </item>
     </conf>
@@ -276,6 +279,8 @@
       </item>
       <item path="src/gui/GLWidget.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="src/gui/MainWindow.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="src/main.cpp" ex="false" tool="1" flavor2="0">
       </item>
     </conf>
@@ -385,6 +390,8 @@
             flavor2="0">
       </item>
       <item path="src/gui/GLWidget.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/gui/MainWindow.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/main.cpp" ex="false" tool="1" flavor2="0">
       </item>

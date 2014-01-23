@@ -44,6 +44,9 @@ public:
 	~GLWidget();
 	
 	virtual bool eventFilter(QObject *obj, QEvent *event);
+	
+	void addRenderPass(RenderPass::RenderPassType pass);
+	void removeRenderPass(RenderPass::RenderPassType pass);
 
 protected:
     virtual void initializeGL();
