@@ -8,9 +8,15 @@
 #include "OpenForm.h"
 #include "GLWidget.h"
 #include <QFileDialog>
+#include <QtGui/qsplashscreen.h>
 
 OpenForm::OpenForm(GLWidget * glw) : glWidget(glw) {
 	openForm.setupUi(this);
+	
+	//DEBUG TEMP
+	openForm.geometryPath->setText("/home/jaa/Documents/FEL/DP/data/statue/statue.obj");
+	openForm.bundlerPath->setText("/home/jaa/Documents/FEL/DP/data/statue/bundle.out");
+	openForm.photosPath->setText("/home/jaa/Documents/FEL/DP/data/statue/photos/");	
 }
 
 OpenForm::~OpenForm() {
@@ -23,11 +29,16 @@ void OpenForm::acceptCB() {
 		openForm.photosPath->text().length() > 0) 
 	{
 		this->close();
+		
+		QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+		
 		glWidget->createScene(
 			openForm.geometryPath->text().toStdString(), 
 			openForm.bundlerPath->text().toStdString(), 
 			openForm.photosPath->text().toStdString()
 		);
+		
+		QApplication::restoreOverrideCursor();
 	}
 	else {
 		openForm.statusLabel->setText("Select all required files!");
