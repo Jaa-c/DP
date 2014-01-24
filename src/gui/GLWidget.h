@@ -32,8 +32,8 @@ class GLWidget : public QGLWidget
 	Camera camera;
 	ShaderHandler shaderHandler;
 	Renderer renderer;
-	TextureHandler textureHandler;
 	
+	TextureHandler *textureHandler;
 	Radar *radar;
 	ObjectData *object;
 	Controlls * controlls;
@@ -46,6 +46,8 @@ class GLWidget : public QGLWidget
 public:
     GLWidget(const QGLFormat& format, int w, int h, QWidget* parent = 0 );
 	~GLWidget();
+	
+	void createScene(std::string geom, std::string bundler, std::string photos);
 	
 	virtual bool eventFilter(QObject *obj, QEvent *event);
 	

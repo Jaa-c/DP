@@ -104,6 +104,30 @@
     </item>
    </layout>
   </widget>
+  <widget class="QLabel" name="statusLabel">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>225</y>
+     <width>191</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color:red;</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections>
@@ -111,7 +135,7 @@
    <sender>actionButtons</sender>
    <signal>accepted()</signal>
    <receiver>OpenForm</receiver>
-   <slot>accept()</slot>
+   <slot>acceptCB()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>248</x>
@@ -127,7 +151,7 @@
    <sender>actionButtons</sender>
    <signal>rejected()</signal>
    <receiver>OpenForm</receiver>
-   <slot>reject()</slot>
+   <slot>rejectCB()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>316</x>
@@ -192,5 +216,7 @@
   <slot>openGeometryCB()</slot>
   <slot>openBundlerCB()</slot>
   <slot>openPhotosCB()</slot>
+  <slot>acceptCB()</slot>
+  <slot>rejectCB()</slot>
  </slots>
 </ui>

@@ -6,10 +6,11 @@
  */
 
 #include "OpenForm.h"
+#include "GLWidget.h"
 #include <QFileDialog>
 
-OpenForm::OpenForm() {
-	widget.setupUi(this);
+OpenForm::OpenForm(GLWidget * glw) : glWidget(glw) {
+	openForm.setupUi(this);
 }
 
 OpenForm::~OpenForm() {
@@ -17,6 +18,20 @@ OpenForm::~OpenForm() {
 
 
 void OpenForm::acceptCB() {
+	if( openForm.geometryPath->text().length() > 0 && 
+		openForm.bundlerPath->text().length() > 0 &&
+		openForm.photosPath->text().length() > 0) 
+	{
+		this->close();
+		glWidget->createScene(
+			openForm.geometryPath->text().toStdString(), 
+			openForm.bundlerPath->text().toStdString(), 
+			openForm.photosPath->text().toStdString()
+		);
+	}
+	else {
+		openForm.statusLabel->setText("Select all required files!");
+	}
 
 }
 
@@ -27,20 +42,20 @@ void OpenForm::rejectCB() {
 void OpenForm::openGeometryCB() {
 	QString fileName = QFileDialog::getOpenFileName(this, tr("Open geometry file"), "",tr("Geometry file"));
 	if(!fileName.isEmpty()) {
-		widget.geometryPath->setText(fileName);
+		openForm.geometryPath->setText(fileName);
 	}
 }
 
 void OpenForm::openBundlerCB() {
 	QString fileName = QFileDialog::getOpenFileName(this, tr("Open bundler file"), "",tr("Bundler out file (*.out)"));
 	if(!fileName.isEmpty()) {
-		widget.bundlerPath->setText(fileName);
+		openForm.bundlerPath->setText(fileName);
 	}
 }
 
 void OpenForm::openPhotosCB() {
 	QString path = QFileDialog::getExistingDirectory (this, tr("Choose folder with photos"));
 	if(!path.isEmpty()) {
-		widget.photosPath->setText(path);
+		openForm.photosPath->setText(path);
 	}
 }

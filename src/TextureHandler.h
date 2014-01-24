@@ -83,7 +83,7 @@ class TextureHandler {
 	}
 	
 public:
-	TextureHandler(const std::string folder) : folder(folder) {
+	TextureHandler(const std::string folder) : folder(folder + "/") {
 		readDirectory(folder);
 		data.resize(jpgPaths.size()); //same number of images as cameras
 		

@@ -20,8 +20,6 @@ public:
 	MainWindow(QApplication *app, int w, int h);
 	~MainWindow();
 	
-	virtual bool eventFilter(QObject *obj, QEvent *event);
-
 private slots:
 	void openCB();
 	void quitCB();

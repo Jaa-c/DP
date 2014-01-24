@@ -21,8 +21,7 @@ MainWindow::MainWindow(QApplication *app, int w, int h) {
 	glWidget->setAttribute(Qt::WA_NoMousePropagation);
 	this->setCentralWidget(glWidget);
 	
-	app->installEventFilter(glWidget);	//only opengl controlls
-	app->installEventFilter(this);		//other application controlls
+	app->installEventFilter(glWidget);	//opengl controlls
 		
 	initAppState();
 }
@@ -31,6 +30,12 @@ void MainWindow::initAppState() {
 	//Initial state of application
 	texturingRP->setChecked(true);
 	displayRadar->setChecked(true);
+	
+//	glWidget->createScene(
+//		"/home/jaa/Documents/FEL/DP/data/statue/statue.obj",
+//		"/home/jaa/Documents/FEL/DP/data/statue/bundle.out",
+//		"/home/jaa/Documents/FEL/DP/data/statue/photos/"
+//	);
 }
 
 void MainWindow::createActions() {
@@ -41,6 +46,7 @@ void MainWindow::createActions() {
 	
 	quitAct = new QAction(tr("&Quit"), this);
 	quitAct->setStatusTip(tr("Exit application"));
+	quitAct->setShortcut(Qt::Key_Escape);
 	connect(quitAct, SIGNAL(triggered()), this, SLOT(quitCB()));
 	
 	texturingRP = new QAction(tr("&Texturing Pass"), this);
@@ -71,7 +77,7 @@ void MainWindow::createMenus() {
 }
 
 void MainWindow::openCB() {
-	OpenForm form;
+	OpenForm form(glWidget);
 	form.exec();
 }
 
@@ -101,24 +107,6 @@ void MainWindow::displayRadarCB() {
 	glWidget->setDisplayRadar(displayRadar->isChecked());
 }
 
- bool MainWindow::eventFilter(QObject *, QEvent *event) {
-	switch(event->type()) {
-		case QEvent::KeyPress:
-		{
-			QKeyEvent *e = (QKeyEvent *) event;
-			switch(e->key()) {
-				case Qt::Key_Q:
-				case Qt::Key_Escape:
-					quitCB();
-					break;
-			}
-		}
-		default:
-			return false;
-	}
-	return false;
-}
- 
 MainWindow::~MainWindow() {
 	if(glWidget) delete glWidget;
 	

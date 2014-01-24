@@ -59,6 +59,9 @@ public:
 	typedef std::vector<CameraPosition> Cameras;
 	
 	void parseFile(std::string file) {
+		points.clear();
+		cameras.clear();
+		cameraDirections.clear();
 		
 		std::ifstream infile(file.c_str());
 		std::string line;

@@ -11,10 +11,12 @@
 #include "../globals.h"
 #include "ui_OpenForm.h"
 
+class GLWidget;
+
 class OpenForm : public QDialog {
 	Q_OBJECT
 public:
-	OpenForm();
+	OpenForm(GLWidget * glw);
 	virtual ~OpenForm();
 	
 private slots:
@@ -25,7 +27,8 @@ private slots:
 	void openPhotosCB();
 	
 private:
-	Ui::OpenForm widget;
+	Ui::OpenForm openForm;
+	GLWidget *glWidget;
 };
 
 #endif	/* _OPENFORM_H */

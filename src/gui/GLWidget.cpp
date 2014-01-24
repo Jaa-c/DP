@@ -12,18 +12,30 @@
 GLWidget::GLWidget(const QGLFormat& format, int w, int h, QWidget* parent) : 
 	QGLWidget(format, parent),
 	camera(w, h), 
-	renderer(&camera), 
-	textureHandler("/home/jaa/Documents/FEL/DP/data/statue/photos/"),
+	renderer(&camera),
+	textureHandler(NULL), 
+	radar(NULL), 
+	object(NULL),
 	displayRadar(false)
 {		
-	const int defaultCameraID = 20;
-
-	bp.parseFile("/home/jaa/Documents/FEL/DP/data/statue/bundle.out");
 	controlls = &Controlls::getInstance();
 	controlls->setPointers(&bp, &camera, &shaderHandler);
-	controlls->setCameraId(defaultCameraID);
+	controlls->setCameraId(0);
+	
+	fps = 0;
+    srand((unsigned)std::time(0)); 
+	gettimeofday(&start, NULL);
+}
 
-	object = new ObjectData("/home/jaa/Documents/FEL/DP/data/statue/statue.obj");
+void GLWidget::createScene(std::string geom, std::string bundler, std::string photos) {
+	
+	if(textureHandler) delete textureHandler;
+	if(object) delete object;
+	if(radar) delete radar;
+	
+	textureHandler = new TextureHandler(photos);
+	bp.parseFile(bundler);
+	object = new ObjectData(geom);
 	object->mvm = glm::rotate(object->mvm, 180.f, glm::vec3(1.0f, 0.0f, 0.0f));
 	object->pointData = new PointData(&bp, object->getCentroid());
 	object->texture = new Texture(GL_TEXTURE_RECTANGLE, 0);
@@ -31,10 +43,7 @@ GLWidget::GLWidget(const QGLFormat& format, int w, int h, QWidget* parent) :
 	radar = new Radar(object, &camera, controlls);
 	radar->setPosition(10, 10, 250, 250);
 	
-	fps = 0;
-    srand((unsigned)std::time(0)); 
-	gettimeofday(&start, NULL);
-
+	glClearColor(0.4f, 0.4f, 0.7f, 0);
 }
 
 void GLWidget::addRenderPass(RenderPass::RenderPassType pass) {
@@ -57,6 +66,7 @@ void GLWidget::removeRenderPass(RenderPass::RenderPassType pass) {
 GLWidget::~GLWidget() {
 	if(object) delete object;
 	if(radar) delete radar;
+	if(textureHandler) delete textureHandler;
 }
 
 void GLWidget::initializeGL() {
@@ -67,32 +77,35 @@ void GLWidget::initializeGL() {
 	}
 
 	// Set OpenGL state variables
-	glClearColor(0.4f, 0.4f, 0.7f, 0);
+	glClearColor(0.7f, 0.7f, 0.7f, 0);
 }
 
 void GLWidget::paintGL() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
-	camera.updateCameraViewMatrix();
-
-	if(!camera.isCameraStatic()) {
-		glm::vec3 viewDir = object->getCentroidPosition() + camera.getCameraPosition();
-		const int cam = bp.getClosestCamera(viewDir, object->mvm);
-		controlls->setCameraId(cam);
-	}
-
-	const int camID = controlls->getCameraId();
-	object->texture->setImage(textureHandler.getImage(camID), &bp.getCameras()->at(camID));
-
-	renderPassHandler.draw(object);
-
-	glUseProgram(0);
-
-	if(displayRadar) {
-		radar->draw();
-	}
 	
+	if(object) {
+		
+		camera.updateCameraViewMatrix();
+
+		if(!camera.isCameraStatic()) {
+			glm::vec3 viewDir = object->getCentroidPosition() + camera.getCameraPosition();
+			const int cam = bp.getClosestCamera(viewDir, object->mvm);
+			controlls->setCameraId(cam);
+		}
+
+		const int camID = controlls->getCameraId();
+		object->texture->setImage(textureHandler->getImage(camID), &bp.getCameras()->at(camID));
+
+		renderPassHandler.draw(object);
+
+		glUseProgram(0);
+
+		if(displayRadar) {
+			radar->draw();
+		}
+	
+	}
 	
 	gettimeofday(&end, NULL);
 	if(((end.tv_sec - start.tv_sec) * 1000 + (end.tv_usec - start.tv_usec)/1000.0) > 5000) {

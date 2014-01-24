@@ -8,7 +8,6 @@
         <itemPath>src/gui/GLWidget.h</itemPath>
         <itemPath>src/gui/MainWindow.h</itemPath>
         <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/gui/OpenForm.h</itemPath>
-        <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/gui/OpenForm.ui</itemPath>
       </logicalFolder>
       <logicalFolder name="RenderPass" displayName="RenderPass" projectFiles="true">
         <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/RenderPass/BundlerPointsRenderPass.h</itemPath>
@@ -32,6 +31,9 @@
     <logicalFolder name="ResourceFiles"
                    displayName="Resource Files"
                    projectFiles="true">
+      <logicalFolder name="f1" displayName="gui" projectFiles="true">
+        <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/gui/OpenForm.ui</itemPath>
+      </logicalFolder>
     </logicalFolder>
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"

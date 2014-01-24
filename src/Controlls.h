@@ -65,15 +65,19 @@ public:
 				shaderHandler->resetShaders();
 				break;
 			case Qt::Key_Left:
-				cameraId--;
-				if(cameraId < 0) {
-					cameraId = bp->getCameras()->size()-1;
-				}
-				setCameraParams();
+				if(bp && !bp->getCameras()->empty()) {
+					cameraId--;
+					if(cameraId < 0) {
+						cameraId = bp->getCameras()->size()-1;
+					}
+					setCameraParams();
+					}
 				break;
 			case Qt::Key_Right:
-				cameraId = (cameraId + 1) % bp->getCameras()->size();
-				setCameraParams();
+				if(bp && !bp->getCameras()->empty()) {
+					cameraId = (cameraId + 1) % bp->getCameras()->size();
+					setCameraParams();
+				}
 				break;
 		}
 	}
@@ -107,7 +111,7 @@ public:
 	}	
 	
 	void setCameraParams() {
-		if(bp) {
+		if(bp && !bp->getCameras()->empty()) {
 			Log::d("using camera: %d", cameraId);
 			CameraPosition * cam = &bp->getCameras()->at(cameraId);
 			camera->setCameraParams(cam->rotate, cam->translate);	
@@ -115,7 +119,7 @@ public:
 	}
 	
 	void getProjectionMatrixForCamera(int cameraID, glm::mat4x3 &projection) const {
-		if(bp) {
+		if(bp && !bp->getCameras()->empty()) {
 			CameraPosition * cam = &bp->getCameras()->at(cameraID);
 			projection = glm::mat4x3(cam->rotate);
 			projection[3] = cam->translate;
@@ -127,7 +131,12 @@ public:
 	}
 	
 	void setCameraId(const int id) {
-		cameraId = id % bp->getCameras()->size();
+		if(bp && bp->getCameras()->size() == 0) {
+			cameraId = 0;
+		}
+		else {
+			cameraId = id % bp->getCameras()->size();
+		}
 	}
 	
 };
