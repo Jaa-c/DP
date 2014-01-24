@@ -37,12 +37,16 @@ public:
 	};
 	
 	Camera(int winWidth, int winHeight) : freeWalk(true) {
+		resetView();
+		resizeWindow(winWidth, winHeight);
+	}
+	
+	void resetView() {
 		cameraPos = glm::vec3(0.0f, 0.0f, 0.0f);
 		cameraRot = glm::vec3(0.0f, 0.0f, 0.0f);
 
 		cameraPosLag = cameraPos;
 		cameraRotLag = cameraRot;
-		resizeWindow(winWidth, winHeight);
 	}
 	
 	void resizeWindow(int winWidth, int winHeight) {

@@ -71,7 +71,8 @@ public:
 	
 	ObjectData(std::string file) : ok(true),
 		vaoID(GL_ID_NONE), texCoordsID(GL_ID_NONE), verticesID(GL_ID_NONE), 
-		normalsID(GL_ID_NONE), indicesID(GL_ID_NONE)
+		normalsID(GL_ID_NONE), indicesID(GL_ID_NONE), 
+		texture(NULL), pointData(NULL)
 	{
 		glm::vec3 offset;
 		try {

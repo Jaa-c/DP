@@ -33,6 +33,8 @@ void GLWidget::createScene(std::string geom, std::string bundler, std::string ph
 	if(object) delete object;
 	if(radar) delete radar;
 	
+	camera.resetView();
+	
 	textureHandler = new TextureHandler(photos);
 	bp.parseFile(bundler);
 	object = new ObjectData(geom);
