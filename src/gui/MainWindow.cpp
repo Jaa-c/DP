@@ -36,6 +36,7 @@ void MainWindow::initAppState() {
 void MainWindow::createActions() {
 	openAct = new QAction(tr("&Open"), this);
 	openAct->setStatusTip(tr("Open model"));
+	openAct->setShortcut(Qt::Key_O | Qt::CTRL);
 	connect(openAct, SIGNAL(triggered()), this, SLOT(openCB()));
 	
 	quitAct = new QAction(tr("&Quit"), this);
