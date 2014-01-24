@@ -22,6 +22,7 @@ int main(int argc, char** argv) {
 	MainWindow window(&app, width, height);
 	window.setWindowTitle(window_title);
 	window.resize(width, height);
+	window.move(200, 0);
     window.show();
 		
 	GLint texture_units = 0;

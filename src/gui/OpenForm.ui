@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>OpenForm</class>
+ <widget class="QDialog" name="OpenForm">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>386</width>
+    <height>255</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Open model</string>
+  </property>
+  <property name="modal">
+   <bool>true</bool>
+  </property>
+  <widget class="QDialogButtonBox" name="actionButtons">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>220</y>
+     <width>361</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Horizontal</enum>
+   </property>
+   <property name="standardButtons">
+    <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+   </property>
+  </widget>
+  <widget class="QWidget" name="layoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>361</width>
+     <height>191</height>
+    </rect>
+   </property>
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="3" column="1">
+     <widget class="QLabel" name="label_2">
+      <property name="text">
+       <string>Choose bundler file (*.out)</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="1">
+     <widget class="QLabel" name="label">
+      <property name="text">
+       <string>Choose geometry file (*.obj etc)</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
+      </property>
+     </widget>
+    </item>
+    <item row="6" column="2">
+     <widget class="QPushButton" name="bundlerButton">
+      <property name="text">
+       <string>Choose file</string>
+      </property>
+     </widget>
+    </item>
+    <item row="8" column="1">
+     <widget class="QLineEdit" name="photosPath"/>
+    </item>
+    <item row="2" column="1">
+     <widget class="QLineEdit" name="geometryPath"/>
+    </item>
+    <item row="6" column="1">
+     <widget class="QLineEdit" name="bundlerPath"/>
+    </item>
+    <item row="8" column="2">
+     <widget class="QPushButton" name="photosButton">
+      <property name="text">
+       <string>Choose folder</string>
+      </property>
+     </widget>
+    </item>
+    <item row="7" column="1">
+     <widget class="QLabel" name="label_3">
+      <property name="text">
+       <string>Choose folder with photos</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="2">
+     <widget class="QPushButton" name="geometryButton">
+      <property name="text">
+       <string>Choose file</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>actionButtons</sender>
+   <signal>accepted()</signal>
+   <receiver>OpenForm</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>248</x>
+     <y>254</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>157</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionButtons</sender>
+   <signal>rejected()</signal>
+   <receiver>OpenForm</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>316</x>
+     <y>260</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>286</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>geometryButton</sender>
+   <signal>clicked()</signal>
+   <receiver>OpenForm</receiver>
+   <slot>openGeometryCB()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>307</x>
+     <y>58</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>295</x>
+     <y>18</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>bundlerButton</sender>
+   <signal>clicked()</signal>
+   <receiver>OpenForm</receiver>
+   <slot>openBundlerCB()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>347</x>
+     <y>127</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>340</x>
+     <y>100</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>photosButton</sender>
+   <signal>clicked()</signal>
+   <receiver>OpenForm</receiver>
+   <slot>openPhotosCB()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>288</x>
+     <y>185</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>282</x>
+     <y>170</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>openGeometryCB()</slot>
+  <slot>openBundlerCB()</slot>
+  <slot>openPhotosCB()</slot>
+ </slots>
+</ui>

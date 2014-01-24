@@ -23,6 +23,7 @@ public:
 	virtual bool eventFilter(QObject *obj, QEvent *event);
 
 private slots:
+	void openCB();
 	void quitCB();
 	void texturingPassCB();
 	void bundlerPointsPassCB();
@@ -42,6 +43,7 @@ private:
 	QMenu *renderPass;
 	QMenu *view;
 	
+	QAction *openAct;
 	QAction *quitAct;
 	QAction *texturingRP;
 	QAction *bundlerPointsRP;

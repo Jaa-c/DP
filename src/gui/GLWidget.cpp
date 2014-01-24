@@ -59,8 +59,7 @@ GLWidget::~GLWidget() {
 	if(radar) delete radar;
 }
 
-void GLWidget::initializeGL()
-{
+void GLWidget::initializeGL() {
 	GLuint err = glewInit();
 	if (err != GLEW_OK) {
 		Log::e("Unable to init glew: %s", glewGetErrorString(err));
@@ -95,7 +94,6 @@ void GLWidget::paintGL() {
 	}
 	
 	
-	
 	gettimeofday(&end, NULL);
 	if(((end.tv_sec - start.tv_sec) * 1000 + (end.tv_usec - start.tv_usec)/1000.0) > 5000) {
 		Log::i("fps ~ %d", (int)(fps/5.0f + .5f));
@@ -103,10 +101,11 @@ void GLWidget::paintGL() {
 		gettimeofday(&start, NULL);
 	}
 	fps++;
+	
 	this->update(); //TODO
 }
 
-bool GLWidget::eventFilter(QObject *obj, QEvent *event) {
+bool GLWidget::eventFilter(QObject *, QEvent *event) {
 	
 	switch(event->type()) {
 		case QEvent::MouseMove:

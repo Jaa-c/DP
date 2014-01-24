@@ -1,6 +1,7 @@
 
 #include "MainWindow.h"
 #include "GLWidget.h"
+#include "OpenForm.h"
 
 #include <QApplication>
 #include <QtGui/QtGui>
@@ -22,7 +23,7 @@ MainWindow::MainWindow(QApplication *app, int w, int h) {
 	
 	app->installEventFilter(glWidget);	//only opengl controlls
 	app->installEventFilter(this);		//other application controlls
-	
+		
 	initAppState();
 }
 
@@ -33,6 +34,10 @@ void MainWindow::initAppState() {
 }
 
 void MainWindow::createActions() {
+	openAct = new QAction(tr("&Open"), this);
+	openAct->setStatusTip(tr("Open model"));
+	connect(openAct, SIGNAL(triggered()), this, SLOT(openCB()));
+	
 	quitAct = new QAction(tr("&Quit"), this);
 	quitAct->setStatusTip(tr("Exit application"));
 	connect(quitAct, SIGNAL(triggered()), this, SLOT(quitCB()));
@@ -51,7 +56,9 @@ void MainWindow::createActions() {
 }
 
 void MainWindow::createMenus() {
-	file = menuBar()->addMenu(tr("File"));
+	file = menuBar()->addMenu(tr("&File"));
+	file->addAction(openAct);
+	file->addSeparator();
 	file->addAction(quitAct);
 	
 	renderPass = menuBar()->addMenu(tr("&Render Passes"));
@@ -60,6 +67,11 @@ void MainWindow::createMenus() {
 	
 	view = menuBar()->addMenu(tr("&View"));
 	view->addAction(displayRadar);
+}
+
+void MainWindow::openCB() {
+	OpenForm form;
+	form.exec();
 }
 
  void MainWindow::quitCB() {
@@ -88,7 +100,7 @@ void MainWindow::displayRadarCB() {
 	glWidget->setDisplayRadar(displayRadar->isChecked());
 }
 
- bool MainWindow::eventFilter(QObject *obj, QEvent *event) {
+ bool MainWindow::eventFilter(QObject *, QEvent *event) {
 	switch(event->type()) {
 		case QEvent::KeyPress:
 		{
@@ -113,6 +125,7 @@ MainWindow::~MainWindow() {
 	if(renderPass) delete renderPass;
 	if(view) delete view;
 
+	if(openAct) delete openAct;
 	if(quitAct) delete quitAct;
 	if(texturingRP) delete texturingRP;
 	if(bundlerPointsRP) delete bundlerPointsRP;
