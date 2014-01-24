@@ -171,11 +171,12 @@ private:
 	void drawLine(glm::vec3 &point, glm::vec3 &dir) {
 		glm::vec2 d(dir.x, dir.z);
 		d = glm::normalize(d);
-		d *= 3;
+		d *= 15;
 		glm::vec2 p1(point.x, point.z);
-		glm::vec2 p2 = p1 + d;
-		if(cmpCoords(p1) && cmpCoords(p2)) {
+		//glm::vec2 p2 = p1 + d;
+		if(cmpCoords(p1)) {
 			glVertex2f(p1.x, p1.y);
+			glm::vec2 p2 = p1 + d;
 			glVertex2f(p2.x, p2.y);
 		}	
 	}

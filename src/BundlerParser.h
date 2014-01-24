@@ -63,7 +63,7 @@ public:
 		cameras.clear();
 		cameraDirections.clear();
 		
-		std::string error = "File:\n" + file + "\n doesn't seem to be bundler file";
+		std::string error = "File:\n" + file + "\n doesn't seem to be valid bundler file";
 		
 		std::ifstream infile(file.c_str());
 		std::string line;

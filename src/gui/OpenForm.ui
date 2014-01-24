@@ -37,7 +37,7 @@
     <rect>
      <x>10</x>
      <y>10</y>
-     <width>361</width>
+     <width>2147</width>
      <height>191</height>
     </rect>
    </property>
@@ -45,7 +45,7 @@
     <item row="3" column="1">
      <widget class="QLabel" name="label_2">
       <property name="text">
-       <string>Choose bundler file (*.out)</string>
+       <string>Choose bundler output file (*.out)</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
