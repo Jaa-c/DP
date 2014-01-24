@@ -87,6 +87,10 @@ public:
 		readDirectory(folder);
 		data.resize(jpgPaths.size()); //same number of images as cameras
 		
+		if(data.empty()) {
+			throw "No jpg or raw images in folder:\n " + folder;
+		}
+		
 		/// convert all the jpegs to raws for faster loading
 		createRaws(); 
 		

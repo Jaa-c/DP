@@ -30,7 +30,7 @@ void OpenForm::acceptCB() {
 	{
 		this->close();
 		
-		QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+		QApplication::setOverrideCursor(Qt::WaitCursor);
 		
 		glWidget->createScene(
 			openForm.geometryPath->text().toStdString(), 
@@ -51,14 +51,16 @@ void OpenForm::rejectCB() {
 }
 
 void OpenForm::openGeometryCB() {
-	QString fileName = QFileDialog::getOpenFileName(this, tr("Open geometry file"), "",tr("Geometry file"));
+	QString fileName = QFileDialog::getOpenFileName(this, tr("Open geometry file"), "",
+		tr("3D geometry file (*.obj *.dae *.blend *.3ds *.ase *.ifc *.xgl *.zgl *.ply *.dxf *.lwo *.lws *.lxo *.stl *.x *.ac *.ms3d *.cob *.scn)"));
+	
 	if(!fileName.isEmpty()) {
 		openForm.geometryPath->setText(fileName);
 	}
 }
 
 void OpenForm::openBundlerCB() {
-	QString fileName = QFileDialog::getOpenFileName(this, tr("Open bundler file"), "",tr("Bundler out file (*.out)"));
+	QString fileName = QFileDialog::getOpenFileName(this, tr("Open bundler file"), "", tr("Bundler out file (*.out)"));
 	if(!fileName.isEmpty()) {
 		openForm.bundlerPath->setText(fileName);
 	}

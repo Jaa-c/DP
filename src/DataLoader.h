@@ -53,7 +53,7 @@ public:
 		
 		if(scene == NULL) {
 			Log::e("[ModelLoader] unable to load file: %s", importer.GetErrorString());
-			throw importer.GetErrorString();
+			throw "Error while loading file \n" + file + "\n" + importer.GetErrorString();
 		}
 		
 		const aiMesh* mesh = scene->mMeshes[0];

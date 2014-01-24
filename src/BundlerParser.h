@@ -63,16 +63,20 @@ public:
 		cameras.clear();
 		cameraDirections.clear();
 		
+		std::string error = "File:\n" + file + "\n doesn't seem to be bundler file";
+		
 		std::ifstream infile(file.c_str());
 		std::string line;
 		
 		if(std::getline(infile, line)) {
 			if(trim(line) != "# Bundle file v0.3") {
 				Log::e("<BundlerParser> Doesn't seem to be bundler file");
+				throw error;
 				return;
 			}
 		}
 		else {
+			throw error;
 			return;
 		}
 		
@@ -81,6 +85,7 @@ public:
 		
 		int c, p;
 		if(!(ss >> c && ss >> p)) {
+			throw error;
 			return;
 		}
 		cameraDirections.reserve(c);

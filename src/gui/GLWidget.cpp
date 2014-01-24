@@ -5,7 +5,7 @@
 #include "../RenderPass/BundlerPointsRenderPass.h"
 
 #include <QtGui/QMouseEvent>
-
+#include <QtGui/QMessageBox>
 #include <ctime>
 #include <sys/time.h>
 
@@ -35,17 +35,24 @@ void GLWidget::createScene(std::string geom, std::string bundler, std::string ph
 	
 	camera.resetView();
 	
-	textureHandler = new TextureHandler(photos);
-	bp.parseFile(bundler);
-	object = new ObjectData(geom);
-	object->mvm = glm::rotate(object->mvm, 180.f, glm::vec3(1.0f, 0.0f, 0.0f));
-	object->pointData = new PointData(&bp, object->getCentroid());
-	object->texture = new Texture(GL_TEXTURE_RECTANGLE, 0);
+	try {
 	
-	radar = new Radar(object, &camera, controlls);
-	radar->setPosition(10, 10, 250, 250);
-	
-	glClearColor(0.4f, 0.4f, 0.7f, 0);
+		textureHandler = new TextureHandler(photos);
+		bp.parseFile(bundler);
+		object = new ObjectData(geom);
+		object->mvm = glm::rotate(object->mvm, 180.f, glm::vec3(1.0f, 0.0f, 0.0f));
+		object->pointData = new PointData(&bp, object->getCentroid());
+		object->texture = new Texture(GL_TEXTURE_RECTANGLE, 0);
+
+		radar = new Radar(object, &camera, controlls);
+		radar->setPosition(10, 10, 250, 250);
+
+		glClearColor(0.4f, 0.4f, 0.7f, 0);
+	}
+	catch(std::string msg) {
+		QMessageBox messageBox;
+		messageBox.critical(0, "Error!", msg.c_str());
+	}
 }
 
 void GLWidget::addRenderPass(RenderPass::RenderPassType pass) {
