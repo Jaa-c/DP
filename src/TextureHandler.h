@@ -49,7 +49,7 @@ class TextureHandler {
 		}
 	}
 	
-	void createRaws() {
+	void createRaws(std::function<void(int)> progress = NULL) {
 		if(rawPaths.size() != jpgPaths.size()) {
 			for(uint i = 0; i < jpgPaths.size(); ++i) {
 				const std::string name = folder + jpgPaths[i];
@@ -64,6 +64,9 @@ class TextureHandler {
 					binaryFile.write((char *) &id.image[0], 3 * sizeof(rgb) * id.image.size());
 					binaryFile.close();
 					Log::i("Created file: " + name + RAW);
+					if(progress) {
+						progress((int) (100 / (float) jpgPaths.size() + .5f));
+					}
 				}
 			}
 		}
@@ -71,19 +74,22 @@ class TextureHandler {
 	}
 	
 	/// this expects that every jpg has raw equivalent
-	void loadImages() {
+	void loadImages(std::function<void(int)> progress = NULL) {
 		assert(rawPaths.size() == jpgPaths.size());
 		for(uint i = 0; i < rawPaths.size(); ++i) {
 			const std::string name = folder + rawPaths[i] + RAW;
 			ImageData& id = data[i];
 			if(id.image.empty()) {
 				DataLoader::loadRAW(name, id.image, id.size.x, id.size.y);
+				if(progress) {
+					progress((int) (100 / (float) rawPaths.size() + .5f));
+				}
 			}
 		}
 	}
 	
 public:
-	TextureHandler(const std::string folder) : folder(folder + "/") {
+	TextureHandler(const std::string folder, std::function<void(int)> progress = NULL) : folder(folder + "/") {
 		readDirectory(folder);
 		data.resize(jpgPaths.size()); //same number of images as cameras
 		
@@ -92,11 +98,11 @@ public:
 		}
 		
 		/// convert all the jpegs to raws for faster loading
-		createRaws(); 
+		createRaws(progress); 
 		
 		/// preload all images
 		/// this is not neccessary, image can be loaded on demand
-		loadImages(); 
+		loadImages(progress); 
 	}
 	
 	ImageData * getImage(uint camID) {

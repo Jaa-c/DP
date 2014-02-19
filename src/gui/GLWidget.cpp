@@ -6,95 +6,18 @@
 
 #include <QtGui/QMouseEvent>
 #include <QtGui/QMessageBox>
+#include <QtGui/QProgressDialog>
+#include <QApplication>
+
 #include <ctime>
 #include <sys/time.h>
 
-GLWidget::GLWidget(const QGLFormat& format, int w, int h, QWidget* parent) : 
-	QGLWidget(format, parent),
-	camera(w, h), 
-	renderer(&camera),
-	textureHandler(NULL), 
-	radar(NULL), 
-	object(NULL),
-	displayRadar(false)
-{		
-	controlls = &Controlls::getInstance();
-	controlls->setPointers(&bp, &camera, &shaderHandler);
-	controlls->setCameraId(0);
-	
-	fps = 0;
-    srand((unsigned)std::time(0)); 
-	gettimeofday(&start, NULL);
-}
-
-void GLWidget::createScene(std::string geom, std::string bundler, std::string photos) {
-	
-	if(textureHandler) delete textureHandler;
-	if(object) delete object;
-	if(radar) delete radar;
-	
-	camera.resetView();
-	
-	try {
-	
-		textureHandler = new TextureHandler(photos);
-		bp.parseFile(bundler);
-		object = new ObjectData(geom);
-		object->mvm = glm::rotate(object->mvm, 180.f, glm::vec3(1.0f, 0.0f, 0.0f));
-		object->pointData = new PointData(&bp, object->getCentroid());
-		object->texture = new Texture(GL_TEXTURE_RECTANGLE, 0);
-
-		radar = new Radar(object, &camera, controlls);
-		radar->setPosition(10, 10, 250, 250);
-
-		glClearColor(0.4f, 0.4f, 0.7f, 0);
-	}
-	catch(std::string msg) {
-		QMessageBox messageBox;
-		messageBox.critical(0, "Error!", msg.c_str());
-	}
-}
-
-void GLWidget::addRenderPass(RenderPass::RenderPassType pass) {
-	switch(pass) {
-		case RenderPass::TEXTURING_PASS:
-			renderPassHandler.add(RenderPass::TEXTURING_PASS, new TexturingRenderPass(&renderer, &shaderHandler));
-			break;
-		case RenderPass::BUNDLER_POINTS_PASS:
-			renderPassHandler.add(RenderPass::BUNDLER_POINTS_PASS, new BundlerPointsRenderPass(&renderer, &shaderHandler));
-			break;
-		default:
-			return;
-	}
-}
-
-void GLWidget::removeRenderPass(RenderPass::RenderPassType pass) {
-	renderPassHandler.remove(pass);
-}
-
-GLWidget::~GLWidget() {
-	if(object) delete object;
-	if(radar) delete radar;
-	if(textureHandler) delete textureHandler;
-}
-
-void GLWidget::initializeGL() {
-	GLuint err = glewInit();
-	if (err != GLEW_OK) {
-		Log::e("Unable to init glew: %s", glewGetErrorString(err));
-		return;
-	}
-
-	// Set OpenGL state variables
-	glClearColor(0.7f, 0.7f, 0.7f, 0);
-}
 
 void GLWidget::paintGL() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	
 	if(object) {
-		
 		camera.updateCameraViewMatrix();
 
 		if(!camera.isCameraStatic()) {
@@ -113,7 +36,6 @@ void GLWidget::paintGL() {
 		if(displayRadar) {
 			radar->draw();
 		}
-	
 	}
 	
 	gettimeofday(&end, NULL);
@@ -125,6 +47,50 @@ void GLWidget::paintGL() {
 	fps++;
 	
 	this->update(); //TODO
+}
+
+void GLWidget::createScene(std::string geom, std::string bundler, std::string photos) {
+	
+	if(textureHandler) delete textureHandler;
+	if(object) delete object;
+	if(radar) delete radar;
+	
+	camera.resetView();
+	
+	QProgressDialog progress( "Loading", QString(), 0, 100, this); //progress.setWindowModality(Qt::WindowModal)));
+	progress.show();
+	
+	auto prgcb = [&progress] (int p) {progress.setValue(progress.value() + p); QApplication::processEvents();};
+	
+	try {
+		textureHandler = new TextureHandler(photos, prgcb);
+		bp.parseFile(bundler);
+		object = new ObjectData(geom);
+		object->mvm = glm::rotate(object->mvm, 180.f, glm::vec3(1.0f, 0.0f, 0.0f));
+		object->pointData = new PointData(&bp, object->getCentroid());
+		object->texture = new Texture(GL_TEXTURE_RECTANGLE, 0);
+
+		radar = new Radar(object, &camera, controlls);
+		radar->setPosition(10, 10, 250, 250);
+
+		glClearColor(0.4f, 0.4f, 0.7f, 0);
+	}
+	catch(std::string msg) {
+		QMessageBox messageBox;
+		messageBox.critical(0, "Error!", msg.c_str());
+	}
+	progress.close();
+}
+
+void GLWidget::initializeGL() {
+	GLuint err = glewInit();
+	if (err != GLEW_OK) {
+		Log::e("Unable to init glew: %s", glewGetErrorString(err));
+		return;
+	}
+
+	// Set OpenGL state variables
+	glClearColor(0.7f, 0.7f, 0.7f, 0);
 }
 
 bool GLWidget::eventFilter(QObject *, QEvent *event) {
@@ -153,6 +119,24 @@ bool GLWidget::eventFilter(QObject *, QEvent *event) {
 	return false;
 }
 
+void GLWidget::addRenderPass(RenderPass::RenderPassType pass) {
+	switch(pass) {
+		case RenderPass::TEXTURING_PASS:
+			renderPassHandler.add(RenderPass::TEXTURING_PASS, new TexturingRenderPass(&renderer, &shaderHandler));
+			break;
+		case RenderPass::BUNDLER_POINTS_PASS:
+			renderPassHandler.add(RenderPass::BUNDLER_POINTS_PASS, new BundlerPointsRenderPass(&renderer, &shaderHandler));
+			break;
+		default:
+			return;
+	}
+}
+
+
+void GLWidget::removeRenderPass(RenderPass::RenderPassType pass) {
+	renderPassHandler.remove(pass);
+}
+
 
 void GLWidget::resizeGL(int w, int h) {
 	controlls->windowSizeChangedImpl(w, h);
@@ -160,4 +144,29 @@ void GLWidget::resizeGL(int w, int h) {
 
 void GLWidget::setDisplayRadar(bool value) {
 	displayRadar = value;
+}
+
+
+GLWidget::GLWidget(const QGLFormat& format, int w, int h, QWidget* parent) : 
+	QGLWidget(format, parent),
+	camera(w, h), 
+	renderer(&camera),
+	textureHandler(NULL), 
+	radar(NULL), 
+	object(NULL),
+	displayRadar(false)
+{		
+	controlls = &Controlls::getInstance();
+	controlls->setPointers(&bp, &camera, &shaderHandler);
+	controlls->setCameraId(0);
+	
+	fps = 0;
+    srand((unsigned)std::time(0)); 
+	gettimeofday(&start, NULL);
+}
+
+GLWidget::~GLWidget() {
+	if(object) delete object;
+	if(radar) delete radar;
+	if(textureHandler) delete textureHandler;
 }
