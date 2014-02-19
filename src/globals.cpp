@@ -1,6 +1,7 @@
 
 #include <GL/glew.h>
 #include <iostream>
+#include "Log.h"
 
 void glError(const char *file, int line) {
 	GLenum err(glGetError());

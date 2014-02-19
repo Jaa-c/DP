@@ -1,4 +1,4 @@
-
+#include "../globals.h"
 #include "GLWidget.h"
 
 #include "../RenderPass/TexturingRenderPass.h"
@@ -50,17 +50,19 @@ void GLWidget::paintGL() {
 }
 
 void GLWidget::createScene(std::string geom, std::string bundler, std::string photos) {
-	
-	if(textureHandler) delete textureHandler;
-	if(object) delete object;
-	if(radar) delete radar;
+	DELETE(textureHandler);
+	DELETE(object);
+	DELETE(radar);
 	
 	camera.resetView();
 	
-	QProgressDialog progress( "Loading", QString(), 0, 100, this); //progress.setWindowModality(Qt::WindowModal)));
+	QProgressDialog progress( "Loading", "", 0, 100, this);
 	progress.show();
 	
-	auto prgcb = [&progress] (int p) {progress.setValue(progress.value() + p); QApplication::processEvents();};
+	auto prgcb = [&progress] (int p) {
+		progress.setValue(progress.value() + p); 
+		QApplication::processEvents();
+	};
 	
 	try {
 		textureHandler = new TextureHandler(photos, prgcb);
@@ -166,7 +168,7 @@ GLWidget::GLWidget(const QGLFormat& format, int w, int h, QWidget* parent) :
 }
 
 GLWidget::~GLWidget() {
-	if(object) delete object;
-	if(radar) delete radar;
-	if(textureHandler) delete textureHandler;
+	DELETE(textureHandler);
+	DELETE(object);
+	DELETE(radar);
 }
