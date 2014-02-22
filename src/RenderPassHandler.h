@@ -21,14 +21,14 @@ public:
 	RenderPassHandler() {}
 	
 	~RenderPassHandler() {
-	for(PassList::const_iterator it = passes.begin(); it != passes.end(); ++it) {
-			if((*it).second) delete (*it).second;	
+	for(auto &it : passes) {
+			if(it.second) delete it.second;	
 		}
 	}
 	
 	void draw(ObjectData *object) {
-		for(PassList::const_iterator it = passes.begin(); it != passes.end(); ++it) {
-			(*it).second->draw(object);		
+		for(auto &it : passes) {
+			it.second->draw(object);		
 		}
 	}
 	

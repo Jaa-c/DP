@@ -32,8 +32,8 @@ public:
 		glm::vec2 ylimits(10e5, -10e5);
 		glm::vec4 tmp;
 		
-		for(auto it = cameras.begin(); it != cameras.end(); ++it) {
-			tmp = object->mvm * glm::vec4((*it), 1.0f);
+		for(auto &cam : cameras) {
+			tmp = object->mvm * glm::vec4(cam, 1.0f);
 			if(tmp.x < xlimits.s) xlimits.s = tmp.x;
 			if(tmp.x > xlimits.t) xlimits.t = tmp.x;
 			if(tmp.z < ylimits.s) ylimits.s = tmp.z;
@@ -121,8 +121,8 @@ public:
 
 		glColor4f(0.3f, 0.3f, 0.3f, 1.0f);
 		glBegin(GL_POINTS);
-			for(auto it = cameras.begin(); it != cameras.end(); ++it) {
-				tmp = object->mvm * glm::vec4((*it), 1.0f);
+			for(auto &cam : cameras) {
+				tmp = object->mvm * glm::vec4(cam, 1.0f);
 				drawPoint(tmp);
 			}
 		glEnd();

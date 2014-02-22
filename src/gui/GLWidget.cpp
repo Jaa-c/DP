@@ -56,7 +56,7 @@ void GLWidget::createScene(std::string geom, std::string bundler, std::string ph
 	
 	camera.resetView();
 	
-	QProgressDialog progress( "Loading", "", 0, 100, this);
+	QProgressDialog progress("Loading data", "", 0, 100, this);
 	progress.show();
 	
 	auto prgcb = [&progress] (int p) {
