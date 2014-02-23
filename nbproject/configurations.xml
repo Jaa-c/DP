@@ -14,7 +14,7 @@
         <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/RenderPass/RenderPass.h</itemPath>
         <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/RenderPass/TexturingRenderPass.h</itemPath>
       </logicalFolder>
-      <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/BundlerParser.h</itemPath>
+      <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/BundlerData.h</itemPath>
       <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/Camera.h</itemPath>
       <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/Controlls.h</itemPath>
       <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/DataLoader.h</itemPath>
@@ -83,7 +83,7 @@
           </incDir>
         </ccTool>
       </compileType>
-      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/BundlerParser.h"
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/BundlerData.h"
             ex="false"
             tool="3"
             flavor2="0">
@@ -224,7 +224,7 @@
           <developmentMode>5</developmentMode>
         </asmTool>
       </compileType>
-      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/BundlerParser.h"
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/BundlerData.h"
             ex="false"
             tool="3"
             flavor2="0">
@@ -361,7 +361,7 @@
           </incDir>
         </ccTool>
       </compileType>
-      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/BundlerParser.h"
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/BundlerData.h"
             ex="false"
             tool="3"
             flavor2="0">

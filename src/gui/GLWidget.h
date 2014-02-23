@@ -9,7 +9,7 @@
 #define	GLWIDGET_H
 
 
-#include "../BundlerParser.h"
+#include "../BundlerData.h"
 #include "../ShaderHandler.h"
 #include "../Camera.h"
 #include "../ObjectData.h"

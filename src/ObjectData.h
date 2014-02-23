@@ -10,7 +10,7 @@
 
 #include "DataLoader.h"
 #include "Texture.h"
-#include "BundlerParser.h"
+#include "BundlerData.h"
 
 struct PointData {
 private:

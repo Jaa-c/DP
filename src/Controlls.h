@@ -8,7 +8,7 @@
 #ifndef CONTROLLS_H
 #define	CONTROLLS_H
 
-#include "BundlerParser.h"
+#include "BundlerData.h"
 #include "glm/core/type_mat4x4.hpp"
 
 #include <Qt> 
