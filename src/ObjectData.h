@@ -18,7 +18,7 @@ private:
 	Points cameraPos;
 	
 	/// viewing directions of cameras
-	const Points *cameraDirections;
+	Points cameraDirections;
 	
 	/// Point data from bundler
 	Points *pointData;
@@ -29,10 +29,10 @@ public:
 		for(auto &cam : *bp->getCameras()) {
 			glm::vec3 v = -1 * glm::transpose(cam.rotate) * cam.translate;
 			cameraPos.push_back(v);
+			cameraDirections.push_back(cam.getDirection());
 		}
 		cameraPos.push_back(centroid);
 		pointData = bp->getPoints();
-		cameraDirections = &bp->getCamerDirections();
 	}
 	
 	const Points &getPointData() const {
@@ -40,8 +40,9 @@ public:
 	}
 	
 	const Points &getCameraDirections() const {
-		return *cameraDirections;
+		return cameraDirections;
 	}
+	
 	const Points &getCameraPositions() const {
 		return cameraPos;
 	}

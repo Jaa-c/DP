@@ -27,12 +27,16 @@ struct CameraPosition {
 	
 	float focalL;
 	float d1, d2;
+	
+	//maybe just save this
+	glm::vec3 getDirection() const {
+		return glm::vec3(-rotate[2]);
+	}
 };
 
 class BundlerData {
 	std::vector<glm::vec3> points;
 	std::vector<CameraPosition> cameras;
-	std::vector<glm::vec3> cameraDirections;
 	
 	// trim from start
     static inline std::string &ltrim(std::string &s) {
@@ -61,7 +65,6 @@ public:
 	void parseFile(std::string file) {
 		points.clear();
 		cameras.clear();
-		cameraDirections.clear();
 		
 		std::string error = "File:\n" + file + "\n doesn't seem to be valid bundler file";
 		
@@ -88,7 +91,6 @@ public:
 			throw error;
 			return;
 		}
-		cameraDirections.reserve(c);
 		cameras.reserve(c);
 		Log::i("[BundlerData] Loading %d cameras, %d points", c, p);
 		//parse cameras
@@ -122,7 +124,6 @@ public:
 			cam.Rt[3][2] = cam.translate[2];
 			
 			cameras.push_back(cam);
-			cameraDirections.push_back(glm::vec3(-cam.rotate[2]));
 		}
 		
 		//parse points
@@ -155,21 +156,22 @@ public:
 		glm::vec2 ndir(dir.x, dir.z);
 		ndir = glm::normalize(ndir);
 		const glm::mat4 vecMat = glm::inverse(glm::transpose(mvm));
-		auto max = std::max_element(cameraDirections.begin(), cameraDirections.end(), 
-			[ndir, vecMat] (const glm::vec3 &a, const glm::vec3 &b) -> bool {
-				const glm::vec4 ta = vecMat * glm::vec4(a, 1.0f);
-				const glm::vec4 tb = vecMat * glm::vec4(b, 1.0f);
+		auto max = std::max_element(cameras.begin(), cameras.end(), 
+			[ndir, vecMat] (const CameraPosition &a, const CameraPosition &b) -> bool {
+				const glm::vec4 ta = vecMat * glm::vec4(a.getDirection(), 1.0f);
+				const glm::vec4 tb = vecMat * glm::vec4(b.getDirection(), 1.0f);
 				const glm::vec2 v1(ta.x, ta.z);
 				const glm::vec2 v2(tb.x, tb.z);
 				return glm::dot(glm::normalize(v1), ndir) < glm::dot(glm::normalize(v2), ndir);
 			}
 		);
-		return std::distance(cameraDirections.begin(), max);
+		return std::distance(cameras.begin(), max);
 	}
 	
-	const std::vector<glm::vec3> &getCamerDirections() const {
-		return cameraDirections;
-	}
+//	std::vector<int> && getClosestCameras(const glm::vec3 & dir, const glm::mat4 &mvm, const int count) const {
+//	
+//		
+//	}
 	
 };
 
