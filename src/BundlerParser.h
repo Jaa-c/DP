@@ -29,7 +29,7 @@ struct CameraPosition {
 	float d1, d2;
 };
 
-class BundlerParser {
+class BundlerData {
 	std::vector<glm::vec3> points;
 	std::vector<CameraPosition> cameras;
 	std::vector<glm::vec3> cameraDirections;
@@ -53,8 +53,8 @@ class BundlerParser {
 	
 	
 public:
-	BundlerParser() {}
-	~BundlerParser() {}
+	BundlerData() {}
+	~BundlerData() {}
 	
 	typedef std::vector<CameraPosition> Cameras;
 	
@@ -90,7 +90,7 @@ public:
 		}
 		cameraDirections.reserve(c);
 		cameras.reserve(c);
-		Log::i("[BundlerParser] Loading %d cameras, %d points", c, p);
+		Log::i("[BundlerData] Loading %d cameras, %d points", c, p);
 		//parse cameras
 		for(int i = 0; i < c; ++i) {
 			std::getline(infile, line);

@@ -15,7 +15,7 @@
 
 class Controlls {
 private:
-	BundlerParser * bp;
+	BundlerData * bp;
 	Camera *camera;
 	ShaderHandler *shaderHandler;
 	
@@ -34,7 +34,7 @@ public:
 		return instance;
 	}
 
-	void setPointers(BundlerParser * bp, Camera * cam, ShaderHandler *shaderHandler) {
+	void setPointers(BundlerData * bp, Camera * cam, ShaderHandler *shaderHandler) {
 		this->bp = bp;
 		this->camera = cam;
 		this->shaderHandler = shaderHandler;

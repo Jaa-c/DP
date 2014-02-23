@@ -22,12 +22,12 @@ void GLWidget::paintGL() {
 
 		if(!camera.isCameraStatic()) {
 			glm::vec3 viewDir = object->getCentroidPosition() + camera.getCameraPosition();
-			const int cam = bp.getClosestCamera(viewDir, object->mvm);
+			const int cam = bundlerData.getClosestCamera(viewDir, object->mvm);
 			controlls->setCameraId(cam);
 		}
 
 		const int camID = controlls->getCameraId();
-		object->texture->setImage(textureHandler->getImage(camID), &bp.getCameras()->at(camID));
+		object->texture->setImage(textureHandler->getImage(camID), &bundlerData.getCameras()->at(camID));
 
 		renderPassHandler.draw(object);
 
@@ -66,10 +66,10 @@ void GLWidget::createScene(std::string geom, std::string bundler, std::string ph
 	
 	try {
 		textureHandler = new TextureHandler(photos, prgcb);
-		bp.parseFile(bundler);
+		bundlerData.parseFile(bundler);
 		object = new ObjectData(geom);
 		object->mvm = glm::rotate(object->mvm, 180.f, glm::vec3(1.0f, 0.0f, 0.0f));
-		object->pointData = new PointData(&bp, object->getCentroid());
+		object->pointData = new PointData(&bundlerData, object->getCentroid());
 		object->texture = new Texture(GL_TEXTURE_RECTANGLE, 0);
 
 		radar = new Radar(object, &camera, controlls);
@@ -159,7 +159,7 @@ GLWidget::GLWidget(const QGLFormat& format, int w, int h, QWidget* parent) :
 	displayRadar(false)
 {		
 	controlls = &Controlls::getInstance();
-	controlls->setPointers(&bp, &camera, &shaderHandler);
+	controlls->setPointers(&bundlerData, &camera, &shaderHandler);
 	controlls->setCameraId(0);
 	
 	fps = 0;

@@ -25,7 +25,7 @@ private:
 public:
 	GLuint pointsVBO;
 	GLuint camPosVBO;
-	PointData(BundlerParser *bp, glm::vec3 centroid) : pointsVBO(GL_ID_NONE), camPosVBO(GL_ID_NONE) {
+	PointData(BundlerData *bp, glm::vec3 centroid) : pointsVBO(GL_ID_NONE), camPosVBO(GL_ID_NONE) {
 		for(auto &cam : *bp->getCameras()) {
 			glm::vec3 v = -1 * glm::transpose(cam.rotate) * cam.translate;
 			cameraPos.push_back(v);

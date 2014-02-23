@@ -27,7 +27,7 @@ class GLWidget : public QGLWidget
 {
 	Q_OBJECT
 	
-	BundlerParser bp;
+	BundlerData bundlerData;
 	RenderPassHandler renderPassHandler;
 	Camera camera;
 	ShaderHandler shaderHandler;

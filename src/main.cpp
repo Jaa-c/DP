@@ -5,7 +5,6 @@
  * Created on 27. září 2013, 19:23
  */
 
-#include <GL/glew.h>
 #include "globals.h"
 #include "gui/GLWidget.h"
 #include "gui/MainWindow.h"
