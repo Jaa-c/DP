@@ -8,14 +8,13 @@
 #ifndef CONTROLLS_H
 #define	CONTROLLS_H
 
-#include "BundlerData.h"
+#include "io/BundlerData.h"
 #include "glm/core/type_mat4x4.hpp"
 
 #include <Qt> 
 
 class Controlls {
 private:
-	BundlerData * bp;
 	Camera *camera;
 	ShaderHandler *shaderHandler;
 	
@@ -34,8 +33,7 @@ public:
 		return instance;
 	}
 
-	void setPointers(BundlerData * bp, Camera * cam, ShaderHandler *shaderHandler) {
-		this->bp = bp;
+	void setPointers(Camera * cam, ShaderHandler *shaderHandler) {
 		this->camera = cam;
 		this->shaderHandler = shaderHandler;
 	}
@@ -64,21 +62,21 @@ public:
 			case 'R':// recompile shaders
 				shaderHandler->resetShaders();
 				break;
-			case Qt::Key_Left:
-				if(bp && !bp->getCameras()->empty()) {
-					cameraId--;
-					if(cameraId < 0) {
-						cameraId = bp->getCameras()->size()-1;
-					}
-					setCameraParams();
-					}
-				break;
-			case Qt::Key_Right:
-				if(bp && !bp->getCameras()->empty()) {
-					cameraId = (cameraId + 1) % bp->getCameras()->size();
-					setCameraParams();
-				}
-				break;
+//			case Qt::Key_Left:
+//				if(bp && !bp->getCameras()->empty()) {
+//					cameraId--;
+//					if(cameraId < 0) {
+//						cameraId = bp->getCameras()->size()-1;
+//					}
+//					setCameraParams();
+//					}
+//				break;
+//			case Qt::Key_Right:
+//				if(bp && !bp->getCameras()->empty()) {
+//					cameraId = (cameraId + 1) % bp->getCameras()->size();
+//					setCameraParams();
+//				}
+//				break;
 		}
 	}
 	
@@ -111,19 +109,19 @@ public:
 	}	
 	
 	void setCameraParams() {
-		if(bp && !bp->getCameras()->empty()) {
-			Log::d("using camera: %d", cameraId);
-			CameraPosition * cam = &bp->getCameras()->at(cameraId);
-			camera->setCameraParams(cam->rotate, cam->translate);	
-		}
+//		if(bp && !bp->getCameras()->empty()) {
+//			Log::d("using camera: %d", cameraId);
+//			CameraPosition * cam = &bp->getCameras()->at(cameraId);
+//			camera->setCameraParams(cam->rotate, cam->translate);	
+//		}
 	}
 	
 	void getProjectionMatrixForCamera(int cameraID, glm::mat4x3 &projection) const {
-		if(bp && !bp->getCameras()->empty()) {
-			CameraPosition * cam = &bp->getCameras()->at(cameraID);
-			projection = glm::mat4x3(cam->rotate);
-			projection[3] = cam->translate;
-		}
+//		if(bp && !bp->getCameras()->empty()) {
+//			CameraPosition * cam = &bp->getCameras()->at(cameraID);
+//			projection = glm::mat4x3(cam->rotate);
+//			projection[3] = cam->translate;
+//		}
 	}
 	
 	int getCameraId() const {
@@ -131,12 +129,12 @@ public:
 	}
 	
 	void setCameraId(const int id) {
-		if(bp && bp->getCameras()->size() == 0) {
-			cameraId = 0;
-		}
-		else {
-			cameraId = id % bp->getCameras()->size();
-		}
+//		if(bp && bp->getCameras()->size() == 0) {
+//			cameraId = 0;
+//		}
+//		else {
+//			cameraId = id % bp->getCameras()->size();
+//		}
 	}
 	
 };

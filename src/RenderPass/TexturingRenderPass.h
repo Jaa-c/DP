@@ -44,7 +44,7 @@ public:
 		assert(programID != GL_ID_NONE);
 		glUseProgram(programID);
 		
-		CameraPosition * c = object->texture->cameraPosition;
+		const CameraPosition * c = &object->texture->photo->camera;
 		glUniformMatrix4fv(textureRTLoc, 1, GL_FALSE, &c->Rt[0][0]);
 		glUniform2iv(textureSizeLoc, 1, &object->texture->getSize()[0]);
 		glUniform1f(textureFLLoc, c->focalL);

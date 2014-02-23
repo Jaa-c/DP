@@ -9,15 +9,18 @@
         <itemPath>src/gui/MainWindow.h</itemPath>
         <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/gui/OpenForm.h</itemPath>
       </logicalFolder>
+      <logicalFolder name="f2" displayName="io" projectFiles="true">
+        <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/io/BundlerData.h</itemPath>
+        <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/io/DataLoader.h</itemPath>
+        <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/io/ImageLoader.h</itemPath>
+      </logicalFolder>
       <logicalFolder name="RenderPass" displayName="RenderPass" projectFiles="true">
         <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/RenderPass/BundlerPointsRenderPass.h</itemPath>
         <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/RenderPass/RenderPass.h</itemPath>
         <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/RenderPass/TexturingRenderPass.h</itemPath>
       </logicalFolder>
-      <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/BundlerData.h</itemPath>
       <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/Camera.h</itemPath>
       <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/Controlls.h</itemPath>
-      <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/DataLoader.h</itemPath>
       <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/Log.h</itemPath>
       <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/ObjectData.h</itemPath>
       <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/Radar.h</itemPath>
@@ -83,22 +86,12 @@
           </incDir>
         </ccTool>
       </compileType>
-      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/BundlerData.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
       <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/Camera.h"
             ex="false"
             tool="3"
             flavor2="0">
       </item>
       <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/Controlls.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/DataLoader.h"
             ex="false"
             tool="3"
             flavor2="0">
@@ -189,6 +182,21 @@
             flavor2="0">
       </item>
       <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/gui/OpenForm.ui"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/io/BundlerData.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/io/DataLoader.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/io/ImageLoader.h"
             ex="false"
             tool="3"
             flavor2="0">
@@ -224,22 +232,12 @@
           <developmentMode>5</developmentMode>
         </asmTool>
       </compileType>
-      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/BundlerData.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
       <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/Camera.h"
             ex="false"
             tool="3"
             flavor2="0">
       </item>
       <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/Controlls.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/DataLoader.h"
             ex="false"
             tool="3"
             flavor2="0">
@@ -330,6 +328,21 @@
             flavor2="0">
       </item>
       <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/gui/OpenForm.ui"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/io/BundlerData.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/io/DataLoader.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/io/ImageLoader.h"
             ex="false"
             tool="3"
             flavor2="0">
@@ -361,22 +374,12 @@
           </incDir>
         </ccTool>
       </compileType>
-      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/BundlerData.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
       <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/Camera.h"
             ex="false"
             tool="3"
             flavor2="0">
       </item>
       <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/Controlls.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/DataLoader.h"
             ex="false"
             tool="3"
             flavor2="0">
@@ -467,6 +470,21 @@
             flavor2="0">
       </item>
       <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/gui/OpenForm.ui"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/io/BundlerData.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/io/DataLoader.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/io/ImageLoader.h"
             ex="false"
             tool="3"
             flavor2="0">

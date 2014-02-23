@@ -9,34 +9,23 @@
 #define	BUNDLERPARSER_H
 
 #include <vector>
+#include <set>
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <algorithm>
 #include <stdexcept>
 
-#include "Log.h"
+#include "../Log.h"
+#include "../TextureHandler.h"
 
 #include "glm/glm.hpp"
 #include "glm/core/type_mat3x3.hpp"
 
-struct CameraPosition {
-	glm::mat3 rotate;
-	glm::vec3 translate;
-	glm::mat4 Rt;
-	
-	float focalL;
-	float d1, d2;
-	
-	//maybe just save this
-	glm::vec3 getDirection() const {
-		return glm::vec3(-rotate[2]);
-	}
-};
 
 class BundlerData {
 	std::vector<glm::vec3> points;
-	std::vector<CameraPosition> cameras;
+	const std::string file;
 	
 	// trim from start
     static inline std::string &ltrim(std::string &s) {
@@ -57,14 +46,12 @@ class BundlerData {
 	
 	
 public:
-	BundlerData() {}
+	BundlerData(std::string file) : file(file) {}
 	~BundlerData() {}
-	
-	typedef std::vector<CameraPosition> Cameras;
-	
-	void parseFile(std::string file) {
+			
+	std::vector<CameraPosition> parseFile() {
 		points.clear();
-		cameras.clear();
+		std::vector<CameraPosition> cameras;
 		
 		std::string error = "File:\n" + file + "\n doesn't seem to be valid bundler file";
 		
@@ -75,12 +62,10 @@ public:
 			if(trim(line) != "# Bundle file v0.3") {
 				Log::e("<BundlerParser> Doesn't seem to be bundler file");
 				throw error;
-				return;
 			}
 		}
 		else {
 			throw error;
-			return;
 		}
 		
 		std::getline(infile, line);
@@ -89,7 +74,6 @@ public:
 		int c, p;
 		if(!(ss >> c && ss >> p)) {
 			throw error;
-			return;
 		}
 		cameras.reserve(c);
 		Log::i("[BundlerData] Loading %d cameras, %d points", c, p);
@@ -141,38 +125,12 @@ public:
 			
 			points.push_back(point);
 		}
-					
+		return cameras;	
 	}
-	
-	Cameras * getCameras() {
-		return &cameras;
-	}
-	
-	std::vector<glm::vec3> * getPoints()  {
-		return &points;
-	}
-	
-	int getClosestCamera(const glm::vec3 & dir, const glm::mat4 &mvm) const {
-		glm::vec2 ndir(dir.x, dir.z);
-		ndir = glm::normalize(ndir);
-		const glm::mat4 vecMat = glm::inverse(glm::transpose(mvm));
-		auto max = std::max_element(cameras.begin(), cameras.end(), 
-			[ndir, vecMat] (const CameraPosition &a, const CameraPosition &b) -> bool {
-				const glm::vec4 ta = vecMat * glm::vec4(a.getDirection(), 1.0f);
-				const glm::vec4 tb = vecMat * glm::vec4(b.getDirection(), 1.0f);
-				const glm::vec2 v1(ta.x, ta.z);
-				const glm::vec2 v2(tb.x, tb.z);
-				return glm::dot(glm::normalize(v1), ndir) < glm::dot(glm::normalize(v2), ndir);
-			}
-		);
-		return std::distance(cameras.begin(), max);
-	}
-	
-//	std::vector<int> && getClosestCameras(const glm::vec3 & dir, const glm::mat4 &mvm, const int count) const {
-//	
-//		
-//	}
-	
+		
+	std::vector<glm::vec3> &getPoints()  {
+		return points;
+	}	
 };
 
 #endif	/* BUNDLERPARSER_H */

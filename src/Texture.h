@@ -8,24 +8,22 @@
 #ifndef TEXTURE_H
 #define	TEXTURE_H
 
+#include <GL/glew.h>
 
-struct ImageData {
-	Image image;
-	glm::ivec2 size;
-};
+#include "TextureHandler.h"
 
 
-class Texture {
-	ImageData* image;
+class CameraPosition;
+
+class Texture {	
+public:	
+	const Photo * photo;
 	
-public:
 	const GLenum target;
 	const GLuint unit;
 	
 	GLuint textureID;
 	GLuint samplerID;
-	
-	CameraPosition *cameraPosition;
 	
 	Texture(const GLenum target, const GLuint unit) : target(target), unit(unit), 
 		textureID(GL_ID_NONE), samplerID(GL_ID_NONE) 
@@ -33,27 +31,26 @@ public:
 	
 	}
 	
-	void setImage(ImageData *image, CameraPosition *cp) {
-		if(image && image != this->image) {
+	void setImage(const Photo * photo) {
+		if(&photo->image != &this->photo->image) {
 			if(glIsTexture(textureID)) { //TODO
 				glDeleteTextures(1, &textureID);
 			}
 			textureID = GL_ID_NONE;
-			this->image = image;
-			cameraPosition = cp;
+			this->photo = photo;
 		}
 	};
 	
 	const rgb *getImageStart() const {
-		if(image->image.empty()) {
+		if(photo->image.empty()) {
 			return NULL;
 		}
-		assert(image->image.size() == (uint) image->size.x * image->size.y * 3);
-		return &image->image[0];
+		assert(photo->image.size() == (uint) photo->size.x * photo->size.y * 3);
+		return &photo->image[0];
 	}
 	
 	const glm::ivec2 getSize() const {
-		return image->size;
+		return photo->size;
 	}
 	
 };

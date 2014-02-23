@@ -8,6 +8,8 @@
 #ifndef MODELLOADER_H
 #define	MODELLOADER_H
 
+#include "../globals.h"
+
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>

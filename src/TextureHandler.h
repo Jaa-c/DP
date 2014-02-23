@@ -2,120 +2,111 @@
  * File:   TextureHandler.h
  * Author: jaa
  *
- * Created on 24. listopad 2013, 14:59
+ * Created on 23. únor 2014, 22:42
  */
 
 #ifndef TEXTUREHANDLER_H
 #define	TEXTUREHANDLER_H
 
-#include <dirent.h>
-#include <sys/types.h>
-#include <fstream>
 
-#include "DataLoader.h"
-#include "Texture.h"
+#include <vector>
+#include <set>
+
+#include "glm/glm.hpp"
+#include "glm/core/type_mat3x3.hpp"
+#include "io/BundlerData.h"
+#include "io/ImageLoader.h"
+
+struct CameraPosition {
+	glm::mat3 rotate;
+	glm::vec3 translate;
+	glm::mat4 Rt;
+	
+	float focalL;
+	float d1, d2;
+	
+	//maybe just save this
+	glm::vec3 getDirection() const {
+		return glm::vec3(-rotate[2]);
+	}
+};
+
+struct Photo {
+	const Image image;
+	const glm::ivec2 size;
+	const CameraPosition camera;
+	
+	Photo(const Image image, const glm::ivec2 size, const CameraPosition camera) :
+	image(image), size(size), camera(camera) {}
+};
 
 class TextureHandler {
-	std::vector<ImageData> data;
-	std::vector<std::string> jpgPaths;
-	std::vector<std::string> rawPaths;
+	std::vector<Photo> photos;
 	
-	const std::string folder;
-	
-	const std::string RAW = "raw";
-	const std::string JPG = "jpg";
-	
-	void readDirectory(const std::string& path) {
-		dirent* de;
-		DIR* dp;
-		dp = opendir(path.c_str());
-		if (dp) {
-			while ((de = readdir(dp)) != NULL) {
-				std::string name(de->d_name);
-					if(name.length() > 3) {
-					std::string sfx = name.substr(name.length()-3, 3);
-					std::transform(sfx.begin(), sfx.end(), sfx.begin(), ::tolower);
-					if(sfx == JPG) {
-						jpgPaths.push_back(name.substr(0, name.length()-3));
-					}
-					if(sfx == RAW) {
-						rawPaths.push_back(name.substr(0, name.length()-3));
-					}
-				}
-			}
-			closedir(dp);
-			std::sort(jpgPaths.begin(), jpgPaths.end());
-			std::sort(rawPaths.begin(), rawPaths.end());
-		}
-	}
-	
-	void createRaws(std::function<void(int)> progress = NULL) {
-		if(rawPaths.size() != jpgPaths.size()) {
-			for(uint i = 0; i < jpgPaths.size(); ++i) {
-				const std::string name = folder + jpgPaths[i];
-				ImageData& id = data[i];
-				if(!DataLoader::fileExists(name + RAW)) {
-					DataLoader::loadJPEG(name + JPG, id.image, id.size.x, id.size.y);
-					assert(id.image.size() == (uint) id.size.x * id.size.y * 3);
-					
-					//this should be probbably elsewhere
-					std::fstream binaryFile(name + RAW, std::ios::out | std::ios::binary);
-					binaryFile.write((char *) &id.size.x, sizeof(id.size));
-					binaryFile.write((char *) &id.image[0], 3 * sizeof(rgb) * id.image.size());
-					binaryFile.close();
-					Log::i("Created file: " + name + RAW);
-					if(progress) {
-						progress((int) (100 / (float) jpgPaths.size() + .5f));
-					}
-				}
-			}
-		}
-		rawPaths = jpgPaths;
-	}
-	
-	/// this expects that every jpg has raw equivalent
-	void loadImages(std::function<void(int)> progress = NULL) {
-		assert(rawPaths.size() == jpgPaths.size());
-		for(uint i = 0; i < rawPaths.size(); ++i) {
-			const std::string name = folder + rawPaths[i] + RAW;
-			ImageData& id = data[i];
-			if(id.image.empty()) {
-				DataLoader::loadRAW(name, id.image, id.size.x, id.size.y);
-				if(progress) {
-					progress((int) (100 / (float) rawPaths.size() + .5f));
-				}
-			}
-		}
-	}
-	
-public:
-	TextureHandler(const std::string folder, std::function<void(int)> progress = NULL) : folder(folder + "/") {
-		readDirectory(folder);
-		data.resize(jpgPaths.size()); //same number of images as cameras
+public:	
+	TextureHandler(const std::vector<CameraPosition> &cameras, const std::vector<ImageData> &imgData) {
 		
-		if(data.empty()) {
-			throw "No jpg or raw images in folder:\n " + folder;
+		photos.reserve(cameras.size());
+		for(int i = 0; i < cameras.size(); ++i) {
+			const ImageData *img = &imgData.at(i);
+			const CameraPosition *cp = &cameras.at(i);
+			photos.push_back(Photo(img->image, img->size, *cp));
 		}
 		
-		/// convert all the jpegs to raws for faster loading
-		createRaws(progress); 
-		
-		/// preload all images
-		/// this is not neccessary, image can be loaded on demand
-		loadImages(progress); 
 	}
 	
-	ImageData * getImage(uint camID) {
-		if(camID > data.size()) {
-			return NULL;
-		}
-		ImageData& id = data[camID];
-		if(id.image.empty()) {
-			DataLoader::loadJPEG(folder + jpgPaths[camID] + JPG, id.image, id.size.x, id.size.y);
-			assert(id.image.size() == (uint) id.size.x * id.size.y * 3);
-		}
-		return &data[camID];
+	const std::vector<Photo> & getPhotos() const {
+		return photos;
 	}
+	
+	const Photo * getClosestCamera(const glm::vec3 & dir, const glm::mat4 &mvm) const {
+		glm::vec2 ndir(dir.x, dir.z);
+		ndir = glm::normalize(ndir);
+		const glm::mat4 vecMat = glm::inverse(glm::transpose(mvm));
+		auto max = std::max_element(photos.begin(), photos.end(), 
+			[ndir, vecMat] (const Photo &a, const Photo &b) -> bool {
+				const glm::vec4 ta = vecMat * glm::vec4(a.camera.getDirection(), 1.0f);
+				const glm::vec4 tb = vecMat * glm::vec4(b.camera.getDirection(), 1.0f);
+				const glm::vec2 v1(ta.x, ta.z);
+				const glm::vec2 v2(tb.x, tb.z);
+				return glm::dot(glm::normalize(v1), ndir) < glm::dot(glm::normalize(v2), ndir);
+			}
+		);
+		return &(*max);
+	}
+	
+	//TODO, this is just a simple version
+	std::set<const Photo*> getClosestCameras(const glm::vec3 & dir, const glm::mat4 &mvm, const uint count) const {
+		std::set<const Photo*> result;
+		glm::vec2 ndir(dir.x, dir.z);
+		ndir = glm::normalize(ndir);
+		const glm::mat4 vecMat = glm::inverse(glm::transpose(mvm));
+		
+		for(auto &p : photos) {
+			if(result.empty()) {
+				result.insert(&p);
+				continue;
+			}
+			
+			const glm::vec4 ta = vecMat * glm::vec4(p.camera.getDirection(), 1.0f);
+			const glm::vec4 tb = vecMat * glm::vec4((*result.begin())->camera.getDirection(), 1.0f);
+			const glm::vec2 v1(ta.x, ta.z);
+			const glm::vec2 v2(tb.x, tb.z);
+			
+			if (result.size() < count || glm::dot(glm::normalize(v1), ndir) < glm::dot(glm::normalize(v2), ndir)) {
+				result.insert(&p);
+				while (result.size() > count) {
+					if (result.size() == count) {
+						break;
+					}
+					result.erase(result.begin());
+				}
+			}
+		 }
+		
+		return result;
+	}
+
 
 };
 

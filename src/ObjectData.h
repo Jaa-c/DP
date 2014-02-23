@@ -8,9 +8,9 @@
 #ifndef OBJECTDATA_H
 #define	OBJECTDATA_H
 
-#include "DataLoader.h"
+#include "io/DataLoader.h"
 #include "Texture.h"
-#include "BundlerData.h"
+#include "TextureHandler.h"
 
 struct PointData {
 private:
@@ -21,22 +21,22 @@ private:
 	Points cameraDirections;
 	
 	/// Point data from bundler
-	Points *pointData;
+	Points pointData;
 public:
 	GLuint pointsVBO;
 	GLuint camPosVBO;
-	PointData(BundlerData *bp, glm::vec3 centroid) : pointsVBO(GL_ID_NONE), camPosVBO(GL_ID_NONE) {
-		for(auto &cam : *bp->getCameras()) {
-			glm::vec3 v = -1 * glm::transpose(cam.rotate) * cam.translate;
+	PointData(const std::vector<Photo> &photos, const Points &bundlerPoints, glm::vec3 centroid) : pointsVBO(GL_ID_NONE), camPosVBO(GL_ID_NONE) {
+		for(auto &photo : photos) {
+			glm::vec3 v = -1 * glm::transpose(photo.camera.rotate) * photo.camera.translate;
 			cameraPos.push_back(v);
-			cameraDirections.push_back(cam.getDirection());
+			cameraDirections.push_back(photo.camera.getDirection());
 		}
 		cameraPos.push_back(centroid);
-		pointData = bp->getPoints();
+		pointData = bundlerPoints;
 	}
 	
 	const Points &getPointData() const {
-		return *pointData;
+		return pointData;
 	}
 	
 	const Points &getCameraDirections() const {

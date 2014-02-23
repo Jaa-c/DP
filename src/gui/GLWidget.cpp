@@ -3,6 +3,7 @@
 
 #include "../RenderPass/TexturingRenderPass.h"
 #include "../RenderPass/BundlerPointsRenderPass.h"
+#include "../io/ImageLoader.h"
 
 #include <QtGui/QMouseEvent>
 #include <QtGui/QMessageBox>
@@ -19,22 +20,26 @@ void GLWidget::paintGL() {
 	
 	if(object) {
 		camera.updateCameraViewMatrix();
-
+		glm::vec3 viewDir = object->getCentroidPosition() + camera.getCameraPosition();
+		const Photo * photo = textureHandler->getClosestCamera(viewDir, object->mvm);
+		
 		if(!camera.isCameraStatic()) {
-			glm::vec3 viewDir = object->getCentroidPosition() + camera.getCameraPosition();
-			const int cam = bundlerData.getClosestCamera(viewDir, object->mvm);
-			controlls->setCameraId(cam);
+			
+			//controlls->setCameraId(cam);
 		}
 
 		const int camID = controlls->getCameraId();
-		object->texture->setImage(textureHandler->getImage(camID), &bundlerData.getCameras()->at(camID));
+		object->texture->setImage(photo);
 
 		renderPassHandler.draw(object);
 
 		glUseProgram(0);
+		
+		
+		std::set<const Photo*> camerasUsed = textureHandler->getClosestCameras(viewDir, object->mvm, 4);
 
 		if(displayRadar) {
-			radar->draw();
+			radar->draw(camerasUsed);
 		}
 	}
 	
@@ -65,11 +70,13 @@ void GLWidget::createScene(std::string geom, std::string bundler, std::string ph
 	};
 	
 	try {
-		textureHandler = new TextureHandler(photos, prgcb);
-		bundlerData.parseFile(bundler);
+		ImageLoader imgLoader(photos, prgcb);
+		BundlerData bundlerData(bundler);
+		textureHandler = new TextureHandler(bundlerData.parseFile(), imgLoader.getData());
+		
 		object = new ObjectData(geom);
 		object->mvm = glm::rotate(object->mvm, 180.f, glm::vec3(1.0f, 0.0f, 0.0f));
-		object->pointData = new PointData(&bundlerData, object->getCentroid());
+		object->pointData = new PointData(textureHandler->getPhotos(), bundlerData.getPoints(), object->getCentroid());
 		object->texture = new Texture(GL_TEXTURE_RECTANGLE, 0);
 
 		radar = new Radar(object, &camera, controlls);
@@ -159,7 +166,7 @@ GLWidget::GLWidget(const QGLFormat& format, int w, int h, QWidget* parent) :
 	displayRadar(false)
 {		
 	controlls = &Controlls::getInstance();
-	controlls->setPointers(&bundlerData, &camera, &shaderHandler);
+	controlls->setPointers(&camera, &shaderHandler);
 	controlls->setCameraId(0);
 	
 	fps = 0;

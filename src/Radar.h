@@ -10,6 +10,8 @@
 
 #include <GL/glew.h>
 
+#include "TextureHandler.h"
+
 class Radar {
 
 	ObjectData *object;
@@ -63,7 +65,7 @@ public:
 	/**
 	 * Please don't look any further.
      */
-	void draw() {
+	void draw(std::set<const Photo*> &camerasUsed) {
 		GLint viewport[4] = {0};
 		glGetIntegerv(GL_VIEWPORT, viewport);
 
@@ -136,10 +138,11 @@ public:
 			drawPoint(c);
 
 			glColor4f(0.0f, 0.0f, 1.0f, 1.0f);
-			const int camID = controlls->getCameraId();
-			tmp =  object->mvm * glm::vec4(cameras[camID], 1.0f);
-			
-			drawPoint(tmp);
+			for(auto photo : camerasUsed) {
+				glm::vec3 v = -1 * glm::transpose(photo->camera.rotate) * photo->camera.translate;
+				tmp =  object->mvm * glm::vec4(v, 1.0f);
+				drawPoint(tmp);
+			}			
 		glEnd();
 
 		glMatrixMode(GL_PROJECTION);

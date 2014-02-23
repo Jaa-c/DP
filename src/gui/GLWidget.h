@@ -9,11 +9,11 @@
 #define	GLWIDGET_H
 
 
-#include "../BundlerData.h"
+#include "../io/BundlerData.h"
 #include "../ShaderHandler.h"
 #include "../Camera.h"
 #include "../ObjectData.h"
-#include "../TextureHandler.h"
+#include "../io/ImageLoader.h"
 #include "../Renderer.h"
 #include "../Controlls.h"
 #include "../Radar.h"
@@ -27,7 +27,6 @@ class GLWidget : public QGLWidget
 {
 	Q_OBJECT
 	
-	BundlerData bundlerData;
 	RenderPassHandler renderPassHandler;
 	Camera camera;
 	ShaderHandler shaderHandler;
