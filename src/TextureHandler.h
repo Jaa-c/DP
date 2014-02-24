@@ -14,7 +14,7 @@
 
 #include "glm/glm.hpp"
 #include "glm/core/type_mat3x3.hpp"
-#include "io/BundlerData.h"
+#include "io/BundlerParser.h"
 #include "io/ImageLoader.h"
 
 struct CameraPosition {

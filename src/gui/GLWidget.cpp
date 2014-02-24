@@ -66,7 +66,7 @@ void GLWidget::createScene(std::string geom, std::string bundler, std::string ph
 	
 	try {
 		ImageLoader imgLoader(photos, prgcb);
-		BundlerData bundlerData(bundler);
+		BundlerParser bundlerData(bundler);
 		textureHandler = new TextureHandler(bundlerData.parseFile(), imgLoader.getData());
 		
 		object = new ObjectData(geom);

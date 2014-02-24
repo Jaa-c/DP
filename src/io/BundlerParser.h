@@ -23,7 +23,7 @@
 #include "glm/core/type_mat3x3.hpp"
 
 
-class BundlerData {
+class BundlerParser {
 	std::vector<glm::vec3> points;
 	const std::string file;
 	
@@ -46,8 +46,8 @@ class BundlerData {
 	
 	
 public:
-	BundlerData(std::string file) : file(file) {}
-	~BundlerData() {}
+	BundlerParser(std::string file) : file(file) {}
+	~BundlerParser() {}
 			
 	std::vector<CameraPosition> parseFile() {
 		points.clear();

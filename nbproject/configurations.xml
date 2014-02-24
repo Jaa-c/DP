@@ -10,7 +10,7 @@
         <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/gui/OpenForm.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f2" displayName="io" projectFiles="true">
-        <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/io/BundlerData.h</itemPath>
+        <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/io/BundlerParser.h</itemPath>
         <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/io/DataLoader.h</itemPath>
         <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/io/ImageLoader.h</itemPath>
       </logicalFolder>
@@ -186,7 +186,7 @@
             tool="3"
             flavor2="0">
       </item>
-      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/io/BundlerData.h"
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/io/BundlerParser.h"
             ex="false"
             tool="3"
             flavor2="0">
@@ -332,7 +332,7 @@
             tool="3"
             flavor2="0">
       </item>
-      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/io/BundlerData.h"
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/io/BundlerParser.h"
             ex="false"
             tool="3"
             flavor2="0">
@@ -474,7 +474,7 @@
             tool="3"
             flavor2="0">
       </item>
-      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/io/BundlerData.h"
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/io/BundlerParser.h"
             ex="false"
             tool="3"
             flavor2="0">
