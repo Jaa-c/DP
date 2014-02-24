@@ -100,7 +100,7 @@ public:
 		cameraRot[1] += diffX * rotateSpeed;
 	}
 	
-	void setCameraParams(glm::mat3 &rot, glm::vec3 &trans) {
+	void setCameraParams(const glm::mat3 &rot, const glm::vec3 &trans) {
 		g_CameraViewMatrix[3] = glm::vec4(trans, 1.0f);
 		
 		g_CameraViewMatrix[0] = glm::vec4(rot[0], 0.0f);

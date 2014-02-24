@@ -17,6 +17,7 @@ class Controlls {
 private:
 	Camera *camera;
 	ShaderHandler *shaderHandler;
+	const std::vector<Photo> *photos;
 	
 	bool mouseRotationEnabled;
 	int ox, oy;
@@ -36,6 +37,10 @@ public:
 	void setPointers(Camera * cam, ShaderHandler *shaderHandler) {
 		this->camera = cam;
 		this->shaderHandler = shaderHandler;
+	}
+	
+	void setPhotos(const std::vector<Photo> * photos) {
+		this->photos = photos;
 	}
 	
 	/**
@@ -62,21 +67,21 @@ public:
 			case 'R':// recompile shaders
 				shaderHandler->resetShaders();
 				break;
-//			case Qt::Key_Left:
-//				if(bp && !bp->getCameras()->empty()) {
-//					cameraId--;
-//					if(cameraId < 0) {
-//						cameraId = bp->getCameras()->size()-1;
-//					}
-//					setCameraParams();
-//					}
-//				break;
-//			case Qt::Key_Right:
-//				if(bp && !bp->getCameras()->empty()) {
-//					cameraId = (cameraId + 1) % bp->getCameras()->size();
-//					setCameraParams();
-//				}
-//				break;
+			case Qt::Key_Left:
+				if(photos) {
+					cameraId--;
+					if(cameraId < 0) {
+						cameraId = photos->size()-1;
+					}
+					setCameraParams();
+					}
+				break;
+			case Qt::Key_Right:
+				if(photos) {
+					cameraId = (cameraId + 1) % photos->size();
+					setCameraParams();
+				}
+				break;
 		}
 	}
 	
@@ -109,32 +114,15 @@ public:
 	}	
 	
 	void setCameraParams() {
-//		if(bp && !bp->getCameras()->empty()) {
-//			Log::d("using camera: %d", cameraId);
-//			CameraPosition * cam = &bp->getCameras()->at(cameraId);
-//			camera->setCameraParams(cam->rotate, cam->translate);	
-//		}
+		if(photos) {
+			Log::d("using camera: %d", cameraId);
+			const CameraPosition * cam = &photos->at(cameraId).camera;
+			camera->setCameraParams(cam->rotate, cam->translate);	
+		}
 	}
 	
-	void getProjectionMatrixForCamera(int cameraID, glm::mat4x3 &projection) const {
-//		if(bp && !bp->getCameras()->empty()) {
-//			CameraPosition * cam = &bp->getCameras()->at(cameraID);
-//			projection = glm::mat4x3(cam->rotate);
-//			projection[3] = cam->translate;
-//		}
-	}
-	
-	int getCameraId() const {
-		return cameraId;
-	}
-	
-	void setCameraId(const int id) {
-//		if(bp && bp->getCameras()->size() == 0) {
-//			cameraId = 0;
-//		}
-//		else {
-//			cameraId = id % bp->getCameras()->size();
-//		}
+	const Photo * getCurrentPhoto() {
+		return &photos->at(cameraId);
 	}
 	
 };

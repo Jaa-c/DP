@@ -47,7 +47,7 @@ public:
 	TextureHandler(const std::vector<CameraPosition> &cameras, const std::vector<ImageData> &imgData) {
 		
 		photos.reserve(cameras.size());
-		for(int i = 0; i < cameras.size(); ++i) {
+		for(uint i = 0; i < cameras.size(); ++i) {
 			const ImageData *img = &imgData.at(i);
 			const CameraPosition *cp = &cameras.at(i);
 			photos.push_back(Photo(img->image, img->size, *cp));
@@ -59,21 +59,22 @@ public:
 		return photos;
 	}
 	
-	const Photo * getClosestCamera(const glm::vec3 & dir, const glm::mat4 &mvm) const {
-		glm::vec2 ndir(dir.x, dir.z);
-		ndir = glm::normalize(ndir);
-		const glm::mat4 vecMat = glm::inverse(glm::transpose(mvm));
-		auto max = std::max_element(photos.begin(), photos.end(), 
-			[ndir, vecMat] (const Photo &a, const Photo &b) -> bool {
-				const glm::vec4 ta = vecMat * glm::vec4(a.camera.getDirection(), 1.0f);
-				const glm::vec4 tb = vecMat * glm::vec4(b.camera.getDirection(), 1.0f);
-				const glm::vec2 v1(ta.x, ta.z);
-				const glm::vec2 v2(tb.x, tb.z);
-				return glm::dot(glm::normalize(v1), ndir) < glm::dot(glm::normalize(v2), ndir);
-			}
-		);
-		return &(*max);
-	}
+	
+//	const Photo * getClosestCamera(const glm::vec3 & dir, const glm::mat4 &mvm) const {
+//		glm::vec2 ndir(dir.x, dir.z);
+//		ndir = glm::normalize(ndir);
+//		const glm::mat4 vecMat = glm::inverse(glm::transpose(mvm));
+//		auto max = std::max_element(photos.begin(), photos.end(), 
+//			[ndir, vecMat] (const Photo &a, const Photo &b) -> bool {
+//				const glm::vec4 ta = vecMat * glm::vec4(a.camera.getDirection(), 1.0f);
+//				const glm::vec4 tb = vecMat * glm::vec4(b.camera.getDirection(), 1.0f);
+//				const glm::vec2 v1(ta.x, ta.z);
+//				const glm::vec2 v2(tb.x, tb.z);
+//				return glm::dot(glm::normalize(v1), ndir) < glm::dot(glm::normalize(v2), ndir);
+//			}
+//		);
+//		return &(*max);
+//	}
 	
 	//TODO, this is just a simple version
 	std::set<const Photo*> getClosestCameras(const glm::vec3 & dir, const glm::mat4 &mvm, const uint count) const {
@@ -93,7 +94,7 @@ public:
 			const glm::vec2 v1(ta.x, ta.z);
 			const glm::vec2 v2(tb.x, tb.z);
 			
-			if (result.size() < count || glm::dot(glm::normalize(v1), ndir) < glm::dot(glm::normalize(v2), ndir)) {
+			if (result.size() < count || glm::dot(glm::normalize(v1), ndir) > glm::dot(glm::normalize(v2), ndir)) {
 				result.insert(&p);
 				while (result.size() > count) {
 					if (result.size() == count) {

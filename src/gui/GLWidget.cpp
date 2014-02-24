@@ -13,30 +13,25 @@
 #include <ctime>
 #include <sys/time.h>
 
-
 void GLWidget::paintGL() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	
 	if(object) {
 		camera.updateCameraViewMatrix();
-		glm::vec3 viewDir = object->getCentroidPosition() + camera.getCameraPosition();
-		const Photo * photo = textureHandler->getClosestCamera(viewDir, object->mvm);
+		glm::vec3 viewDir = object->getCentroidPosition() + camera.getCameraPosition();		
+		std::set<const Photo*> camerasUsed = textureHandler->getClosestCameras(viewDir, object->mvm, 4);
 		
-		if(!camera.isCameraStatic()) {
-			
-			//controlls->setCameraId(cam);
+		if(camera.isCameraStatic()) {
+			object->texture->setImage(controlls->getCurrentPhoto());
 		}
-
-		const int camID = controlls->getCameraId();
-		object->texture->setImage(photo);
+		else {
+			object->texture->setImage(*camerasUsed.begin());
+		}
 
 		renderPassHandler.draw(object);
 
 		glUseProgram(0);
-		
-		
-		std::set<const Photo*> camerasUsed = textureHandler->getClosestCameras(viewDir, object->mvm, 4);
 
 		if(displayRadar) {
 			radar->draw(camerasUsed);
@@ -81,6 +76,8 @@ void GLWidget::createScene(std::string geom, std::string bundler, std::string ph
 
 		radar = new Radar(object, &camera, controlls);
 		radar->setPosition(10, 10, 250, 250);
+		
+		controlls->setPhotos(&textureHandler->getPhotos());
 
 		glClearColor(0.4f, 0.4f, 0.7f, 0);
 	}
@@ -167,7 +164,6 @@ GLWidget::GLWidget(const QGLFormat& format, int w, int h, QWidget* parent) :
 {		
 	controlls = &Controlls::getInstance();
 	controlls->setPointers(&camera, &shaderHandler);
-	controlls->setCameraId(0);
 	
 	fps = 0;
     srand((unsigned)std::time(0)); 
