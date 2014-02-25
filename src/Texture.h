@@ -19,20 +19,28 @@ class Texture {
 public:	
 	const Photo * photo;
 	
-	const GLenum target;
-	const GLuint unit;
+	GLenum target; //todo: should be const
+	GLuint unit; //todo: should be const
 	
 	GLuint textureID;
 	GLuint samplerID;
 	
-	Texture(const GLenum target, const GLuint unit) : target(target), unit(unit), 
+	Texture(const GLenum target, const GLuint unit) : 
+		photo(NULL), target(target), unit(unit), 
+		textureID(GL_ID_NONE), samplerID(GL_ID_NONE) 
+	{
+	
+	}
+	
+	Texture(const GLenum target, const GLuint unit, const Photo * photo) : 
+		photo(photo), target(target), unit(unit), 
 		textureID(GL_ID_NONE), samplerID(GL_ID_NONE) 
 	{
 	
 	}
 	
 	void setImage(const Photo * photo) {
-		if(&photo->image != &this->photo->image) {
+		if(photo->ID != this->photo->ID) {
 			if(glIsTexture(textureID)) { //TODO
 				glDeleteTextures(1, &textureID);
 			}
@@ -42,7 +50,7 @@ public:
 	};
 	
 	const rgb *getImageStart() const {
-		if(photo->image.empty()) {
+		if(!photo || photo->image.empty()) {
 			return NULL;
 		}
 		assert(photo->image.size() == (uint) photo->size.x * photo->size.y * 3);
@@ -50,6 +58,9 @@ public:
 	}
 	
 	const glm::ivec2 getSize() const {
+		if(!photo) {
+			return glm::ivec2(0, 0);
+		}
 		return photo->size;
 	}
 	

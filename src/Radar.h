@@ -65,7 +65,7 @@ public:
 	/**
 	 * Please don't look any further.
      */
-	void draw(std::set<const Photo*> &camerasUsed) {
+	void draw(std::vector<Texture> *camerasUsed) {
 		GLint viewport[4] = {0};
 		glGetIntegerv(GL_VIEWPORT, viewport);
 
@@ -138,8 +138,8 @@ public:
 			drawPoint(c);
 
 			glColor4f(0.0f, 0.0f, 1.0f, 1.0f);
-			for(auto photo : camerasUsed) {
-				glm::vec3 v = -1 * glm::transpose(photo->camera.rotate) * photo->camera.translate;
+			for(auto &tex : *camerasUsed) {
+				glm::vec3 v = -1 * glm::transpose(tex.photo->camera.rotate) * tex.photo->camera.translate;
 				tmp =  object->mvm * glm::vec4(v, 1.0f);
 				drawPoint(tmp);
 			}			

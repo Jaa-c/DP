@@ -8,7 +8,9 @@ in block{
 	smooth vec2 v_texCoords;
 } In;
 
-uniform sampler2DRect texture0;
+uniform int u_textureCount;
+
+uniform sampler2DRect texture0[32];
 uniform ivec2	u_TextureSize;
 
 layout(location = 0) out vec4 a_FragColor;
@@ -27,7 +29,7 @@ void main() {
 	
 	float specular = pow(max(dot(R, E), 0.0f), 256.0f);
 
-	vec3 col = texture2DRect(texture0, In.v_texCoords).rgb;
+	vec3 col = texture2DRect(texture0[0], In.v_texCoords).rgb;
 	
 	vec3 color = min(col * diffuse + specular * .3f, 1.0f);
 	

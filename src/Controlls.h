@@ -17,7 +17,7 @@ class Controlls {
 private:
 	Camera *camera;
 	ShaderHandler *shaderHandler;
-	const std::vector<Photo> *photos;
+	const std::vector<Photo> *photos; //to be removed!!
 	
 	bool mouseRotationEnabled;
 	int ox, oy;

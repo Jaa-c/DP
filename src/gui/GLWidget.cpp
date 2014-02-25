@@ -20,13 +20,13 @@ void GLWidget::paintGL() {
 	if(object) {
 		camera.updateCameraViewMatrix();
 		glm::vec3 viewDir = object->getCentroidPosition() + camera.getCameraPosition();		
-		std::set<const Photo*> camerasUsed = textureHandler->getClosestCameras(viewDir, object->mvm, 4);
+		textureHandler->updateTextures(viewDir, object->mvm, 4);
 		
 		if(camera.isCameraStatic()) {
-			object->texture->setImage(controlls->getCurrentPhoto());
+			//todo!!
 		}
 		else {
-			object->texture->setImage(*camerasUsed.begin());
+			object->textures = &textureHandler->getTextures();
 		}
 
 		renderPassHandler.draw(object);
@@ -34,7 +34,7 @@ void GLWidget::paintGL() {
 		glUseProgram(0);
 
 		if(displayRadar) {
-			radar->draw(camerasUsed);
+			radar->draw(&textureHandler->getTextures());
 		}
 	}
 	
@@ -72,7 +72,6 @@ void GLWidget::createScene(std::string geom, std::string bundler, std::string ph
 		object = new ObjectData(geom);
 		object->mvm = glm::rotate(object->mvm, 180.f, glm::vec3(1.0f, 0.0f, 0.0f));
 		object->pointData = new PointData(textureHandler->getPhotos(), bundlerData.getPoints(), object->getCentroid());
-		object->texture = new Texture(GL_TEXTURE_RECTANGLE, 0);
 
 		radar = new Radar(object, &camera, controlls);
 		radar->setPosition(10, 10, 250, 250);

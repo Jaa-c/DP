@@ -11,6 +11,7 @@
 
 #include <vector>
 #include <set>
+#include <unordered_map>
 
 #include "glm/glm.hpp"
 #include "glm/core/type_mat3x3.hpp"
@@ -32,16 +33,23 @@ struct CameraPosition {
 };
 
 struct Photo {
+	const uint ID;
 	const Image image;
 	const glm::ivec2 size;
 	const CameraPosition camera;
 	
-	Photo(const Image image, const glm::ivec2 size, const CameraPosition camera) :
-	image(image), size(size), camera(camera) {}
+	bool current;
+	
+	Photo(const uint ID, const Image image, const glm::ivec2 size, const CameraPosition camera) :
+	ID(ID), image(image), size(size), camera(camera) {}
 };
+
+#include "Texture.h" //TODO!
 
 class TextureHandler {
 	std::vector<Photo> photos;
+	
+	std::vector<Texture> textures;
 	
 public:	
 	TextureHandler(const std::vector<CameraPosition> &cameras, const std::vector<ImageData> &imgData) {
@@ -50,7 +58,7 @@ public:
 		for(uint i = 0; i < cameras.size(); ++i) {
 			const ImageData *img = &imgData.at(i);
 			const CameraPosition *cp = &cameras.at(i);
-			photos.push_back(Photo(img->image, img->size, *cp));
+			photos.push_back(Photo(i, img->image, img->size, *cp));
 		}
 		
 	}
@@ -76,14 +84,60 @@ public:
 //		return &(*max);
 //	}
 	
+	void updateTextures(const glm::vec3 & dir, const glm::mat4 &mvm, const uint count) {
+		std::set<Photo*> currentPhotos = getClosestCameras(dir, mvm, count);
+		
+		for(auto it = currentPhotos.begin(); it != currentPhotos.end(); ) {
+			bool erased = false;
+			for(auto &tex : textures) {
+				if((*it)->ID == tex.photo->ID) {
+					(*it)->current = true;
+					currentPhotos.erase(it++);
+					erased = true;
+					break;
+				}
+			}
+			if(!erased) {
+				++it;
+			}
+		}
+		
+		for(auto it = textures.begin(); it != textures.end(); ) {
+			Texture &tex = *it;
+			if(!tex.photo->current) {
+				if(!currentPhotos.empty()) {
+					tex.setImage(*currentPhotos.begin());
+					currentPhotos.erase(currentPhotos.begin());
+					++it;
+				}
+				else { //lowered the number of textures
+					textures.erase(it++);
+				}
+			}
+			++it;
+		}
+		
+		for(auto p : currentPhotos) {
+			textures.push_back(Texture(GL_TEXTURE_RECTANGLE, textures.size(), p));
+		}
+	
+	}
+	
+	std::vector<Texture> & getTextures() {
+		return textures;
+	}
+	
+private:
 	//TODO, this is just a simple version
-	std::set<const Photo*> getClosestCameras(const glm::vec3 & dir, const glm::mat4 &mvm, const uint count) const {
-		std::set<const Photo*> result;
+	std::set<Photo*> getClosestCameras(const glm::vec3 & dir, const glm::mat4 &mvm, const uint count) {
+		std::set<Photo*> result;
 		glm::vec2 ndir(dir.x, dir.z);
 		ndir = glm::normalize(ndir);
 		const glm::mat4 vecMat = glm::inverse(glm::transpose(mvm));
 		
-		for(auto &p : photos) {
+		for(Photo &p : photos) {
+			p.current = false;
+			
 			if(result.empty()) {
 				result.insert(&p);
 				continue;

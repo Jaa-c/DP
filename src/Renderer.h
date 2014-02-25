@@ -41,7 +41,7 @@ public:
 		glUniformMatrix4fv(ulocs->at(RenderPass::PROJECTION_MATRIX), 1, GL_FALSE, &(*projection)[0][0]);	
 	}
 	
-	void drawTexture(Texture &texture) {
+	void drawTexture(Texture &texture, int index) {
 		if(texture.getImageStart() == NULL) {
 			return; //no texture avaiable!
 		}
@@ -62,12 +62,11 @@ public:
 		assert(texture.samplerID);
 		assert(texture.textureID);
 		
-		glUniform1i(ulocs->at(RenderPass::TEXTURE0), 0);
+		glUniform1i(ulocs->at(RenderPass::TEXTURE0), index);
 		
-		glBindSampler(0, texture.samplerID);
+		glBindSampler(texture.unit, texture.samplerID);
 		glActiveTexture(GL_TEXTURE0 + texture.unit);
 		
-
 		glBindTexture(texture.target, texture.textureID);	
 	}
 	

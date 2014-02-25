@@ -65,7 +65,7 @@ public:
 	GLuint normalsID;
 	GLuint indicesID;
 	
-	Texture *texture;
+	std::vector<Texture> * textures;
 	PointData * pointData;
 	
 	glm::mat4 mvm;
@@ -73,7 +73,7 @@ public:
 	ObjectData(std::string file) : ok(true),
 		vaoID(GL_ID_NONE), texCoordsID(GL_ID_NONE), verticesID(GL_ID_NONE), 
 		normalsID(GL_ID_NONE), indicesID(GL_ID_NONE), 
-		texture(NULL), pointData(NULL)
+		textures(NULL), pointData(NULL)
 	{
 		glm::vec3 offset;
 		try {
@@ -88,7 +88,6 @@ public:
 	}
 	
 	~ObjectData() {
-		if(texture) delete texture;
 		if(pointData) delete pointData;
 	}
 	
