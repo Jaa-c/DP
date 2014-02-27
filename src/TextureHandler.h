@@ -89,6 +89,8 @@ public:
 		
 		for(auto it = currentPhotos.begin(); it != currentPhotos.end(); ) {
 			bool erased = false;
+			//compare textures and current photos
+			//if there is a match - OK, remove photo, no need to change texture
 			for(auto &tex : textures) {
 				if((*it)->ID == tex.photo->ID) {
 					(*it)->current = true;
@@ -103,15 +105,16 @@ public:
 		}
 		
 		for(auto it = textures.begin(); it != textures.end(); ) {
-			Texture &tex = *it;
-			if(!tex.photo->current) {
+			Texture *tex = &*it;
+			//remove textures that are no longer used
+			if(!tex->photo->current) {
 				if(!currentPhotos.empty()) {
-					tex.setImage(*currentPhotos.begin());
+					tex->setImage(*currentPhotos.begin());
 					currentPhotos.erase(currentPhotos.begin());
-					++it;
 				}
 				else { //lowered the number of textures
 					textures.erase(it++);
+					continue; //important, otherwise iterator is incremented 2x
 				}
 			}
 			++it;
