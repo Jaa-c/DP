@@ -1,4 +1,4 @@
-#version 330 core
+#version 400 core
 
 uniform mat4 u_ModelViewMatrix;
 uniform mat4 u_ProjectionMatrix;
@@ -9,11 +9,9 @@ struct TextureData {
 	ivec2	u_TextureSize;
 	float	u_TextureFL;
 };
-
 layout(std140) uniform u_textureDataBlock {
 	TextureData ub_texData[32];
 };
-
 uniform int u_textureCount;
 
 layout(location = 0) in vec3 a_position;
@@ -25,6 +23,7 @@ out block {
 	smooth vec4 v_viewPos;
 	smooth vec3 v_normal;
 	smooth vec2 v_texCoords;
+	flat   int	v_texIndex;
 } Out;
 
 void main () {
@@ -32,9 +31,19 @@ void main () {
 	Out.v_viewPos = u_ModelViewMatrix * vec4(a_position, 1.0);
 	Out.v_normal = a_normal;
 	Out.v_position =  u_ProjectionMatrix * Out.v_viewPos;
-	//Out.v_texCoords = a_textureCoords;
 	
-	TextureData data = ub_texData[0]; //tmp
+	TextureData data;
+	Out.v_texIndex = 0;
+	float bestDot = 0.0f;
+	for(int i = 0; i < u_textureCount; i++) {
+		data = ub_texData[i];
+		float dotp = dot(a_normal, -vec3(data.u_TextureRt[0][2], data.u_TextureRt[1][2], data.u_TextureRt[2][2]));
+		if(dotp > bestDot) {
+			bestDot = dotp;
+			Out.v_texIndex = i;
+		}
+	}
+	data = ub_texData[Out.v_texIndex];
 
 	vec3 coords = (data.u_TextureRt * vec4(a_position, 1.0f)).xyz;
 	coords = -coords / coords.z;

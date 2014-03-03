@@ -1,11 +1,12 @@
-#version 330 core
+#version 430 core
 #extension GL_ARB_texture_rectangle : enable
 
-in block{
+in block {
 	smooth vec4 v_position;
 	smooth vec4 v_viewPos;
 	smooth vec3 v_normal;
 	smooth vec2 v_texCoords;
+	flat   int	v_texIndex;
 } In;
 
 uniform int u_textureCount;
@@ -29,10 +30,14 @@ void main() {
 	
 	float specular = pow(max(dot(R, E), 0.0f), 256.0f);
 
-	vec3 col = texture2DRect(texture0[0], In.v_texCoords).rgb;
+	vec3 col = texture2DRect(texture0[In.v_texIndex], In.v_texCoords).rgb;
 	
 	vec3 color = min(col * diffuse + specular * .3f, 1.0f);
-	
+
+	//color.r = In.v_texCoords.x / 1600;
+	//color.g = In.v_texCoords.y / 1600;
+	//color.b = 0;
+		
 	a_FragColor = vec4(color, 1.0f);
 
 }

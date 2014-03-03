@@ -11,14 +11,7 @@
 #include "RenderPass.h"
 
 class TexturingRenderPass : public RenderPass {
-	
-//	/// R * t matrix
-//	GLuint textureRTLoc;
-//	/// texture dimenstions
-//	GLuint textureSizeLoc;
-//	/// focal length
-//	GLuint textureFLLoc;
-	
+		
 	GLuint textureCount;
 	GLuint textureDataUB;
 	
@@ -37,17 +30,13 @@ public:
 	
 	void draw(ObjectData *object) {
 		
+		const uint sizeOfTextureData = sizeof(glm::mat4) + sizeof(glm::ivec2) + sizeof(float);
 		if(programID == GL_ID_NONE) {
 			programID = shaderHandler->getProgramId(shader);
 			getDefaultUniformLocations();
-//			textureRTLoc = glGetUniformLocation(programID, "u_TextureRt");
-//			textureSizeLoc = glGetUniformLocation(programID, "u_TextureSize");
-//			textureFLLoc = glGetUniformLocation(programID, "u_TextureFL");
 			textureCount = glGetUniformLocation(programID, "u_textureCount");
-		}
-		
-		const uint sizeOfTextureData = sizeof(glm::mat4) + sizeof(glm::ivec2) + sizeof(float);
-		if(textureDataUB == GL_ID_NONE) {
+			textureDataUB = GL_ID_NONE;
+			
 			// the binding point must be smaller than GL_MAX_UNIFORM_BUFFER_BINDINGS
 			GLuint bindingPoint = 1, blockIndex; 
 			blockIndex = glGetUniformBlockIndex(programID, "u_textureDataBlock");
@@ -58,7 +47,7 @@ public:
 				glUniformBlockBinding(programID, blockIndex, bindingPoint);
 				glGenBuffers(1, &textureDataUB);
 				glBindBuffer(GL_UNIFORM_BUFFER, textureDataUB);
-				glBufferData(GL_UNIFORM_BUFFER, 32 * sizeOfTextureData + sizeof(int), NULL, GL_STATIC_DRAW);
+				glBufferData(GL_UNIFORM_BUFFER, 32 * sizeOfTextureData, NULL, GL_STATIC_DRAW);
 				glBindBufferBase(GL_UNIFORM_BUFFER, bindingPoint, textureDataUB);
 			}
 		}
@@ -67,6 +56,8 @@ public:
 		glEnable(GL_CULL_FACE);
 		
 		assert(programID != GL_ID_NONE);
+		//assert(textureDataUB != GL_ID_NONE); //no need to crash on shader error :)
+		
 		glUseProgram(programID);
 		
 		std::vector<Texture> * textures = object->textures;
@@ -74,32 +65,27 @@ public:
 		//this needs optimization later!!
 		if(textureDataUB != GL_ID_NONE) {
 			glBindBuffer(GL_UNIFORM_BUFFER, textureDataUB);
-			
+			int offset = 0;
 			for(uint i = 0; i < textures->size(); ++i) { //slooooooooow
 				const Photo *p = textures->at(i).photo;
-				int offset = i * sizeOfTextureData;
+				//int offset = i * sizeOfTextureData;
 				glBufferSubData(GL_UNIFORM_BUFFER, offset, sizeof(glm::mat4), &p->camera.Rt[0][0]);
-				offset += sizeof(glm::mat4);
+				offset += 16 * sizeof(float);
 				glBufferSubData(GL_UNIFORM_BUFFER, offset, sizeof(glm::ivec2) , &p->size);
-				offset += sizeof(glm::ivec2);
-				glBufferSubData(GL_UNIFORM_BUFFER, offset, sizeof(int), &p->camera.focalL);
-			}
-			
-			
+				offset += 2 * sizeof(int);
+				glBufferSubData(GL_UNIFORM_BUFFER, offset, sizeof(float), &p->camera.focalL);
+				offset += 2 * sizeof(float); //note that this is std140 alignment!
+			}			
 		}
 		
-//		const CameraPosition * c = &object->texture->photo->camera;
-//		glUniformMatrix4fv(textureRTLoc, 1, GL_FALSE, &c->Rt[0][0]);
-//		glUniform2iv(textureSizeLoc, 1, &object->texture->getSize()[0]);
-//		glUniform1f(textureFLLoc, c->focalL);
 		GLint texCount = textures->size();
 		glUniform1i(textureCount, texCount);
 		
 		renderer->setUniformLocations(&uniformLocations);
 		
 		renderer->bindCameraMatrices();
-		for(uint i = 0; i < textures->size(); ++i) {	//slooow ??
-			renderer->drawTexture(textures->at(i), i);
+		for(auto &tex : *textures) {	//slooow ??
+			renderer->drawTexture(tex);
 		}
 		//renderer->bindTextures(textures->size());
 		renderer->drawObject(*object);
