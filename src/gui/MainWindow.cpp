@@ -62,6 +62,7 @@ void MainWindow::createActions() {
 	connect(displayRadar, SIGNAL(changed()), this, SLOT(displayRadarCB()));
 	
 	reloadShaders = new QAction(tr("&Recompile shaders"), this);
+	reloadShaders->setShortcut(Qt::Key_R | Qt::CTRL);
 	connect(reloadShaders, SIGNAL(triggered()), this, SLOT(reloadShadersCB()));
 }
 

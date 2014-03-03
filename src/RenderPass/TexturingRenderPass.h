@@ -80,8 +80,8 @@ public:
 				int offset = i * sizeOfTextureData;
 				glBufferSubData(GL_UNIFORM_BUFFER, offset, sizeof(glm::mat4), &p->camera.Rt[0][0]);
 				offset += sizeof(glm::mat4);
-				glBufferSubData(GL_UNIFORM_BUFFER, offset, sizeof(glm::ivec3) , &p->size);
-				offset += sizeof(glm::ivec3);
+				glBufferSubData(GL_UNIFORM_BUFFER, offset, sizeof(glm::ivec2) , &p->size);
+				offset += sizeof(glm::ivec2);
 				glBufferSubData(GL_UNIFORM_BUFFER, offset, sizeof(int), &p->camera.focalL);
 			}
 			
