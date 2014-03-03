@@ -32,6 +32,15 @@ void main() {
 	vec3 col = texture2DRect(texture0[0], In.v_texCoords).rgb;
 	
 	vec3 color = min(col * diffuse + specular * .3f, 1.0f);
+
+	//debug
+	for(int i = 0; i < 32; i++) {
+		if(texture2DRect(texture0[i], In.v_texCoords).rgb != vec3(0, 0, 0))
+			color.r = 1.0f;
+	}
+
+	color.r = In.v_texCoords.x / 1600.f;
+	color.g = In.v_texCoords.y / 2400.f;
 	
 	a_FragColor = vec4(color, 1.0f);
 

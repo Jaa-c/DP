@@ -57,9 +57,12 @@ void MainWindow::createActions() {
 	bundlerPointsRP->setCheckable(true);
 	connect(bundlerPointsRP, SIGNAL(changed()), this, SLOT(bundlerPointsPassCB()));
 	
-	displayRadar = new QAction(tr("Display &Radar"), this);
+	displayRadar = new QAction(tr("Display &radar"), this);
 	displayRadar->setCheckable(true);
 	connect(displayRadar, SIGNAL(changed()), this, SLOT(displayRadarCB()));
+	
+	reloadShaders = new QAction(tr("&Recompile shaders"), this);
+	connect(reloadShaders, SIGNAL(triggered()), this, SLOT(reloadShadersCB()));
 }
 
 void MainWindow::createMenus() {
@@ -74,6 +77,14 @@ void MainWindow::createMenus() {
 	
 	view = menuBar()->addMenu(tr("&View"));
 	view->addAction(displayRadar);
+	
+	debug = menuBar()->addMenu(tr("&Debug"));
+	debug->addAction(reloadShaders);
+}
+
+void MainWindow::reloadShadersCB() {
+	glWidget->shaderHandler.resetShaders();
+	glWidget->renderPassHandler.resetShaderIDs();
 }
 
 void MainWindow::openCB() {

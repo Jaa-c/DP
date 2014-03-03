@@ -77,7 +77,7 @@ public:
 			
 			for(uint i = 0; i < textures->size(); ++i) { //slooooooooow
 				const Photo *p = textures->at(i).photo;
-				int offset = sizeof(GLuint) + i * sizeOfTextureData;
+				int offset = i * sizeOfTextureData;
 				glBufferSubData(GL_UNIFORM_BUFFER, offset, sizeof(glm::mat4), &p->camera.Rt[0][0]);
 				offset += sizeof(glm::mat4);
 				glBufferSubData(GL_UNIFORM_BUFFER, offset, sizeof(glm::ivec3) , &p->size);
@@ -101,6 +101,7 @@ public:
 		for(uint i = 0; i < textures->size(); ++i) {	//slooow ??
 			renderer->drawTexture(textures->at(i), i);
 		}
+		//renderer->bindTextures(textures->size());
 		renderer->drawObject(*object);
 		
 		glUseProgram(0);

@@ -26,6 +26,8 @@ private slots:
 	void texturingPassCB();
 	void bundlerPointsPassCB();
 	void displayRadarCB();
+	
+	void reloadShadersCB();
 
 
 
@@ -40,12 +42,14 @@ private:
 	QMenu *file;
 	QMenu *renderPass;
 	QMenu *view;
+	QMenu *debug;
 	
 	QAction *openAct;
 	QAction *quitAct;
 	QAction *texturingRP;
 	QAction *bundlerPointsRP;
 	QAction *displayRadar;
+	QAction *reloadShaders;
 
 };
 

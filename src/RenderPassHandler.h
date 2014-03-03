@@ -21,7 +21,7 @@ public:
 	RenderPassHandler() {}
 	
 	~RenderPassHandler() {
-	for(auto &it : passes) {
+		for(auto &it : passes) {
 			if(it.second) delete it.second;	
 		}
 	}
@@ -40,6 +40,12 @@ public:
 		RenderPass * p = passes.at((uint) type);
 		passes.erase(type);
 		if(p) delete p;
+	}
+	
+	void resetShaderIDs() {
+		for(auto &it : passes) {
+			it.second->reset();
+		}	
 	}
 
 };

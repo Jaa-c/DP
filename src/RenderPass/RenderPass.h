@@ -30,6 +30,11 @@ public:
 	
 	virtual ~RenderPass() {}
 	
+	
+	void reset() {
+		programID = GL_ID_NONE;
+	}
+	
 protected:
 	const RenderPassType type;
 	ShaderHandler *shaderHandler;

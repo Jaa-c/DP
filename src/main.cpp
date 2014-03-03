@@ -10,7 +10,7 @@
 #include "gui/MainWindow.h"
 
 #include <QApplication>
-	 
+
 int main(int argc, char** argv) {
 	const char *window_title = "View dependent texturing";
 	const int width = 1000;
@@ -27,6 +27,7 @@ int main(int argc, char** argv) {
 	GLint texture_units = 0;
 	glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &texture_units);
 	Log::i("Avaiable texture units for FS: %d", texture_units);
+	
 	
     return app.exec();
 }

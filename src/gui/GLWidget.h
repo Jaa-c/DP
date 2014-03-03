@@ -41,6 +41,8 @@ class GLWidget : public QGLWidget
 	int fps;
 	
 	bool displayRadar;
+	
+	friend class MainWindow;
     
 public:
     GLWidget(const QGLFormat& format, int w, int h, QWidget* parent = 0 );

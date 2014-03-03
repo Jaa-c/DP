@@ -62,12 +62,23 @@ public:
 		assert(texture.samplerID);
 		assert(texture.textureID);
 		
-		glUniform1i(ulocs->at(RenderPass::TEXTURE0), index);
+//		glUniform1i(ulocs->at(RenderPass::TEXTURE0), index);
+//		glBindSampler(texture.unit, texture.samplerID);
+		
+		glActiveTexture(GL_TEXTURE0 + texture.unit);
+		glBindTexture(texture.target, texture.textureID);
 		
 		glBindSampler(texture.unit, texture.samplerID);
-		glActiveTexture(GL_TEXTURE0 + texture.unit);
 		
-		glBindTexture(texture.target, texture.textureID);	
+		glUniform1i(ulocs->at(RenderPass::TEXTURE0), texture.unit);
+	}
+	
+	void bindTextures(int size) {
+		GLint tex[size];
+		for(GLint i = 0; i < size; i++) {
+			tex[i] = i;
+		}
+		glUniform1iv(ulocs->at(RenderPass::TEXTURE0), size, &tex[0]);
 	}
 	
 	void drawPointData(ObjectData &data) {
