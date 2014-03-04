@@ -30,7 +30,7 @@ void main() {
 	
 	float specular = pow(max(dot(R, E), 0.0f), 256.0f);
 
-	vec3 col = texture2DRect(texture0[In.v_texIndex], In.v_texCoords).rgb;
+	vec3 col = texture2DRect(texture0[0], In.v_texCoords).rgb;
 	
 	vec3 color = min(col * diffuse + specular * .3f, 1.0f);
 

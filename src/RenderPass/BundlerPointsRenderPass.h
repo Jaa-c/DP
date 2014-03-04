@@ -33,7 +33,7 @@ public:
 		glEnable(GL_PROGRAM_POINT_SIZE );
 		glUseProgram(programID);
 		
-		renderer->setUniformLocations(&uniformLocations);
+		renderer->setUniformLocations(&uniformLocations, &textureLocations);
 		
 		renderer->bindCameraMatrices();
 		renderer->drawPointData(*object);

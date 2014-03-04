@@ -81,13 +81,13 @@ public:
 		GLint texCount = textures->size();
 		glUniform1i(textureCount, texCount);
 		
-		renderer->setUniformLocations(&uniformLocations);
+		renderer->setUniformLocations(&uniformLocations, &textureLocations);
 		
 		renderer->bindCameraMatrices();
 		for(auto &tex : *textures) {	//slooow ??
 			renderer->drawTexture(tex);
 		}
-		//renderer->bindTextures(textures->size());
+//		renderer->bindTextures(textures->size());
 		renderer->drawObject(*object);
 		
 		glUseProgram(0);

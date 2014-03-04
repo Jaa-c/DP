@@ -21,7 +21,6 @@ public:
 	enum UniformLocations {
 		PROJECTION_MATRIX = 0,
 		MODELVIEW_MATRIX,
-		TEXTURE0,
 		COLOR,
 		UNIFORM_LOC_SIZE
 	};
@@ -43,6 +42,7 @@ protected:
 	ShaderHandler::ShaderType shader;
 	
 	std::vector<GLuint> uniformLocations;
+	std::vector<GLuint> textureLocations;
 	
 	GLuint programID;
 	
@@ -57,8 +57,13 @@ protected:
 		uniformLocations.resize(UNIFORM_LOC_SIZE);
 		uniformLocations[PROJECTION_MATRIX] = glGetUniformLocation(programID, "u_ProjectionMatrix");
 		uniformLocations[MODELVIEW_MATRIX] = glGetUniformLocation(programID, "u_ModelViewMatrix");
-		uniformLocations[TEXTURE0] = glGetUniformLocation(programID, "u_texture0");
 		uniformLocations[COLOR] = glGetUniformLocation(programID, "u_color");
+		
+		textureLocations.resize(32);
+		for(int i = 0; i < 32; ++i) {
+			std::string name = std::string("u_texture0[") + std::to_string(i) + std::string("]");
+			textureLocations[i] = glGetUniformLocation(programID, name.c_str());
+		}
 	}
 	
 };

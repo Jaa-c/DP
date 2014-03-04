@@ -43,12 +43,12 @@ void main () {
 			Out.v_texIndex = i;
 		}
 	}
+	Out.v_texIndex = 0;
 	data = ub_texData[Out.v_texIndex];
 
 	vec3 coords = (data.u_TextureRt * vec4(a_position, 1.0f)).xyz;
-	coords = -coords / coords.z;
-	Out.v_texCoords.x = coords.x * data.u_TextureFL + data.u_TextureSize.x * 0.5f;
-	Out.v_texCoords.y = -coords.y * data.u_TextureFL + data.u_TextureSize.y * 0.5f;
+	Out.v_texCoords.x = -coords.x/coords.z * data.u_TextureFL + data.u_TextureSize.x * 0.5f;
+	Out.v_texCoords.y = coords.y/coords.z * data.u_TextureFL + data.u_TextureSize.y * 0.5f;
 
 	gl_Position = Out.v_position;
 }

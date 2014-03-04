@@ -22,6 +22,7 @@ class Renderer {
 	Camera *camera;
 	
 	std::vector<GLuint> *ulocs;
+	std::vector<GLuint> *uTexLocs;
 
 public:
 	
@@ -29,8 +30,9 @@ public:
 	
 	}
 	
-	void setUniformLocations(std::vector<GLuint> * locs) {
+	void setUniformLocations(std::vector<GLuint> * locs, std::vector<GLuint> * texLocs) {
 		ulocs = locs;
+		uTexLocs = texLocs;
 	}
 	
 	void bindCameraMatrices() {
@@ -67,16 +69,16 @@ public:
 		
 		glBindSampler(texture.unit, texture.samplerID);
 		
-		glUniform1i(ulocs->at(RenderPass::TEXTURE0), texture.unit);
+		glUniform1i(uTexLocs->at(texture.unit), texture.unit); // correct vector position??
 	}
 	
-	void bindTextures(int size) {
-		GLint tex[size];
-		for(GLint i = 0; i < size; i++) {
-			tex[i] = i;
-		}
-		glUniform1iv(ulocs->at(RenderPass::TEXTURE0), size, &tex[0]);
-	}
+//	void bindTextures(int size) {
+//		GLint tex[size];
+//		for(GLint i = 0; i < size; i++) {
+//			tex[i] = i;
+//		}
+//		glUniform1iv(ulocs->at(RenderPass::TEXTURE0), size, &tex[0]);
+//	}
 	
 	void drawPointData(ObjectData &data) {
 		PointData * points = data.pointData;
