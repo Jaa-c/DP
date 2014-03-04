@@ -68,23 +68,7 @@ public:
 		return photos;
 	}
 	
-	
-//	const Photo * getClosestCamera(const glm::vec3 & dir, const glm::mat4 &mvm) const {
-//		glm::vec2 ndir(dir.x, dir.z);
-//		ndir = glm::normalize(ndir);
-//		const glm::mat4 vecMat = glm::inverse(glm::transpose(mvm));
-//		auto max = std::max_element(photos.begin(), photos.end(), 
-//			[ndir, vecMat] (const Photo &a, const Photo &b) -> bool {
-//				const glm::vec4 ta = vecMat * glm::vec4(a.camera.getDirection(), 1.0f);
-//				const glm::vec4 tb = vecMat * glm::vec4(b.camera.getDirection(), 1.0f);
-//				const glm::vec2 v1(ta.x, ta.z);
-//				const glm::vec2 v2(tb.x, tb.z);
-//				return glm::dot(glm::normalize(v1), ndir) < glm::dot(glm::normalize(v2), ndir);
-//			}
-//		);
-//		return &(*max);
-//	}
-	
+	//TODO SLOW, but not priority
 	void updateTextures(const glm::vec3 & dir, const glm::mat4 &mvm, const uint count) {
 		std::set<Photo*> currentPhotos = getClosestCameras(dir, mvm, count);
 		
@@ -133,6 +117,7 @@ public:
 	
 private:
 	//TODO SLOW, this is just a stupid version
+	//but not major problem for now
 	std::set<Photo*> getClosestCameras(const glm::vec3 & dir, const glm::mat4 &mvm, const uint count) {
 		
 		glm::vec2 ndir(dir.x, dir.z);

@@ -20,7 +20,7 @@ void GLWidget::paintGL() {
 	if(object) {
 		camera.updateCameraViewMatrix();
 		glm::vec3 viewDir = object->getCentroidPosition() + camera.getCameraPosition();		
-		textureHandler->updateTextures(viewDir, object->mvm, 12);
+		textureHandler->updateTextures(viewDir, object->mvm, 22);
 		
 		if(camera.isCameraStatic()) {
 			//todo!!

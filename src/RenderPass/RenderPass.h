@@ -11,6 +11,9 @@
 class Renderer;
 
 class RenderPass {
+	
+	friend class Rendered;
+	
 public:	
 	enum RenderPassType {
 		TEXTURING_PASS = 0,
@@ -21,6 +24,7 @@ public:
 	enum UniformLocations {
 		PROJECTION_MATRIX = 0,
 		MODELVIEW_MATRIX,
+		TEXTURE0,
 		COLOR,
 		UNIFORM_LOC_SIZE
 	};
@@ -41,8 +45,7 @@ protected:
 	
 	ShaderHandler::ShaderType shader;
 	
-	std::vector<GLuint> uniformLocations;
-	std::vector<GLuint> textureLocations;
+	std::vector<GLuint> uLocs;
 	
 	GLuint programID;
 	
@@ -54,16 +57,11 @@ protected:
 	void getDefaultUniformLocations() {
 		assert(programID != GL_ID_NONE);
 		
-		uniformLocations.resize(UNIFORM_LOC_SIZE);
-		uniformLocations[PROJECTION_MATRIX] = glGetUniformLocation(programID, "u_ProjectionMatrix");
-		uniformLocations[MODELVIEW_MATRIX] = glGetUniformLocation(programID, "u_ModelViewMatrix");
-		uniformLocations[COLOR] = glGetUniformLocation(programID, "u_color");
-		
-		textureLocations.resize(32);
-		for(int i = 0; i < 32; ++i) {
-			std::string name = std::string("u_texture0[") + std::to_string(i) + std::string("]");
-			textureLocations[i] = glGetUniformLocation(programID, name.c_str());
-		}
+		uLocs.resize(UNIFORM_LOC_SIZE);
+		uLocs[PROJECTION_MATRIX] = glGetUniformLocation(programID, "u_ProjectionMatrix");
+		uLocs[MODELVIEW_MATRIX] = glGetUniformLocation(programID, "u_ModelViewMatrix");
+		uLocs[TEXTURE0] = glGetUniformLocation(programID, "u_texture0");
+		uLocs[COLOR] = glGetUniformLocation(programID, "u_color");
 	}
 	
 };

@@ -22,26 +22,7 @@ class Renderer {
 	Camera *camera;
 	
 	std::vector<GLuint> *ulocs;
-	std::vector<GLuint> *uTexLocs;
-
-public:
 	
-	Renderer(Camera *camera) : planeVao(GL_ID_NONE), camera(camera) {
-	
-	}
-	
-	void setUniformLocations(std::vector<GLuint> * locs, std::vector<GLuint> * texLocs) {
-		ulocs = locs;
-		uTexLocs = texLocs;
-	}
-	
-	void bindCameraMatrices() {
-		const glm::mat4 * modelView = camera->getModelViewMatrix();
-		const glm::mat4 * projection = camera->getProjectionMatrix();
-
-		glUniformMatrix4fv(ulocs->at(RenderPass::MODELVIEW_MATRIX), 1, GL_FALSE, &(*modelView)[0][0]);
-		glUniformMatrix4fv(ulocs->at(RenderPass::PROJECTION_MATRIX), 1, GL_FALSE, &(*projection)[0][0]);	
-	}
 	
 	void drawTexture(Texture &texture) {
 		if(texture.getImageStart() == NULL) {
@@ -66,10 +47,34 @@ public:
 				
 		glActiveTexture(GL_TEXTURE0 + texture.unit);
 		glBindTexture(texture.target, texture.textureID);
-		
 		glBindSampler(texture.unit, texture.samplerID);
-		
-		glUniform1i(uTexLocs->at(texture.unit), texture.unit); // correct vector position??
+				
+	}
+
+public:
+	
+	Renderer(Camera *camera) : planeVao(GL_ID_NONE), camera(camera) {
+	}
+	
+	void setUniformLocations(std::vector<GLuint> * locs) {
+		ulocs = locs;
+	}
+	
+	void bindCameraMatrices() {
+		const glm::mat4 * modelView = camera->getModelViewMatrix();
+		const glm::mat4 * projection = camera->getProjectionMatrix();
+
+		glUniformMatrix4fv(ulocs->at(RenderPass::MODELVIEW_MATRIX), 1, GL_FALSE, &(*modelView)[0][0]);
+		glUniformMatrix4fv(ulocs->at(RenderPass::PROJECTION_MATRIX), 1, GL_FALSE, &(*projection)[0][0]);	
+	}
+	
+	void drawTextures(std::vector<Texture> * textures) {
+		std::vector<GLint> units;
+		for(auto &tex : *textures)  {
+			drawTexture(tex);
+			units.push_back(tex.unit);		
+		}
+		glUniform1iv(ulocs->at(RenderPass::TEXTURE0), textures->size(), &units[0]);
 	}
 	
 	void drawPointData(ObjectData &data) {
