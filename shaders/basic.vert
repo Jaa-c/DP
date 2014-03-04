@@ -34,16 +34,16 @@ void main () {
 	
 	TextureData data;
 	Out.v_texIndex = 0;
-	float bestDot = 0.0f;
+	float bestDot = -1.0f;
 	for(int i = 0; i < u_textureCount; i++) {
 		data = ub_texData[i];
-		float dotp = dot(a_normal, -vec3(data.u_TextureRt[0][2], data.u_TextureRt[1][2], data.u_TextureRt[2][2]));
+		vec3 camDir = vec3(data.u_TextureRt[0][2], data.u_TextureRt[1][2], data.u_TextureRt[2][2]);
+		float dotp = dot(a_normal, camDir);
 		if(dotp > bestDot) {
 			bestDot = dotp;
 			Out.v_texIndex = i;
 		}
 	}
-	Out.v_texIndex = 0;
 	data = ub_texData[Out.v_texIndex];
 
 	vec3 coords = (data.u_TextureRt * vec4(a_position, 1.0f)).xyz;

@@ -87,7 +87,6 @@ public:
 		for(auto &tex : *textures) {	//slooow ??
 			renderer->drawTexture(tex);
 		}
-//		renderer->bindTextures(textures->size());
 		renderer->drawObject(*object);
 		
 		glUseProgram(0);

@@ -72,14 +72,6 @@ public:
 		glUniform1i(uTexLocs->at(texture.unit), texture.unit); // correct vector position??
 	}
 	
-//	void bindTextures(int size) {
-//		GLint tex[size];
-//		for(GLint i = 0; i < size; i++) {
-//			tex[i] = i;
-//		}
-//		glUniform1iv(ulocs->at(RenderPass::TEXTURE0), size, &tex[0]);
-//	}
-	
 	void drawPointData(ObjectData &data) {
 		PointData * points = data.pointData;
 		if(!points) {
