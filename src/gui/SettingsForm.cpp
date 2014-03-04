@@ -9,13 +9,13 @@
 #include "GLWidget.h"
 
 SettingsForm::SettingsForm(GLWidget * glw) : glWidget(glw)  {
-	setAttribute(Qt::WA_NoMousePropagation); //not working
+	setAttribute(Qt::WA_NoMousePropagation); //not working TODO
 	widget.setupUi(this);
 	
 	
 	widget.photosSlider->setMinimum(1);
 	widget.photosSlider->setMaximum(32);
-	widget.photosSlider->setValue(6);
+	widget.photosSlider->setValue(glWidget->tmpCameras);
 	widget.photoSliderValue->setText(QString::number(widget.photosSlider->value()));
 	
 	photoSliderPrevVal = widget.photosSlider->value();

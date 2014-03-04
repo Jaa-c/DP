@@ -89,12 +89,12 @@ public:
 			}
 		}
 		
-		for(auto it = textures.begin(); it != textures.end(); ) {
-			Texture *tex = &*it;
+		for(auto it = textures.begin(); it < textures.end(); ) {
+			Texture &tex = *it;
 			//remove textures that are no longer used
-			if(!tex->photo->current) {
+			if(!tex.photo->current) {
 				if(!currentPhotos.empty()) {
-					tex->setImage(*currentPhotos.begin());
+					tex.setImage(*currentPhotos.begin());
 					currentPhotos.erase(currentPhotos.begin());
 				}
 				else { //lowered the number of textures
@@ -120,8 +120,6 @@ private:
 	//but not major problem for now
 	std::set<Photo*> getClosestCameras(const glm::vec3 & dir, const glm::mat4 &mvm, const uint count) {
 		
-		glm::vec2 ndir(dir.x, dir.z);
-		ndir = glm::normalize(ndir);
 		const glm::mat4 vecMat = glm::inverse(glm::transpose(mvm));
 		
 		auto comp = [vecMat, dir](const Photo* a, const Photo* b) {
