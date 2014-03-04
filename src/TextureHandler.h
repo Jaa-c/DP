@@ -148,10 +148,11 @@ private:
 			
 			const glm::vec4 ta = vecMat * glm::vec4(p.camera.getDirection(), 1.0f);
 			const glm::vec4 tb = vecMat * glm::vec4((*result.begin())->camera.getDirection(), 1.0f);
-			const glm::vec2 v1(ta.x, ta.z);
-			const glm::vec2 v2(tb.x, tb.z);
-			
-			if (result.size() < count || glm::dot(glm::normalize(v1), ndir) > glm::dot(glm::normalize(v2), ndir)) {
+//			const glm::vec2 v1(ta.x, ta.z); //TEMP: 2D only
+//			const glm::vec2 v2(tb.x, tb.z);
+//			
+//			if (result.size() < count || glm::dot(v1, ndir) > glm::dot(v2, ndir)) {
+			if (result.size() < count || glm::dot(glm::vec3(ta), dir) > glm::dot(glm::vec3(tb), dir)) {
 				result.insert(&p);
 				while (result.size() > count) {
 					if (result.size() == count) {
