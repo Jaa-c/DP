@@ -20,7 +20,7 @@ void GLWidget::paintGL() {
 	if(object) {
 		camera.updateCameraViewMatrix();
 		glm::vec3 viewDir = object->getCentroidPosition() + camera.getCameraPosition();		
-		textureHandler->updateTextures(viewDir, object->mvm, 22);
+		textureHandler->updateTextures(viewDir, object->mvm, tmpCameras);
 		
 		if(camera.isCameraStatic()) {
 			//todo!!
@@ -167,6 +167,7 @@ GLWidget::GLWidget(const QGLFormat& format, int w, int h, QWidget* parent) :
 	fps = 0;
     srand((unsigned)std::time(0)); 
 	gettimeofday(&start, NULL);
+	tmpCameras = 6;
 }
 
 GLWidget::~GLWidget() {

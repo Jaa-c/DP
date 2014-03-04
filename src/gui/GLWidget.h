@@ -45,6 +45,9 @@ class GLWidget : public QGLWidget
 	friend class MainWindow;
     
 public:
+	
+	int tmpCameras; //TMP to be refactored to settings
+	
     GLWidget(const QGLFormat& format, int w, int h, QWidget* parent = 0 );
 	~GLWidget();
 	

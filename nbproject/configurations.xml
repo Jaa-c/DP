@@ -8,6 +8,7 @@
         <itemPath>src/gui/GLWidget.h</itemPath>
         <itemPath>src/gui/MainWindow.h</itemPath>
         <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/gui/OpenForm.h</itemPath>
+        <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/gui/SettingsForm.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f2" displayName="io" projectFiles="true">
         <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/io/BundlerParser.h</itemPath>
@@ -36,6 +37,7 @@
                    projectFiles="true">
       <logicalFolder name="f1" displayName="gui" projectFiles="true">
         <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/gui/OpenForm.ui</itemPath>
+        <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/gui/SettingsForm.ui</itemPath>
       </logicalFolder>
     </logicalFolder>
     <logicalFolder name="SourceFiles"
@@ -45,6 +47,7 @@
         <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/gui/GLWidget.cpp</itemPath>
         <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/gui/MainWindow.cpp</itemPath>
         <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/gui/OpenForm.cpp</itemPath>
+        <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/gui/SettingsForm.cpp</itemPath>
       </logicalFolder>
       <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/globals.cpp</itemPath>
       <itemPath>src/main.cpp</itemPath>
@@ -184,6 +187,21 @@
             flavor2="0">
       </item>
       <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/gui/OpenForm.ui"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/gui/SettingsForm.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/gui/SettingsForm.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/gui/SettingsForm.ui"
             ex="false"
             tool="3"
             flavor2="0">
@@ -334,6 +352,21 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/gui/SettingsForm.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/gui/SettingsForm.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/gui/SettingsForm.ui"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/io/BundlerParser.h"
             ex="false"
             tool="3"
@@ -472,6 +505,21 @@
             flavor2="0">
       </item>
       <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/gui/OpenForm.ui"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/gui/SettingsForm.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/gui/SettingsForm.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/gui/SettingsForm.ui"
             ex="false"
             tool="3"
             flavor2="0">

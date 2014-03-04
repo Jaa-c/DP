@@ -2,6 +2,7 @@
 #include "MainWindow.h"
 #include "GLWidget.h"
 #include "OpenForm.h"
+#include "SettingsForm.h"
 
 #include <QApplication>
 #include <QtGui/QtGui>
@@ -61,6 +62,9 @@ void MainWindow::createActions() {
 	displayRadar->setCheckable(true);
 	connect(displayRadar, SIGNAL(changed()), this, SLOT(displayRadarCB()));
 	
+	programSettings = new QAction(tr("Program &settings"), this);
+	connect(programSettings, SIGNAL(triggered()), this, SLOT(displaySettingsCB()));
+	
 	reloadShaders = new QAction(tr("&Recompile shaders"), this);
 	reloadShaders->setShortcut(Qt::Key_R | Qt::CTRL);
 	connect(reloadShaders, SIGNAL(triggered()), this, SLOT(reloadShadersCB()));
@@ -76,8 +80,12 @@ void MainWindow::createMenus() {
 	renderPass->addAction(texturingRP);
 	renderPass->addAction(bundlerPointsRP);
 	
-	view = menuBar()->addMenu(tr("&View"));
-	view->addAction(displayRadar);
+//	view = menuBar()->addMenu(tr("&View"));
+//	view->addAction(displayRadar);
+	
+	settings = menuBar()->addMenu(tr("&Settings"));
+	settings->addAction(displayRadar);
+	settings->addAction(programSettings);
 	
 	debug = menuBar()->addMenu(tr("&Debug"));
 	debug->addAction(reloadShaders);
@@ -90,6 +98,11 @@ void MainWindow::reloadShadersCB() {
 
 void MainWindow::openCB() {
 	OpenForm form(glWidget);
+	form.exec();
+}
+
+void MainWindow::displaySettingsCB() {
+	SettingsForm form(glWidget);
 	form.exec();
 }
 
@@ -131,4 +144,6 @@ MainWindow::~MainWindow() {
 	if(texturingRP) delete texturingRP;
 	if(bundlerPointsRP) delete bundlerPointsRP;
 	if(displayRadar) delete displayRadar;
+	
+	//TODO
 }
