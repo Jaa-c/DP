@@ -12,6 +12,7 @@
 #include <vector>
 #include <set>
 #include <unordered_map>
+#include <queue>
 
 #include "glm/glm.hpp"
 #include "glm/core/type_mat3x3.hpp"
@@ -131,39 +132,27 @@ public:
 	}
 	
 private:
-	//TODO, this is just a simple version
+	//TODO SLOW, this is just a stupid version
 	std::set<Photo*> getClosestCameras(const glm::vec3 & dir, const glm::mat4 &mvm, const uint count) {
-		std::set<Photo*> result;
+		
 		glm::vec2 ndir(dir.x, dir.z);
 		ndir = glm::normalize(ndir);
 		const glm::mat4 vecMat = glm::inverse(glm::transpose(mvm));
 		
+		auto comp = [vecMat, dir](const Photo* a, const Photo* b) {
+			const glm::vec3 ta = glm::vec3(vecMat * glm::vec4(a->camera.getDirection(), 1.0f));
+			const glm::vec3 tb = glm::vec3(vecMat * glm::vec4(b->camera.getDirection(), 1.0f));
+			return glm::dot(ta, dir) > glm::dot(tb, dir);
+		};
+		
+		std::set<Photo*, decltype(comp)> result(comp);
 		for(Photo &p : photos) {
 			p.current = false;
-			
-			if(result.empty()) {
-				result.insert(&p);
-				continue;
-			}
-			
-			const glm::vec4 ta = vecMat * glm::vec4(p.camera.getDirection(), 1.0f);
-			const glm::vec4 tb = vecMat * glm::vec4((*result.begin())->camera.getDirection(), 1.0f);
-//			const glm::vec2 v1(ta.x, ta.z); //TEMP: 2D only
-//			const glm::vec2 v2(tb.x, tb.z);
-//			
-//			if (result.size() < count || glm::dot(v1, ndir) > glm::dot(v2, ndir)) {
-			if (result.size() < count || glm::dot(glm::vec3(ta), dir) > glm::dot(glm::vec3(tb), dir)) {
-				result.insert(&p);
-				while (result.size() > count) {
-					if (result.size() == count) {
-						break;
-					}
-					result.erase(result.begin());
-				}
-			}
-		 }
-		
-		return result;
+			result.insert(&p);
+		}
+		auto beg = result.begin();
+		std::advance(beg, count);
+		return std::set<Photo*>(result.begin(), beg);
 	}
 
 
