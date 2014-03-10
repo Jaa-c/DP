@@ -22,15 +22,14 @@ out block {
 	smooth vec4 v_position;
 	smooth vec4 v_viewPos;
 	smooth vec3 v_normal;
-	smooth vec2 v_texCoords;
 	flat   int	v_texIndex;
 } Out;
 
 void main () {
 	
-	Out.v_viewPos = u_ModelViewMatrix * vec4(a_position, 1.0);
-	Out.v_normal = a_normal;
 	Out.v_position =  vec4(a_position, 1.0f);
+	Out.v_viewPos = u_ModelViewMatrix * Out.v_position;
+	Out.v_normal = a_normal;
 	
 	TextureData data;
 	Out.v_texIndex = 0;
