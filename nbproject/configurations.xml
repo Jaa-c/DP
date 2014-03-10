@@ -63,6 +63,7 @@
                    kind="IMPORTANT_FILES_FOLDER">
       <itemPath>Makefile</itemPath>
       <itemPath>shaders/basic.frag</itemPath>
+      <itemPath>shaders/basic.geom</itemPath>
       <itemPath>shaders/basic.vert</itemPath>
     </logicalFolder>
   </logicalFolder>
@@ -80,7 +81,7 @@
       <qt>
         <modules>core gui widgets opengl</modules>
         <defs>
-          <Elem>LIBS += -lGL -lX11 -lGLEW -lglfw -lassimp -ljpeg</Elem>
+          <Elem>"LIBS += -lGL -lX11 -lGLEW -lglfw -lassimp -ljpeg"</Elem>
         </defs>
       </qt>
       <compileType>
@@ -236,7 +237,10 @@
       </toolsSet>
       <qt>
         <buildMode>1</buildMode>
-        <modules>core gui widgets</modules>
+        <modules>core gui widgets opengl</modules>
+        <defs>
+          <Elem>"LIBS += -lGL -lX11 -lGLEW -lglfw -lassimp -ljpeg"</Elem>
+        </defs>
       </qt>
       <compileType>
         <cTool>
@@ -244,6 +248,10 @@
         </cTool>
         <ccTool>
           <developmentMode>5</developmentMode>
+          <standard>8</standard>
+          <incDir>
+            <pElem>lib/</pElem>
+          </incDir>
         </ccTool>
         <fortranCompilerTool>
           <developmentMode>5</developmentMode>

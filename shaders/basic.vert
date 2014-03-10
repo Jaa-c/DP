@@ -30,7 +30,7 @@ void main () {
 	
 	Out.v_viewPos = u_ModelViewMatrix * vec4(a_position, 1.0);
 	Out.v_normal = a_normal;
-	Out.v_position =  u_ProjectionMatrix * Out.v_viewPos;
+	Out.v_position =  vec4(a_position, 1.0f);
 	
 	TextureData data;
 	Out.v_texIndex = 0;
@@ -44,11 +44,6 @@ void main () {
 			Out.v_texIndex = i;
 		}
 	}
-	data = ub_texData[Out.v_texIndex];
 
-	vec3 coords = (data.u_TextureRt * vec4(a_position, 1.0f)).xyz;
-	Out.v_texCoords.x = -coords.x/coords.z * data.u_TextureFL + data.u_TextureSize.x * 0.5f;
-	Out.v_texCoords.y = coords.y/coords.z * data.u_TextureFL + data.u_TextureSize.y * 0.5f;
-
-	gl_Position = Out.v_position;
+	gl_Position = u_ProjectionMatrix * Out.v_viewPos;
 }

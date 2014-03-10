@@ -167,7 +167,7 @@ GLWidget::GLWidget(const QGLFormat& format, int w, int h, QWidget* parent) :
 	fps = 0;
     srand((unsigned)std::time(0)); 
 	gettimeofday(&start, NULL);
-	tmpCameras = 6;
+	tmpCameras = 2;
 }
 
 GLWidget::~GLWidget() {

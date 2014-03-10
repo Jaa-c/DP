@@ -50,8 +50,10 @@ public:
 		glm::vec3 &offset
 	) {
 		Assimp::Importer importer;
+		//importer.SetPropertyFloat(AI_CONFIG_PP_GSN_MAX_SMOOTHING_ANGLE, 80.0f); 
 		const aiScene* scene = importer.ReadFile(file,
-				 aiProcessPreset_TargetRealtime_Quality & ~aiProcess_FindDegenerates);
+				 aiProcessPreset_TargetRealtime_Quality 
+				& ~aiProcess_FindDegenerates);
 		
 		if(scene == NULL) {
 			Log::e("[ModelLoader] unable to load file: %s", importer.GetErrorString());
