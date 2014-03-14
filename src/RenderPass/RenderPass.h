@@ -16,7 +16,8 @@ class RenderPass {
 	
 public:	
 	enum RenderPassType {
-		TEXTURING_PASS = 0,
+		BASIC_TEXTURING_PASS = 0,
+		TEXTURING_PASS,
 		BUNDLER_POINTS_PASS,
 		PASS_SIZE	
 	};

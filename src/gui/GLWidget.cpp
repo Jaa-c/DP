@@ -1,6 +1,7 @@
 #include "../globals.h"
 #include "GLWidget.h"
 
+#include "../RenderPass/BasicTexturingRenderPass.h"
 #include "../RenderPass/TexturingRenderPass.h"
 #include "../RenderPass/BundlerPointsRenderPass.h"
 #include "../io/ImageLoader.h"
@@ -125,6 +126,12 @@ bool GLWidget::eventFilter(QObject *, QEvent *event) {
 void GLWidget::addRenderPass(RenderPass::RenderPassType pass) {
 	assert(textureHandler); //otherwise logic is wrong
 	switch(pass) {
+		case RenderPass::BASIC_TEXTURING_PASS:
+			renderPassHandler.add(
+				RenderPass::BASIC_TEXTURING_PASS, 
+				new BasicTexturingRenderPass(&renderer, &shaderHandler, textureHandler)
+			);
+			break;
 		case RenderPass::TEXTURING_PASS:
 			renderPassHandler.add(
 				RenderPass::TEXTURING_PASS, 

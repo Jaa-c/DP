@@ -2,29 +2,29 @@
  * File:   TexturingRenderPass.h
  * Author: jaa
  *
- * Created on 14. březen 2014, 22:39
+ * Created on 23. listopad 2013, 21:07
  */
 
-#ifndef TEXTURINGRENDERPASS_H
-#define	TEXTURINGRENDERPASS_H
+#ifndef BASICTEXTURINGRENDERPASS_H
+#define	BASICTEXTURINGRENDERPASS_H
 
 #include "RenderPass.h"
 
-class TexturingRenderPass : public RenderPass {
+class BasicTexturingRenderPass : public RenderPass {
 		
 	GLuint textureCount;
 	GLuint textureDataUB;
 	
 public:
 	
-	TexturingRenderPass(Renderer *r, ShaderHandler *sh, TextureHandler *th) : 
-		RenderPass(TEXTURING_PASS, r, sh, th)
+	BasicTexturingRenderPass(Renderer *r, ShaderHandler *sh, TextureHandler *th) : 
+		RenderPass(BASIC_TEXTURING_PASS, r, sh, th)
 	{	
-		shader = ShaderHandler::SHADER_TEXTURING;
+		shader = ShaderHandler::SHADER_BASIC;
 		textureDataUB = GL_ID_NONE;
 	}
 		
-	~TexturingRenderPass() {
+	~BasicTexturingRenderPass() {
 
 	}
 	
@@ -93,5 +93,4 @@ public:
 
 };
 
-#endif	/* TEXTURINGRENDERPASS_H */
-
+#endif	/* BASICTEXTURINGRENDERPASS_H */

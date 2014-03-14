@@ -37,7 +37,7 @@ void MainWindow::initAppState() {
 }
 
 void MainWindow::initScene() {
-	texturingRP->setChecked(true);
+	basicTexturingRP->setChecked(true);
 	displayRadar->setChecked(true);
 }
 
@@ -52,9 +52,17 @@ void MainWindow::createActions() {
 	quitAct->setShortcut(Qt::Key_Escape);
 	connect(quitAct, SIGNAL(triggered()), this, SLOT(quitCB()));
 	
+	texGroup = new QActionGroup(this);
+	
 	texturingRP = new QAction(tr("&Texturing Pass"), this);
 	texturingRP->setCheckable(true);
+	texturingRP->setActionGroup(texGroup);
 	connect(texturingRP, SIGNAL(changed()), this, SLOT(texturingPassCB()));
+	
+	basicTexturingRP = new QAction(tr("B&asic Texturing Pass"), this);
+	basicTexturingRP->setCheckable(true);
+	basicTexturingRP->setActionGroup(texGroup);
+	connect(basicTexturingRP, SIGNAL(changed()), this, SLOT(basicTexturingPassCB()));
 	
 	bundlerPointsRP = new QAction(tr("&Bundler Points Pass"), this);
 	bundlerPointsRP->setCheckable(true);
@@ -80,6 +88,7 @@ void MainWindow::createMenus() {
 	
 	renderPass = menuBar()->addMenu(tr("&Render Passes"));
 	renderPass->addAction(texturingRP);
+	renderPass->addAction(basicTexturingRP);
 	renderPass->addAction(bundlerPointsRP);
 	
 //	view = menuBar()->addMenu(tr("&View"));
@@ -122,6 +131,15 @@ void MainWindow::texturingPassCB() {
 	}
 }
 
+void MainWindow::basicTexturingPassCB() {
+	if(basicTexturingRP->isChecked()) {
+		glWidget->addRenderPass(RenderPass::BASIC_TEXTURING_PASS);
+	}
+	else {
+		glWidget->removeRenderPass(RenderPass::BASIC_TEXTURING_PASS);
+	}
+}
+
 void MainWindow::bundlerPointsPassCB() {
 	if(bundlerPointsRP->isChecked()) {
 		glWidget->addRenderPass(RenderPass::BUNDLER_POINTS_PASS);
@@ -136,17 +154,20 @@ void MainWindow::displayRadarCB() {
 }
 
 MainWindow::~MainWindow() {
-	if(glWidget) delete glWidget;
+	DELETE(glWidget);
 	
-	if(file) delete file;
-	if(renderPass) delete renderPass;
-	if(view) delete view;
+	DELETE(file);
+	DELETE(renderPass);
+	DELETE(view);
 
-	if(openAct) delete openAct;
-	if(quitAct) delete quitAct;
-	if(texturingRP) delete texturingRP;
-	if(bundlerPointsRP) delete bundlerPointsRP;
-	if(displayRadar) delete displayRadar;
+	DELETE(openAct);
+	DELETE(quitAct);
+	DELETE(texturingRP);
+	DELETE(basicTexturingRP);
+	DELETE(bundlerPointsRP);
+	DELETE(displayRadar);
+	
+	DELETE(texGroup);
 	
 	//TODO
 }

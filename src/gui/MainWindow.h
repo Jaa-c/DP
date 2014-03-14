@@ -9,6 +9,7 @@
 #define	MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QActionGroup>
 
 class GLWidget;
 
@@ -24,6 +25,7 @@ private slots:
 	void openCB();
 	void quitCB();
 	void texturingPassCB();
+	void basicTexturingPassCB();
 	void bundlerPointsPassCB();
 	void displayRadarCB();
 	void displaySettingsCB();
@@ -50,10 +52,13 @@ private:
 	QAction *openAct;
 	QAction *quitAct;
 	QAction *texturingRP;
+	QAction *basicTexturingRP;
 	QAction *bundlerPointsRP;
 	QAction *displayRadar;
 	QAction *reloadShaders;
 	QAction *programSettings;
+	
+	QActionGroup * texGroup;
 
 };
 

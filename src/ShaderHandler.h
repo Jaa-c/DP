@@ -16,10 +16,9 @@ class ShaderHandler {
 public:
 	/// list of avaiable shaders
 	enum ShaderType {
-		SHADER_TEST = 0,
+		SHADER_BASIC = 0,
+		SHADER_TEXTURING,
 		SHADER_POINTS,
-		SHADER_CAMERAS,
-		SHADER_BASIC,
 		SIZE,
 	};
 	
@@ -28,10 +27,9 @@ private:
 	const std::string SHADER_PATH = "shaders/";
 	/// shader file names
 	const std::string SHADER_SRC[SIZE] = {
-		"test",
-		"points",
-		"cameras",
-		"basic"
+		"basic",
+		"texturing",
+		"points"
 	};
 	
 	/// Shader program ids

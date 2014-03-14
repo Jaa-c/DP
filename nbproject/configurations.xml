@@ -16,6 +16,7 @@
         <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/io/ImageLoader.h</itemPath>
       </logicalFolder>
       <logicalFolder name="RenderPass" displayName="RenderPass" projectFiles="true">
+        <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/RenderPass/BasicTexturingRenderPass.h</itemPath>
         <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/RenderPass/BundlerPointsRenderPass.h</itemPath>
         <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/RenderPass/RenderPass.h</itemPath>
         <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/RenderPass/TexturingRenderPass.h</itemPath>
@@ -63,8 +64,9 @@
                    kind="IMPORTANT_FILES_FOLDER">
       <itemPath>Makefile</itemPath>
       <itemPath>shaders/basic.frag</itemPath>
-      <itemPath>shaders/basic.geom</itemPath>
       <itemPath>shaders/basic.vert</itemPath>
+      <itemPath>shaders/texturing.frag</itemPath>
+      <itemPath>shaders/texturing.vert</itemPath>
     </logicalFolder>
   </logicalFolder>
   <sourceRootList>
@@ -113,6 +115,11 @@
             flavor2="0">
       </item>
       <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/Radar.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/RenderPass/BasicTexturingRenderPass.h"
             ex="false"
             tool="3"
             flavor2="0">
@@ -285,6 +292,11 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/RenderPass/BasicTexturingRenderPass.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/RenderPass/BundlerPointsRenderPass.h"
             ex="false"
             tool="3"
@@ -438,6 +450,11 @@
             flavor2="0">
       </item>
       <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/Radar.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/RenderPass/BasicTexturingRenderPass.h"
             ex="false"
             tool="3"
             flavor2="0">
