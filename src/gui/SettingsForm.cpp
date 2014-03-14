@@ -10,6 +10,7 @@
 
 SettingsForm::SettingsForm(GLWidget * glw) : glWidget(glw)  {
 	setAttribute(Qt::WA_NoMousePropagation); //not working TODO
+	glWidget->setFocusPolicy(Qt::NoFocus);	
 	widget.setupUi(this);
 	
 	
@@ -22,6 +23,7 @@ SettingsForm::SettingsForm(GLWidget * glw) : glWidget(glw)  {
 }
 
 SettingsForm::~SettingsForm() {
+	glWidget->setFocusPolicy(Qt::StrongFocus);	
 }
 
 void SettingsForm::acceptCB() {

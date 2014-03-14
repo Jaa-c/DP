@@ -112,6 +112,7 @@ bool GLWidget::eventFilter(QObject *, QEvent *event) {
 		{
 			QMouseEvent *e = (QMouseEvent *) event;
 			controlls->mouseButtonChanged(e->buttons());
+			break;
 		}
 		case QEvent::KeyPress:
 		{

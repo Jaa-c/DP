@@ -94,7 +94,8 @@ void main() {
 	//color.r = coords.x / 2400;
 	//color.g = coords.y / 3200;
 	//color.b = 0;
-	//if(In.v_texIndex == 1) color.r += .5f;
+	if(In.v_texIndex == 0) color.r += .2f;
+	if(In.v_texIndex == 1) color.g += .2f;
 		
 	a_FragColor = vec4(color, 1.0f);
 }
