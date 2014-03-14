@@ -22,15 +22,12 @@ void GLWidget::paintGL() {
 		glm::vec3 viewDir = object->getCentroidPosition() + camera.getCameraPosition();		
 		textureHandler->updateTextures(viewDir, object->mvm, tmpCameras);
 		
-		if(camera.isCameraStatic()) {
-			//todo!!
-		}
-		else {
-			object->textures = &textureHandler->getTextures();
-		}
+//		if(camera.isCameraStatic()) {
+//			//todo!!
+//		}
+		//object->textures = &textureHandler->getTextures();
 
 		renderPassHandler.draw(object);
-
 		glUseProgram(0);
 
 		if(displayRadar) {
@@ -126,12 +123,19 @@ bool GLWidget::eventFilter(QObject *, QEvent *event) {
 }
 
 void GLWidget::addRenderPass(RenderPass::RenderPassType pass) {
+	assert(textureHandler); //otherwise logic is wrong
 	switch(pass) {
 		case RenderPass::TEXTURING_PASS:
-			renderPassHandler.add(RenderPass::TEXTURING_PASS, new TexturingRenderPass(&renderer, &shaderHandler));
+			renderPassHandler.add(
+				RenderPass::TEXTURING_PASS, 
+				new TexturingRenderPass(&renderer, &shaderHandler, textureHandler)
+			);
 			break;
 		case RenderPass::BUNDLER_POINTS_PASS:
-			renderPassHandler.add(RenderPass::BUNDLER_POINTS_PASS, new BundlerPointsRenderPass(&renderer, &shaderHandler));
+			renderPassHandler.add(
+				RenderPass::BUNDLER_POINTS_PASS,
+				new BundlerPointsRenderPass(&renderer, &shaderHandler, textureHandler)
+			);
 			break;
 		default:
 			return;

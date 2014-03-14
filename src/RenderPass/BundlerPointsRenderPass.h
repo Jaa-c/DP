@@ -14,8 +14,8 @@ class BundlerPointsRenderPass : public RenderPass {
 		
 public:
 	
-	BundlerPointsRenderPass(Renderer *r, ShaderHandler *sh) : 
-		RenderPass(TEXTURING_PASS, r, sh)
+	BundlerPointsRenderPass(Renderer *r, ShaderHandler *sh, TextureHandler *th) : 
+		RenderPass(TEXTURING_PASS, r, sh, th)
 	{	
 		shader = ShaderHandler::SHADER_POINTS;
 	}

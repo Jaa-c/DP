@@ -28,15 +28,17 @@ MainWindow::MainWindow(QApplication *app, int w, int h) {
 }
 
 void MainWindow::initAppState() {
-	//Initial state of application
-	texturingRP->setChecked(true);
-	displayRadar->setChecked(true);
-	
+
 //	glWidget->createScene(
 //		"/home/jaa/Documents/FEL/DP/data/statue/statue.obj",
 //		"/home/jaa/Documents/FEL/DP/data/statue/bundle.out",
 //		"/home/jaa/Documents/FEL/DP/data/statue/photos/"
 //	);
+}
+
+void MainWindow::initScene() {
+	texturingRP->setChecked(true);
+	displayRadar->setChecked(true);
 }
 
 void MainWindow::createActions() {
@@ -99,6 +101,7 @@ void MainWindow::reloadShadersCB() {
 void MainWindow::openCB() {
 	OpenForm form(glWidget);
 	form.exec();
+	initScene();
 }
 
 void MainWindow::displaySettingsCB() {

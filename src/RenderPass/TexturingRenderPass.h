@@ -17,8 +17,8 @@ class TexturingRenderPass : public RenderPass {
 	
 public:
 	
-	TexturingRenderPass(Renderer *r, ShaderHandler *sh) : 
-		RenderPass(TEXTURING_PASS, r, sh)
+	TexturingRenderPass(Renderer *r, ShaderHandler *sh, TextureHandler *th) : 
+		RenderPass(TEXTURING_PASS, r, sh, th)
 	{	
 		shader = ShaderHandler::SHADER_BASIC;
 		textureDataUB = GL_ID_NONE;
@@ -29,11 +29,12 @@ public:
 	}
 	
 	void draw(ObjectData *object) {
-		
+				
 		const uint sizeOfTextureData = sizeof(glm::mat4) + sizeof(glm::ivec2) + sizeof(float);
 		if(programID == GL_ID_NONE) {
 			programID = shaderHandler->getProgramId(shader);
 			getDefaultUniformLocations();
+			
 			textureCount = glGetUniformLocation(programID, "u_textureCount");
 			textureDataUB = GL_ID_NONE;
 			
@@ -57,10 +58,10 @@ public:
 		
 		assert(programID != GL_ID_NONE);
 		//assert(textureDataUB != GL_ID_NONE); //no need to crash on shader error :)
-		
 		glUseProgram(programID);
 		
-		std::vector<Texture> * textures = object->textures;
+		assert(textureHandler);
+		std::vector<Texture> * textures = &textureHandler->getTextures();
 		
 		//this needs optimization later!!
 		if(textureDataUB != GL_ID_NONE) {

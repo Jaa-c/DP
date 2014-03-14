@@ -65,6 +65,7 @@ public:
 	GLuint normalsID;
 	GLuint indicesID;
 	
+	/// deprecated
 	std::vector<Texture> * textures;
 	PointData * pointData;
 	

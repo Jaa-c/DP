@@ -40,7 +40,9 @@ public:
 	
 protected:
 	const RenderPassType type;
+	
 	ShaderHandler *shaderHandler;
+	TextureHandler *textureHandler;
 	Renderer *renderer;
 	
 	ShaderHandler::ShaderType shader;
@@ -49,8 +51,14 @@ protected:
 	
 	GLuint programID;
 	
-	RenderPass(RenderPassType type, Renderer *r, ShaderHandler *s) : type(type), programID(GL_ID_NONE) {
+	RenderPass(
+		RenderPassType type, 
+		Renderer *r, 
+		ShaderHandler *s, 
+		TextureHandler *t
+	) : type(type), programID(GL_ID_NONE) {
 		shaderHandler = s;
+		textureHandler = t;
 		renderer = r;
 	}
 	

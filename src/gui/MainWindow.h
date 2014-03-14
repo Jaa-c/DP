@@ -34,6 +34,7 @@ private slots:
 
 private:
 	void initAppState();
+	void initScene();
 	
 	void createActions();
 	void createMenus();
