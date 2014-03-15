@@ -10,13 +10,56 @@
 #include "gui/MainWindow.h"
 
 #include <QApplication>
+#include <QtGui/qerrormessage.h>
+
+class MyApplication : public QApplication {
+
+public:
+	QErrorMessage *err;
+	MyApplication(int & argc, char ** argv) : QApplication(argc, argv) {
+		err = new QErrorMessage();
+	}
+	~MyApplication() {
+		DELETE(err);
+	}
+	
+	void handleError(std::exception_ptr eptr) {
+		std::string msg;
+		try {
+			if (eptr != std::exception_ptr()) {
+				std::rethrow_exception(eptr);
+			}
+		} catch(const std::exception& e) {
+			msg = std::string(e.what());
+		}
+		catch(const char* e) {
+			msg = e;
+		}
+		catch(...) {
+			msg = "unknow exception";			
+		}
+		msg = "Unexpected error: " + msg;
+		err->showMessage(msg.c_str());
+		Log::e(msg);
+	}
+	
+	virtual bool notify(QObject * receiver, QEvent * event) {
+		try {
+			return QApplication::notify(receiver, event);
+		} catch (...) {
+			handleError(std::current_exception());
+		}
+		return false;
+	}
+
+};
 
 int main(int argc, char** argv) {
 	const char *window_title = "View dependent texturing";
 	const int width = 1000;
 	const int height = 800;
 		
-	QApplication app(argc, argv);
+	MyApplication app(argc, argv);
     
 	MainWindow window(&app, width, height);
 	window.setWindowTitle(window_title);
