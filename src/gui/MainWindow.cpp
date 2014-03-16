@@ -30,14 +30,14 @@ MainWindow::MainWindow(QApplication *app, int w, int h) {
 void MainWindow::initAppState() {
 
 //	glWidget->createScene(
-//		"/home/jaa/Documents/FEL/DP/data/statue/statue.obj",
-//		"/home/jaa/Documents/FEL/DP/data/statue/bundle.out",
-//		"/home/jaa/Documents/FEL/DP/data/statue/photos/"
+//		"/home/jaa/Documents/FEL/DP/data/debug/statue.obj",
+//		"/home/jaa/Documents/FEL/DP/data/debug/bundle.out",
+//		"/home/jaa/Documents/FEL/DP/data/debug/photos/"
 //	);
 }
 
 void MainWindow::initScene() {
-	basicTexturingRP->setChecked(true);
+	texturingRP->setChecked(true);
 	displayRadar->setChecked(true);
 }
 

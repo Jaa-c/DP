@@ -23,11 +23,6 @@ void GLWidget::paintGL() {
 		glm::vec3 viewDir = object->getCentroidPosition() + camera.getCameraPosition();		
 		textureHandler->updateTextures(viewDir, object->mvm, tmpCameras);
 		
-//		if(camera.isCameraStatic()) {
-//			//todo!!
-//		}
-		//object->textures = &textureHandler->getTextures();
-
 		renderPassHandler.draw(object);
 		glUseProgram(0);
 

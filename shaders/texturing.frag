@@ -11,6 +11,7 @@ layout(std140) uniform u_textureDataBlock {
 };
 uniform int u_textureCount;
 
+uniform int u_textureIndices[32];
 uniform sampler2DRect u_texture0[32];
 
 in block {
@@ -56,11 +57,12 @@ void main() {
 	float specular = pow(max(dot(R, E), 0.0f), 256.0f);
 
 	vec2 coords;
-	projectCoords(In.v_texIndex, In.v_position, coords);
+	int index = u_textureIndices[0]; //In.v_texIndex
+
+	projectCoords(index, In.v_position, coords);
+	vec3 col = texture2DRect(u_texture0[index], coords).rgb;
 	
-	vec3 col = texture2DRect(u_texture0[In.v_texIndex], coords).rgb;
-	
-	if(!inRange(In.v_texIndex, coords)) {
+	if(false && !inRange(In.v_texIndex, coords)) {
 		Pair p[32];
 		for(int i = 0; i < u_textureCount; ++i) {
 			TextureData data = ub_texData[i];
@@ -94,8 +96,8 @@ void main() {
 	//color.r = coords.x / 2400;
 	//color.g = coords.y / 3200;
 	//color.b = 0;
-	if(In.v_texIndex == 0) color.r += .2f;
-	if(In.v_texIndex == 1) color.g += .2f;
+	//if(In.v_texIndex == 0) color.r += .2f;
+	//if(In.v_texIndex == 1) color.g += .2f;
 		
 	a_FragColor = vec4(color, 1.0f);
 }

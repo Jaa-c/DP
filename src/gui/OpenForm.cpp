@@ -14,9 +14,12 @@ OpenForm::OpenForm(GLWidget * glw) : glWidget(glw) {
 	openForm.setupUi(this);
 	
 	//DEBUG TEMP
-	openForm.geometryPath->setText("/home/jaa/Documents/FEL/DP/data/statue/statue.obj");
-	openForm.bundlerPath->setText("/home/jaa/Documents/FEL/DP/data/statue/bundle.out");
-	openForm.photosPath->setText("/home/jaa/Documents/FEL/DP/data/statue/photos/");	
+//	openForm.geometryPath->setText("/home/jaa/Documents/FEL/DP/data/statue/statue.obj");
+//	openForm.bundlerPath->setText("/home/jaa/Documents/FEL/DP/data/statue/bundle.out");
+//	openForm.photosPath->setText("/home/jaa/Documents/FEL/DP/data/statue/photos/");	
+	openForm.geometryPath->setText("/home/jaa/Documents/FEL/DP/data/debug/statue.obj");
+	openForm.bundlerPath->setText("/home/jaa/Documents/FEL/DP/data/debug/bundle.out");
+	openForm.photosPath->setText("/home/jaa/Documents/FEL/DP/data/debug/photos/");	
 }
 
 OpenForm::~OpenForm() {

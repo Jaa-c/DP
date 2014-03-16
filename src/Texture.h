@@ -64,6 +64,13 @@ public:
 		return photo->size;
 	}
 	
+	friend std::ostream & operator << (std::ostream& os, const Texture &tex) {
+		os  << "Texture{unit=" << tex.unit << ", textureID=" << tex.textureID 
+			<< ", samplerId=" << tex.samplerID << ", photo.ID=" << tex.photo->ID 
+			<< "}\n";
+		return os;
+	}
+	
 };
 
 

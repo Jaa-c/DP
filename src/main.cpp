@@ -18,6 +18,7 @@ public:
 	QErrorMessage *err;
 	MyApplication(int & argc, char ** argv) : QApplication(argc, argv) {
 		err = new QErrorMessage();
+		err->setModal(true);
 	}
 	~MyApplication() {
 		DELETE(err);

@@ -52,6 +52,9 @@ class TextureHandler {
 	
 	std::vector<Texture> textures;
 	
+	/// indices of the best textures in the texture array bound to the shader
+	std::vector<int> bestTexIdx;
+	
 public:	
 	TextureHandler(const std::vector<CameraPosition> &cameras, const std::vector<ImageData> &imgData) {
 		
@@ -70,17 +73,25 @@ public:
 	
 	//TODO SLOW, but not priority
 	void updateTextures(const glm::vec3 & dir, const glm::mat4 &mvm, const uint count) {
-		std::set<Photo*> currentPhotos = getClosestCameras(dir, mvm, count);
+		std::vector<Photo*> currentPhotos = getClosestCameras(dir, mvm, count);
+		//std::cout << "\nbest photo id : " << (*currentPhotos.begin())->ID << "\n";
+		
+		int i = 0;
+		bestTexIdx.clear();
+		bestTexIdx.resize(std::max(count, (uint) textures.size()));
 		
 		for(auto it = currentPhotos.begin(); it != currentPhotos.end(); ) {
 			bool erased = false;
+			bestTexIdx[i] = -1;
 			//compare textures and current photos
 			//if there is a match - OK, remove photo, no need to change texture
 			for(auto &tex : textures) {
 				if((*it)->ID == tex.photo->ID) {
 					(*it)->current = true;
-					currentPhotos.erase(it++);
+					currentPhotos.erase(it);
 					erased = true;
+					bestTexIdx[i] = tex.unit;//TODO: check!!
+					i++;
 					break;
 				}
 			}
@@ -105,20 +116,26 @@ public:
 			++it;
 		}
 		
+		i = 0;
 		for(auto p : currentPhotos) {
 			textures.push_back(Texture(GL_TEXTURE_RECTANGLE, textures.size(), p));
-		}
-	
+			while(bestTexIdx[i] != -1) i++;
+			bestTexIdx[i] = textures.at(textures.size()-1).unit;
+		}	
 	}
 	
 	std::vector<Texture> & getTextures() {
 		return textures;
 	}
 	
+	std::vector<int> & getBestTexIdx() {
+		return bestTexIdx;
+	}
+	
 private:
 	//TODO SLOW, this is just a stupid version
 	//but not major problem for now
-	std::set<Photo*> getClosestCameras(const glm::vec3 & dir, const glm::mat4 &mvm, const uint count) {
+	std::vector<Photo*> getClosestCameras(const glm::vec3 & dir, const glm::mat4 &mvm, const uint count) {
 		
 		const glm::mat4 vecMat = glm::inverse(glm::transpose(mvm));
 		
@@ -135,7 +152,7 @@ private:
 		}
 		auto beg = result.begin();
 		std::advance(beg, count);
-		return std::set<Photo*>(result.begin(), beg);
+		return std::vector<Photo*>(result.begin(), beg);
 	}
 
 
