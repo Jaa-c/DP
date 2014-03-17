@@ -78,8 +78,8 @@ public:
 	}
 	
 	void drawPointData(ObjectData &data) {
-		PointData * points = data.pointData;
-		if(!points) {
+		std::shared_ptr<PointData> points = data.pointData;
+		if(points == nullptr) {
 			return; 
 		}
 		

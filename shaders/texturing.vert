@@ -22,7 +22,7 @@ out block {
 	smooth vec4 v_position;
 	smooth vec4 v_viewPos;
 	smooth vec3 v_normal;
-	flat   int	v_texIndex;
+	//flat   int	v_texIndex;
 } Out;
 
 void main () {
@@ -30,7 +30,7 @@ void main () {
 	Out.v_position =  vec4(a_position, 1.0f);
 	Out.v_viewPos = u_ModelViewMatrix * Out.v_position;
 	Out.v_normal = a_normal;
-	
+	/*
 	TextureData data;
 	Out.v_texIndex = 0;
 	float bestDot = -1.0f;
@@ -42,7 +42,7 @@ void main () {
 			bestDot = dotp;
 			Out.v_texIndex = i;
 		}
-	}
+	}*/
 
 	gl_Position = u_ProjectionMatrix * Out.v_viewPos;
 }

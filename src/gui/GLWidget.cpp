@@ -4,6 +4,7 @@
 #include "../RenderPass/BasicTexturingRenderPass.h"
 #include "../RenderPass/TexturingRenderPass.h"
 #include "../RenderPass/BundlerPointsRenderPass.h"
+#include "../io/CalibrationLoader.h"
 #include "../io/ImageLoader.h"
 
 #include <QtGui/QMouseEvent>
@@ -58,14 +59,17 @@ void GLWidget::createScene(std::string geom, std::string bundler, std::string ph
 	};
 	
 	try {
-		ImageLoader imgLoader(photos, prgcb);
-		BundlerParser bundlerData(bundler);
-		textureHandler = new TextureHandler(bundlerData.parseFile(), imgLoader.getData());
+		//ImageLoader imgLoader(photos, prgcb);
+		//BundlerParser bundlerData(bundler);
+		//textureHandler = new TextureHandler(bundlerData.parseFile(), imgLoader.getData());
+		textureHandler = new TextureHandler();
+		CalibrationLoader cl(textureHandler, prgcb);
+		cl.loadData(bundler, photos);
 		
 		object = new ObjectData(geom);
 		object->mvm = glm::rotate(object->mvm, 180.f, glm::vec3(1.0f, 0.0f, 0.0f));
-		object->pointData = new PointData(textureHandler->getPhotos(), bundlerData.getPoints(), object->getCentroid());
-
+		object->pointData = cl.getPointData();
+		
 		radar = new Radar(object, &camera, controlls);
 		radar->setPosition(10, 10, 250, 250);
 		

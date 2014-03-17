@@ -48,6 +48,8 @@ struct Photo {
 #include "Texture.h" //TODO!
 
 class TextureHandler {
+	friend class CalibrationLoader; //loads data into photos w/out exposing it as public
+	
 	std::vector<Photo> photos;
 	
 	std::vector<Texture> textures;
@@ -56,6 +58,8 @@ class TextureHandler {
 	std::vector<int> bestTexIdx;
 	
 public:	
+	TextureHandler() {}
+	
 	TextureHandler(const std::vector<CameraPosition> &cameras, const std::vector<ImageData> &imgData) {
 		
 		photos.reserve(cameras.size());

@@ -105,7 +105,7 @@ public:
 		createRaws(progress); 
 		
 		/// preload all images
-		/// this is not neccessary, image can be loaded on demand
+		/// this is not neccessary, image can be loaded on demand (too slow))
 		loadImages(progress); 
 	}
 	

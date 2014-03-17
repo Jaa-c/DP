@@ -25,13 +25,12 @@ private:
 public:
 	GLuint pointsVBO;
 	GLuint camPosVBO;
-	PointData(const std::vector<Photo> &photos, const Points &bundlerPoints, glm::vec3 centroid) : pointsVBO(GL_ID_NONE), camPosVBO(GL_ID_NONE) {
+	PointData(const std::vector<Photo> &photos, const Points &bundlerPoints) : pointsVBO(GL_ID_NONE), camPosVBO(GL_ID_NONE) {
 		for(auto &photo : photos) {
 			glm::vec3 v = -1 * glm::transpose(photo.camera.rotate) * photo.camera.translate;
 			cameraPos.push_back(v);
 			cameraDirections.push_back(photo.camera.getDirection());
 		}
-		cameraPos.push_back(centroid);
 		pointData = bundlerPoints;
 	}
 	
@@ -67,7 +66,7 @@ public:
 	
 	/// deprecated
 	std::vector<Texture> * textures;
-	PointData * pointData;
+	std::shared_ptr<PointData> pointData;
 	
 	glm::mat4 mvm;
 	
@@ -89,7 +88,7 @@ public:
 	}
 	
 	~ObjectData() {
-		if(pointData) delete pointData;
+		pointData.reset();
 	}
 	
 	const std::vector<GLuint> & getIndices() const {
