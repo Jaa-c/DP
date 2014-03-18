@@ -15,6 +15,8 @@
 class Rz3Parser {
 	const string calibFile;
 	const string imageFile;
+	const string imageFolder;
+	ImageLoader &imgLoader;
 		
 	void rewriteSS(std::stringstream &ss, string &line) {
 		ss.str("");
@@ -23,8 +25,8 @@ class Rz3Parser {
 	}
 	
 public:
-	Rz3Parser(const string cf, const string imf) 
-		: calibFile(cf), imageFile(imf) {}
+	Rz3Parser(ImageLoader &imgLoader, const string cf, const string imfile, const string imfolder) 
+		: imgLoader(imgLoader), calibFile(cf), imageFile(imfile), imageFolder(imfolder) {}
 		
 	/// current gcc doesn't support C++11 regex :/, so it's stupid:
 	std::vector<Photo> parseFile() {
@@ -42,7 +44,6 @@ public:
 			fileList.insert({id, img});
 		}		
 		
-		
 		std::ifstream infile(calibFile.c_str());
 		while(true) {
 			std::getline(infile, line);
@@ -52,6 +53,8 @@ public:
 		}
 		
 		int i, iSize, iStep;
+		
+		imgLoader->setExpectedCount(iSize / (float) iStep);
 		
 		while(true) {
 			std::getline(infile, line);
@@ -120,8 +123,11 @@ public:
 			std::getline(infile, line);
 			
 			//-----------
-			
-			
+			string name = fileList.at(i);
+			ImageData img(name);
+			if(imgLoader.loadImage(imageFolder, name, img)) {
+				data.push_back(Photo(i, img.image, img.size, cam));
+			}
 			
 		}		
 	
