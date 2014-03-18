@@ -29,10 +29,13 @@ public:
 		
 		std::string ext = calibrationFile.substr(calibrationFile.find_last_of(".") + 1);
 		
+		ImageLoader imgLoader(progress);
+		
 		if(ext == "out") { //expected bundler file
-			ImageLoader imgLoader(progress);
+			
 			BundlerParser bundlerData(calibrationFile);
 			const std::vector<CameraPosition> cameras = bundlerData.parseFile();
+			imgLoader.setExpectedCount(cameras.size());
 			const std::vector<ImageData> imgData = imgLoader.loadAllImages(photosFolder);
 			
 			outPhotos.reserve(cameras.size());
