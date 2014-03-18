@@ -13,10 +13,10 @@
 #include <map>
 
 class Rz3Parser {
+	ImageLoader &imgLoader;
 	const string calibFile;
 	const string imageFile;
 	const string imageFolder;
-	ImageLoader &imgLoader;
 		
 	void rewriteSS(std::stringstream &ss, string &line) {
 		ss.str("");
@@ -54,7 +54,7 @@ public:
 		
 		int i, iSize, iStep;
 		
-		imgLoader->setExpectedCount(iSize / (float) iStep);
+		imgLoader.setExpectedCount(iSize / (float) iStep);
 		
 		while(true) {
 			std::getline(infile, line);

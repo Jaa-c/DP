@@ -43,7 +43,13 @@ void GLWidget::paintGL() {
 	this->update(); //TODO
 }
 
-void GLWidget::createScene(std::string geom, std::string bundler, std::string photos) {
+void GLWidget::createScene(
+		std::string geom, 
+		std::string photos, 
+		CalibrationLoader::FileType type,
+		std::string file1,
+		std::string file2)
+{
 	DELETE(textureHandler);
 	DELETE(object);
 	DELETE(radar);
@@ -64,7 +70,7 @@ void GLWidget::createScene(std::string geom, std::string bundler, std::string ph
 		//textureHandler = new TextureHandler(bundlerData.parseFile(), imgLoader.getData());
 		textureHandler = new TextureHandler();
 		CalibrationLoader cl(textureHandler, prgcb);
-		cl.loadData(bundler, photos);
+		cl.loadData(type, photos, file1, file2);
 		
 		object = new ObjectData(geom);
 		object->mvm = glm::rotate(object->mvm, 180.f, glm::vec3(1.0f, 0.0f, 0.0f));

@@ -41,10 +41,23 @@ void OpenForm::acceptCB() {
 		
 		QApplication::setOverrideCursor(Qt::WaitCursor);
 		
+		CalibrationLoader::FileType type = (CalibrationLoader::FileType) openForm.tabWidget->currentIndex();
+		
+		std::string file1, file2("");
+		if(type == CalibrationLoader::FileType::BUNDLER) {
+			file1 = openForm.bundlerPath->text().toStdString();
+		}
+		else if(type == CalibrationLoader::FileType::RZ3) {
+			file1 = openForm.rz3Path->text().toStdString();
+			file2 = openForm.rz3Images->text().toStdString();
+		}
+		
 		glWidget->createScene(
 			openForm.geometryPath->text().toStdString(), 
-			openForm.bundlerPath->text().toStdString(), 
-			openForm.photosPath->text().toStdString()
+			openForm.photosPath->text().toStdString(),
+			type,
+			file1,
+			file2
 		);
 		
 		QApplication::restoreOverrideCursor();
@@ -80,4 +93,20 @@ void OpenForm::openPhotosCB() {
 	if(!path.isEmpty()) {
 		openForm.photosPath->setText(path);
 	}
+}
+
+
+void OpenForm::openRz3FileCB() {
+	QString fileName = QFileDialog::getOpenFileName(this, tr("Open rz3 file"), "", tr("rz3 (*.rz3)"));
+	if(!fileName.isEmpty()) {
+		openForm.rz3Path->setText(fileName);
+	}
+
+}
+void OpenForm::openRz3ImageFileCB() {
+	QString fileName = QFileDialog::getOpenFileName(this, tr("Open images file"), "", tr("Text file (*.*)"));
+	if(!fileName.isEmpty()) {
+		openForm.rz3Images->setText(fileName);
+	}
+
 }

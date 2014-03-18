@@ -25,6 +25,8 @@ private slots:
 	void openGeometryCB();
 	void openBundlerCB();
 	void openPhotosCB();
+	void openRz3FileCB();
+	void openRz3ImageFileCB();
 	
 private:
 	Ui::OpenForm openForm;

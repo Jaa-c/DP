@@ -17,11 +17,13 @@
 #include "../Renderer.h"
 #include "../Controlls.h"
 #include "../Radar.h"
+#include "../io/CalibrationLoader.h"
 
 #include "../RenderPassHandler.h"
 
 #include <QtOpenGL/QGLContext>
 #include <QtOpenGL/QGLWidget>
+
 
 class GLWidget : public QGLWidget
 {
@@ -51,7 +53,12 @@ public:
     GLWidget(const QGLFormat& format, int w, int h, QWidget* parent = 0 );
 	~GLWidget();
 	
-	void createScene(std::string geom, std::string bundler, std::string photos);
+	void createScene(
+		std::string geom, 
+		std::string photos, 
+		CalibrationLoader::FileType type,
+		std::string file1,
+		std::string file2 = "");
 	
 	virtual bool eventFilter(QObject *obj, QEvent *event);
 	
