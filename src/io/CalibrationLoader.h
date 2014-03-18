@@ -8,6 +8,9 @@
 #ifndef CALIBRATIONLOADER_H
 #define	CALIBRATIONLOADER_H
 
+#include "ImageLoader.h"
+
+
 class CalibrationLoader {
 	std::vector<Photo> &outPhotos;
 	//only from bundler data
@@ -27,22 +30,20 @@ public:
 		std::string ext = calibrationFile.substr(calibrationFile.find_last_of(".") + 1);
 		
 		if(ext == "out") { //expected bundler file
-			ImageLoader imgLoader(photosFolder, progress);
+			ImageLoader imgLoader(progress);
 			BundlerParser bundlerData(calibrationFile);
 			const std::vector<CameraPosition> cameras = bundlerData.parseFile();
-			const std::vector<ImageData> imgData = imgLoader.getData();
+			const std::vector<ImageData> imgData = imgLoader.loadAllImages(photosFolder);
 			
 			outPhotos.reserve(cameras.size());
 			for(uint i = 0; i < cameras.size(); ++i) {
-				const ImageData *img = &imgData.at(i);
-				const CameraPosition *cp = &cameras.at(i);
-				outPhotos.push_back(Photo(i, img->image, img->size, *cp));
+				const ImageData &img = imgData.at(i);
+				const CameraPosition &cp = cameras.at(i);
+				outPhotos.push_back(Photo(i, img.image, img.size, cp));
 			}
 			
 			pointData = std::shared_ptr<PointData>(new PointData(outPhotos, bundlerData.getPoints()));
 
-		
-		
 		} else if(ext == "rz3") {
 			
 		

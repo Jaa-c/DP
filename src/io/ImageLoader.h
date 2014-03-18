@@ -15,115 +15,96 @@
 #include "DataLoader.h"
 
 struct ImageData {
+	std::string path;
 	Image image;
 	glm::ivec2 size;
+	
+	ImageData(const std::string &path) : path(path) {}
 };
 
 class ImageLoader {
-	std::vector<ImageData> data;
-	std::vector<std::string> jpgPaths;
-	std::vector<std::string> rawPaths;
-	
-	const std::string folder;
-	
+	std::function<void(int)> progress;
+		
 	const std::string RAW = "raw";
 	const std::string JPG = "jpg";
 	
-	void readDirectory(const std::string& path) {
+	std::vector<ImageData> readDirectory(const std::string& path) {
+		std::vector<ImageData> data;
 		dirent* de;
 		DIR* dp;
 		dp = opendir(path.c_str());
 		if (dp) {
 			while ((de = readdir(dp)) != NULL) {
 				std::string name(de->d_name);
-					if(name.length() > 3) {
-					std::string sfx = name.substr(name.length()-3, 3);
-					std::transform(sfx.begin(), sfx.end(), sfx.begin(), ::tolower);
-					if(sfx == JPG) {
-						jpgPaths.push_back(name.substr(0, name.length()-3));
-					}
-					if(sfx == RAW) {
-						rawPaths.push_back(name.substr(0, name.length()-3));
-					}
+				if(name.length() > 3) {
+					ImageData id(name);
+					loadImage(path + name, id);
+					data.push_back(id);
+	//				if(progress) {
+	//					progress((int) (100 / (float) jpgPaths.size() + .5f));
+	//				}
 				}
 			}
 			closedir(dp);
-			std::sort(jpgPaths.begin(), jpgPaths.end());
-			std::sort(rawPaths.begin(), rawPaths.end());
-		}
-	}
-	
-	void createRaws(std::function<void(int)> progress = NULL) {
-		if(rawPaths.size() != jpgPaths.size()) {
-			for(uint i = 0; i < jpgPaths.size(); ++i) {
-				const std::string name = folder + jpgPaths[i];
-				ImageData& id = data[i];
-				if(!DataLoader::fileExists(name + RAW)) {
-					DataLoader::loadJPEG(name + JPG, id.image, id.size.x, id.size.y);
-					assert(id.image.size() == (uint) id.size.x * id.size.y * 3);
-					
-					//this should be probbably elsewhere
-					std::fstream binaryFile(name + RAW, std::ios::out | std::ios::binary);
-					binaryFile.write((char *) &id.size.x, sizeof(id.size));
-					binaryFile.write((char *) &id.image[0], 3 * sizeof(rgb) * id.image.size());
-					binaryFile.close();
-					Log::i("Created file: " + name + RAW);
-					if(progress) {
-						progress((int) (100 / (float) jpgPaths.size() + .5f));
-					}
+			std::sort(data.begin(), data.end(), 
+				[] (const ImageData &a, const ImageData &b) {
+					return a.path < b.path;
 				}
-			}
+			);
 		}
-		rawPaths = jpgPaths;
-	}
-	
-	/// this expects that every jpg has raw equivalent
-	void loadImages(std::function<void(int)> progress = NULL) {
-		assert(rawPaths.size() == jpgPaths.size());
-		for(uint i = 0; i < rawPaths.size(); ++i) {
-			const std::string name = folder + rawPaths[i] + RAW;
-			ImageData& id = data[i];
-			if(id.image.empty()) {
-				DataLoader::loadRAW(name, id.image, id.size.x, id.size.y);
-				if(progress) {
-					progress((int) (100 / (float) rawPaths.size() + .5f));
-				}
-			}
-		}
-	}
-	
-public:
-	ImageLoader(const std::string folder, std::function<void(int)> progress = NULL) : folder(folder + "/") {
-		readDirectory(folder);
-		data.resize(jpgPaths.size()); //same number of images as cameras
-		
-		if(data.empty()) {
-			throw "No jpg or raw images in folder:\n " + folder;
-		}
-		
-		/// convert all the jpegs to raws for faster loading
-		createRaws(progress); 
-		
-		/// preload all images
-		/// this is not neccessary, image can be loaded on demand (too slow))
-		loadImages(progress); 
-	}
-	
-	const std::vector<ImageData> & getData() const {
 		return data;
 	}
 	
-	ImageData * getImage(uint camID) {
-		if(camID > data.size()) {
-			return NULL;
-		}
-		ImageData& id = data[camID];
-		if(id.image.empty()) {
-			DataLoader::loadJPEG(folder + jpgPaths[camID] + JPG, id.image, id.size.x, id.size.y);
+	void loadImage(const std::string path, ImageData& id) {
+		std::string raw = path.substr(0, path.length()-3);
+		raw += RAW;
+		if(!DataLoader::fileExists(raw)) {
+			std::string sfx = path.substr(path.length()-3, 3);
+			std::transform(sfx.begin(), sfx.end(), sfx.begin(), ::tolower);
+			if(sfx != JPG) {
+				throw string("Unsupported image format: ") + path;
+			}
+			DataLoader::loadJPEG(path, id.image, id.size.x, id.size.y);
 			assert(id.image.size() == (uint) id.size.x * id.size.y * 3);
+
+			//this should be probbably elsewhere
+			std::fstream binaryFile(raw, std::ios::out | std::ios::binary);
+			binaryFile.write((char *) &id.size.x, sizeof(id.size));
+			binaryFile.write((char *) &id.image[0], 3 * sizeof(rgb) * id.image.size());
+			binaryFile.close();
+			Log::i("Created file: " + raw);
+			
 		}
-		return &data[camID];
+		else {
+			DataLoader::loadRAW(raw, id.image, id.size.x, id.size.y);
+		}	
+	
 	}
+	
+public:
+	ImageLoader(std::function<void(int)> progress = NULL) {
+		this->progress = progress;
+	}
+	
+	const std::vector<ImageData> loadAllImages(const std::string path) {
+		if(path.substr(path.length()-1, 1) != "/")
+			return readDirectory(path + "/");
+		else
+			return readDirectory(path);
+			
+	}
+	
+//	ImageData * getImage(uint camID) {
+//		if(camID > data.size()) {
+//			return NULL;
+//		}
+//		ImageData& id = data[camID];
+//		if(id.image.empty()) {
+//			DataLoader::loadJPEG(folder + jpgPaths[camID] + JPG, id.image, id.size.x, id.size.y);
+//			assert(id.image.size() == (uint) id.size.x * id.size.y * 3);
+//		}
+//		return &data[camID];
+//	}
 
 };
 

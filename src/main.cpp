@@ -8,6 +8,7 @@
 #include "globals.h"
 #include "gui/GLWidget.h"
 #include "gui/MainWindow.h"
+#include "io/Rz3Parser.h"
 
 #include <QApplication>
 #include <QtGui/qerrormessage.h>
@@ -56,6 +57,14 @@ public:
 };
 
 int main(int argc, char** argv) {
+	
+//	Rz3Parser p("/home/jaa/Documents/FEL/DP/data/dum/09_done.rz3", 
+//			"/home/jaa/Documents/FEL/DP/data/dum/09_pictures0_OK.txt");
+//	
+//	p.parseFile();
+//	return 0;
+	
+	
 	const char *window_title = "View dependent texturing";
 	const int width = 1000;
 	const int height = 800;

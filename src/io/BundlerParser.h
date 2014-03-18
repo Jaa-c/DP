@@ -8,45 +8,15 @@
 #ifndef BUNDLERPARSER_H
 #define	BUNDLERPARSER_H
 
-#include <vector>
+#include "parser.h"
 #include <set>
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <algorithm>
-#include <stdexcept>
-
-#include "../Log.h"
-#include "../TextureHandler.h"
-
-#include "glm/glm.hpp"
-#include "glm/core/type_mat3x3.hpp"
-
 
 class BundlerParser {
 	std::vector<glm::vec3> points;
 	const std::string file;
-	
-	// trim from start
-    static inline std::string &ltrim(std::string &s) {
-	    s.erase(s.begin(), std::find_if(s.begin(), s.end(), std::not1(std::ptr_fun<int, int>(std::isspace))));
-	    return s;
-    }
-
-    // trim from end
-    static inline std::string &rtrim(std::string &s) {
-	    s.erase(std::find_if(s.rbegin(), s.rend(), std::not1(std::ptr_fun<int, int>(std::isspace))).base(), s.end());
-	    return s;
-    }
-
-    // trim from both ends
-    static inline std::string &trim(std::string &s) {
-	    return ltrim(rtrim(s));
-    }
-	
-	
+		
 public:
-	BundlerParser(std::string file) : file(file) {}
+	BundlerParser(const std::string file) : file(file) {}
 	~BundlerParser() {}
 			
 	std::vector<CameraPosition> parseFile() {

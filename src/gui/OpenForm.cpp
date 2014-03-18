@@ -14,12 +14,18 @@ OpenForm::OpenForm(GLWidget * glw) : glWidget(glw) {
 	openForm.setupUi(this);
 	
 	//DEBUG TEMP
-//	openForm.geometryPath->setText("/home/jaa/Documents/FEL/DP/data/statue/statue.obj");
-//	openForm.bundlerPath->setText("/home/jaa/Documents/FEL/DP/data/statue/bundle.out");
-//	openForm.photosPath->setText("/home/jaa/Documents/FEL/DP/data/statue/photos/");	
-	openForm.geometryPath->setText("/home/jaa/Documents/FEL/DP/data/debug/statue.obj");
-	openForm.bundlerPath->setText("/home/jaa/Documents/FEL/DP/data/debug/bundle.out");
-	openForm.photosPath->setText("/home/jaa/Documents/FEL/DP/data/debug/photos/");	
+	switch(2) {
+		case 1:
+			openForm.geometryPath->setText("/home/jaa/Documents/FEL/DP/data/statue/statue.obj");
+			openForm.bundlerPath->setText("/home/jaa/Documents/FEL/DP/data/statue/bundle.out");
+			openForm.photosPath->setText("/home/jaa/Documents/FEL/DP/data/statue/photos/");	
+			break;
+		case 2:
+			openForm.geometryPath->setText("/home/jaa/Documents/FEL/DP/data/debug/statue.obj");
+			openForm.bundlerPath->setText("/home/jaa/Documents/FEL/DP/data/debug/bundle.out");
+			openForm.photosPath->setText("/home/jaa/Documents/FEL/DP/data/debug/photos/");
+			break;
+	}
 }
 
 OpenForm::~OpenForm() {

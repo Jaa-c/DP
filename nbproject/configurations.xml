@@ -15,6 +15,8 @@
         <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/io/CalibrationLoader.h</itemPath>
         <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/io/DataLoader.h</itemPath>
         <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/io/ImageLoader.h</itemPath>
+        <itemPath>src/io/Rz3Parser.h</itemPath>
+        <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/io/parser.h</itemPath>
       </logicalFolder>
       <logicalFolder name="RenderPass" displayName="RenderPass" projectFiles="true">
         <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/RenderPass/BasicTexturingRenderPass.h</itemPath>
@@ -235,9 +237,16 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/io/parser.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="src/gui/GLWidget.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/gui/MainWindow.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/io/Rz3Parser.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/main.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -413,9 +422,16 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/io/parser.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="src/gui/GLWidget.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/gui/MainWindow.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/io/Rz3Parser.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/main.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -580,9 +596,16 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/io/parser.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="src/gui/GLWidget.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/gui/MainWindow.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/io/Rz3Parser.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/main.cpp" ex="false" tool="1" flavor2="0">
       </item>
