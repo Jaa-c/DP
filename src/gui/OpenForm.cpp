@@ -12,9 +12,16 @@
 
 OpenForm::OpenForm(GLWidget * glw) : glWidget(glw) {
 	openForm.setupUi(this);
-	
+	openForm.tabWidget->setCurrentIndex(0);
 	//DEBUG TEMP
-	switch(2) {
+	switch(0) {
+		case 0:
+			openForm.geometryPath->setText("/home/jaa/Documents/FEL/DP/data/dum/dil09.obj");
+			openForm.photosPath->setText("/home/jaa/Documents/FEL/DP/data/dum/09");	
+			openForm.rz3Path->setText("/home/jaa/Documents/FEL/DP/data/dum/09_done.rz3");
+			openForm.rz3Images->setText("/home/jaa/Documents/FEL/DP/data/dum/09_pictures0_OK.txt");
+			openForm.tabWidget->setCurrentIndex(1);
+			break;
 		case 1:
 			openForm.geometryPath->setText("/home/jaa/Documents/FEL/DP/data/statue/statue.obj");
 			openForm.bundlerPath->setText("/home/jaa/Documents/FEL/DP/data/statue/bundle.out");
@@ -34,8 +41,11 @@ OpenForm::~OpenForm() {
 
 void OpenForm::acceptCB() {
 	if( openForm.geometryPath->text().length() > 0 && 
-		openForm.bundlerPath->text().length() > 0 &&
-		openForm.photosPath->text().length() > 0) 
+		openForm.photosPath->text().length() > 0 && (
+		openForm.bundlerPath->text().length() > 0 || (
+		openForm.rz3Path->text().length() > 0 &&
+		openForm.rz3Images->text().length() > 0
+		)))
 	{
 		this->close();
 		

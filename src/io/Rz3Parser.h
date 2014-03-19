@@ -26,7 +26,7 @@ class Rz3Parser {
 	
 public:
 	Rz3Parser(ImageLoader &imgLoader, const string cf, const string imfile, const string imfolder) 
-		: imgLoader(imgLoader), calibFile(cf), imageFile(imfile), imageFolder(imfolder) {}
+		: imgLoader(imgLoader), calibFile(cf), imageFile(imfile), imageFolder(imfolder + "/") {}
 		
 	/// current gcc doesn't support C++11 regex :/, so it's stupid:
 	std::vector<Photo> parseFile() {
@@ -53,9 +53,6 @@ public:
 		}
 		
 		int i, iSize, iStep;
-		
-		imgLoader.setExpectedCount(iSize / (float) iStep);
-		
 		while(true) {
 			std::getline(infile, line);
 			if(trim(line).length() < 3) { 
@@ -69,6 +66,8 @@ public:
 			ss >> iStep;
 			break;
 		}
+		
+		imgLoader.setExpectedCount(iSize / (float) iStep);
 		
 		while(true) {
 			std::getline(infile, line);
@@ -128,6 +127,8 @@ public:
 			if(imgLoader.loadImage(imageFolder, name, img)) {
 				data.push_back(Photo(i, img.image, img.size, cam));
 			}
+			
+			if(i > 30) break;
 			
 		}		
 	

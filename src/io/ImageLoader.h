@@ -30,6 +30,7 @@ struct ImageData {
 
 class ImageLoader {
 	std::function<void(int)> progress;
+	float prgVal;
 	int expectedCount;
 		
 	const std::string RAW = "raw";
@@ -56,6 +57,9 @@ class ImageLoader {
 					return a.path < b.path;
 				}
 			);
+//			for(ImageData &i : data) {
+//				std::cout << i.path << "\n";
+//			}
 		}
 		return data;
 	}
@@ -103,13 +107,18 @@ public:
 			DataLoader::loadRAW(rawFile, id.image, id.size.x, id.size.y);
 		}
 		if(progress && expectedCount != 0) {
-			progress((int) (100 / (float) expectedCount + .5f));
+			prgVal += 100 / (float) expectedCount;
+			if(prgVal > 1) {
+				progress(floor(prgVal));
+				prgVal -= floor(prgVal);
+			}
 		}
 		return true;
 	}
 	
 	void setExpectedCount(const int c) {
 		expectedCount = c;
+		prgVal = 0;
 	}
 	
 

@@ -226,7 +226,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>248</x>
-     <y>254</y>
+     <y>320</y>
     </hint>
     <hint type="destinationlabel">
      <x>157</x>
@@ -242,7 +242,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>316</x>
-     <y>260</y>
+     <y>320</y>
     </hint>
     <hint type="destinationlabel">
      <x>286</x>
@@ -273,12 +273,60 @@
    <slot>openPhotosCB()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>288</x>
-     <y>185</y>
+     <x>369</x>
+     <y>129</y>
     </hint>
     <hint type="destinationlabel">
      <x>282</x>
      <y>170</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rz3PathButton</sender>
+   <signal>clicked()</signal>
+   <receiver>OpenForm</receiver>
+   <slot>openRz3FileCB()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>347</x>
+     <y>217</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>385</x>
+     <y>226</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rz3ImagesButton</sender>
+   <signal>clicked()</signal>
+   <receiver>OpenForm</receiver>
+   <slot>openRz3ImageFileCB()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>352</x>
+     <y>285</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>388</x>
+     <y>283</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>bundlerButton</sender>
+   <signal>clicked()</signal>
+   <receiver>OpenForm</receiver>
+   <slot>openBundlerCB()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>345</x>
+     <y>218</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>383</x>
+     <y>218</y>
     </hint>
    </hints>
   </connection>
@@ -289,5 +337,7 @@
   <slot>openPhotosCB()</slot>
   <slot>acceptCB()</slot>
   <slot>rejectCB()</slot>
+  <slot>openRz3FileCB()</slot>
+  <slot>openRz3ImageFileCB()</slot>
  </slots>
 </ui>

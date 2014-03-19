@@ -27,7 +27,7 @@ void GLWidget::paintGL() {
 		renderPassHandler.draw(object);
 		glUseProgram(0);
 
-		if(displayRadar) {
+		if(false && displayRadar) {
 			radar->draw(&textureHandler->getTextures());
 		}
 	}
@@ -65,15 +65,12 @@ void GLWidget::createScene(
 	};
 	
 	try {
-		//ImageLoader imgLoader(photos, prgcb);
-		//BundlerParser bundlerData(bundler);
-		//textureHandler = new TextureHandler(bundlerData.parseFile(), imgLoader.getData());
 		textureHandler = new TextureHandler();
 		CalibrationLoader cl(textureHandler, prgcb);
 		cl.loadData(type, photos, file1, file2);
 		
 		object = new ObjectData(geom);
-		object->mvm = glm::rotate(object->mvm, 180.f, glm::vec3(1.0f, 0.0f, 0.0f));
+		//object->mvm = glm::rotate(object->mvm, 180.f, glm::vec3(1.0f, 0.0f, 0.0f));
 		object->pointData = cl.getPointData();
 		
 		radar = new Radar(object, &camera, controlls);

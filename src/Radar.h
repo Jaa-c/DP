@@ -24,11 +24,17 @@ class Radar {
 	//coordinates mapped on radar
 	glm::vec2 xr, yr;
 	
+	bool ok;
+	
 public:
 	Radar(ObjectData *object, Camera *camera, Controlls *controlls) : 
 		object(object), camera(camera), controlls(controlls) {
-		
+		ok = true;
 		//compute which coordinates should map on radar (xr, yr)
+		if(!object->pointData) {
+			ok = false;
+			return;
+		}
 		const Points &cameras = object->pointData->getCameraPositions();
 		glm::vec2 xlimits(10e5, -10e5);
 		glm::vec2 ylimits(10e5, -10e5);
@@ -66,6 +72,9 @@ public:
 	 * Please don't look any further.
      */
 	void draw(std::vector<Texture> *camerasUsed) {
+		if(!ok) {
+			return;
+		}
 		GLint viewport[4] = {0};
 		glGetIntegerv(GL_VIEWPORT, viewport);
 

@@ -114,7 +114,7 @@ public:
         FILE *infile = fopen(filename.c_str(), "rb");
         
         if (!infile) {
-			Log::e("Error opening jpeg image: %s", filename.c_str());
+			Log::e("Error opening jpeg image: " + filename);
 			return false;
         }
 		
