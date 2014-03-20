@@ -52,44 +52,63 @@ public:
 		Assimp::Importer importer;
 		//importer.SetPropertyFloat(AI_CONFIG_PP_GSN_MAX_SMOOTHING_ANGLE, 80.0f); 
 		const aiScene* scene = importer.ReadFile(file,
-				 aiProcessPreset_TargetRealtime_Quality 
-				& ~aiProcess_FindDegenerates);
-		
-		if(scene == NULL) {
+				 (aiProcessPreset_TargetRealtime_Quality
+				 & ~aiProcess_FindDegenerates)
+				 | aiProcess_OptimizeMeshes
+				 | aiProcess_OptimizeGraph);
+				
+		if(scene == nullptr) {
 			Log::e("[ModelLoader] unable to load file: %s", importer.GetErrorString());
 			throw "Error while loading file \n" + file + "\n" + importer.GetErrorString();
 		}
 		
-		const aiMesh* mesh = scene->mMeshes[0];
-		outIndices.resize(mesh->mNumFaces * 3);
-
-		for (uint i = 0; i < mesh->mNumFaces; ++i) {
-			const aiFace &face = mesh->mFaces[i];
-			assert(face.mNumIndices == 3);
-			outIndices[i*3] = face.mIndices[0];
-			outIndices[i*3 + 1] = face.mIndices[1];
-			outIndices[i*3 + 2] = face.mIndices[2];
-		}
-
-		outVertices.resize(mesh->mNumVertices);
-		outNormals.resize(mesh->mNumVertices);
-		glm::vec3 min = outVertices[0], max = min;
+		int faces = 0;
+		glm::vec3 min = glm::vec3(
+				scene->mMeshes[0]->mVertices[0].x, 
+				scene->mMeshes[0]->mVertices[0].y,
+				scene->mMeshes[0]->mVertices[0].z);
+		glm::vec3 max = min;
 		
-		for (uint i = 0; i < mesh->mNumVertices; ++i) {
-			if (mesh->HasPositions()) {
-				updateBB(mesh->mVertices[i], max, min);
-				outVertices[i] = glm::vec3(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z);
-				centroid += outVertices[i];
+		for(uint m = 0; m < scene->mNumMeshes; ++m) {
+			const aiMesh* mesh = scene->mMeshes[m];
+			outIndices.reserve(outIndices.size() + mesh->mNumFaces * 3);
+			
+			int indOffset = outVertices.size();
+			for (uint i = 0; i < mesh->mNumFaces; ++i) {
+				const aiFace &face = mesh->mFaces[i];
+				assert(face.mNumIndices == 3);
+				outIndices.push_back(indOffset + face.mIndices[0]);
+				outIndices.push_back(indOffset + face.mIndices[1]);
+				outIndices.push_back(indOffset + face.mIndices[2]);
 			}
+			
+			outVertices.reserve(outVertices.size() + mesh->mNumVertices);
+			outNormals.reserve(outNormals.size() + mesh->mNumVertices);
+			for (uint i = 0; i < mesh->mNumVertices; ++i) {
+				if (mesh->HasPositions()) {
+					updateBB(mesh->mVertices[i], max, min);
+					outVertices.push_back(glm::vec3(
+							mesh->mVertices[i].x, 
+							mesh->mVertices[i].y, 
+							mesh->mVertices[i].z
+					));
+					centroid += outVertices.at(outVertices.size() - 1);
+				}
 
-			if (mesh->HasNormals()) {
-				outNormals[i] = glm::vec3(mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z);
+				if (mesh->HasNormals()) {
+					outNormals.push_back(glm::vec3(
+							mesh->mNormals[i].x, 
+							mesh->mNormals[i].y, 
+							mesh->mNormals[i].z
+					));
+				}
 			}
+			faces += mesh->mNumFaces;
 		}
+		
 		offset = -(max + min)/2.0f;
-		centroid /= mesh->mNumVertices;
-		
-		Log::i("[ModelLoader] Loaded mesh with %d faces and %d vertices.", mesh->mNumFaces, mesh->mNumVertices);
+		centroid /= outVertices.size();
+		Log::i("[ModelLoader] Loaded mesh with %d faces and %d vertices.", faces, outVertices.size());
 	}
 
 	/**

@@ -128,7 +128,7 @@ public:
 				data.push_back(Photo(i, img.image, img.size, cam));
 			}
 			
-			if(i > 30) break;
+			if(i > 3) break; //tmp
 			
 		}		
 	
