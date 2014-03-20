@@ -150,7 +150,7 @@ public:
 				glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
 			}
 			
-			Log::d("initializing data");
+			Log::d("[Renderer] initializing data");
 		}
 		
 		//draw geometry from VBO

@@ -21,8 +21,8 @@ void GLWidget::paintGL() {
 	
 	if(object) {
 		camera.updateCameraViewMatrix();
-		glm::vec3 viewDir = object->getCentroidPosition() + camera.getCameraPosition();		
-		textureHandler->updateTextures(viewDir, object->mvm, tmpCameras);
+		glm::vec3 viewDir = object->getCentroidPosition() + camera.getCameraPosition();		 
+		//textureHandler->updateTextures(viewDir, object->mvm, Settings::usingTextures);
 		
 		renderPassHandler.draw(object);
 		glUseProgram(0);
@@ -181,7 +181,6 @@ GLWidget::GLWidget(const QGLFormat& format, int w, int h, QWidget* parent) :
 	fps = 0;
     srand((unsigned)std::time(0)); 
 	gettimeofday(&start, NULL);
-	tmpCameras = 2;
 }
 
 GLWidget::~GLWidget() {

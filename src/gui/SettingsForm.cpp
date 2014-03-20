@@ -7,6 +7,7 @@
 
 #include "SettingsForm.h"
 #include "GLWidget.h"
+#include "../Settings.h"
 
 SettingsForm::SettingsForm(GLWidget * glw) : glWidget(glw)  {
 	setAttribute(Qt::WA_NoMousePropagation); //not working TODO
@@ -16,7 +17,7 @@ SettingsForm::SettingsForm(GLWidget * glw) : glWidget(glw)  {
 	
 	widget.photosSlider->setMinimum(1);
 	widget.photosSlider->setMaximum(32);
-	widget.photosSlider->setValue(glWidget->tmpCameras);
+	widget.photosSlider->setValue(Settings::usingTextures);
 	widget.photoSliderValue->setText(QString::number(widget.photosSlider->value()));
 	
 	photoSliderPrevVal = widget.photosSlider->value();
@@ -27,7 +28,7 @@ SettingsForm::~SettingsForm() {
 }
 
 void SettingsForm::acceptCB() {
-	glWidget->tmpCameras = widget.photosSlider->value();
+	Settings::usingTextures = widget.photosSlider->value();
 	this->close();
 }
 
