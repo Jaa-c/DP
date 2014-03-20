@@ -84,7 +84,7 @@ public:
 		}
 		
 		if(!camera->isCameraStatic()) { //if we are moving
-			glm::mat4 modelView =  *camera->getModelViewMatrix() * data.mvm;
+			glm::mat4 modelView =  *camera->getModelViewMatrix() * data.getMvm();
 			glUniformMatrix4fv(ulocs->at(RenderPass::MODELVIEW_MATRIX), 1, GL_FALSE, &modelView[0][0]);		
 		}
 		
@@ -125,7 +125,7 @@ public:
 		}
 		
 		if(!camera->isCameraStatic()) { //if we are moving
-			glm::mat4 modelView =  *camera->getModelViewMatrix() * data.mvm;
+			glm::mat4 modelView =  *camera->getModelViewMatrix() * data.getMvm();
 			glUniformMatrix4fv(ulocs->at(RenderPass::MODELVIEW_MATRIX), 1, GL_FALSE, &modelView[0][0]);		
 		}
 		//initialize buffers

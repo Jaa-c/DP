@@ -57,6 +57,17 @@ private:
 		
 	bool ok;
 	
+	glm::mat4 mvm;
+	glm::vec3 rotation;
+	glm::vec3 translation;
+	
+	void updateMvm() {
+		mvm = glm::translate(glm::mat4(1.0f), translation);
+		mvm = glm::rotate(mvm, rotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
+		mvm = glm::rotate(mvm, rotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
+		mvm = glm::rotate(mvm, rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
+	}
+	
 public:
 	GLuint vaoID;
 	GLuint texCoordsID;
@@ -68,27 +79,38 @@ public:
 	std::vector<Texture> * textures;
 	std::shared_ptr<PointData> pointData;
 	
-	glm::mat4 mvm;
 	
 	ObjectData(std::string file) : ok(true),
 		vaoID(GL_ID_NONE), texCoordsID(GL_ID_NONE), verticesID(GL_ID_NONE), 
 		normalsID(GL_ID_NONE), indicesID(GL_ID_NONE), 
 		textures(NULL), pointData(NULL)
 	{
-		glm::vec3 offset;
 		try {
-			DataLoader::importModel(file, indices, vertices, normals, centroid, offset);
+			DataLoader::importModel(file, indices, vertices, normals, centroid, translation);
 		}
 		catch(const char* c) {
 			ok = false;
 		}
 		///move center to the origin
-		mvm = glm::translate(glm::mat4(1.0f), offset);
-		
+		updateMvm();		
 	}
 	
 	~ObjectData() {
 		pointData.reset();
+	}
+	
+	void rotate(glm::vec3 &rot) {
+		rotation = rot;
+		updateMvm();
+	}
+	
+	void translate(glm::vec3 &trans) {
+		translation = trans;
+		updateMvm();
+	}
+	
+	const glm::mat4 & getMvm() const {
+		return mvm;
 	}
 	
 	const std::vector<GLuint> & getIndices() const {

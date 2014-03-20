@@ -3,6 +3,7 @@
 #include "GLWidget.h"
 #include "OpenForm.h"
 #include "SettingsForm.h"
+#include "ObjectForm.h"
 
 #include <QApplication>
 #include <QtGui/QtGui>
@@ -75,6 +76,9 @@ void MainWindow::createActions() {
 	programSettings = new QAction(tr("Program &settings"), this);
 	connect(programSettings, SIGNAL(triggered()), this, SLOT(displaySettingsCB()));
 	
+	objectSettings = new QAction(tr("&Object settings"), this);
+	connect(objectSettings, SIGNAL(triggered()), this, SLOT(displayObjectSettingsCB()));
+	
 	reloadShaders = new QAction(tr("&Recompile shaders"), this);
 	reloadShaders->setShortcut(Qt::Key_R | Qt::CTRL);
 	connect(reloadShaders, SIGNAL(triggered()), this, SLOT(reloadShadersCB()));
@@ -97,6 +101,7 @@ void MainWindow::createMenus() {
 	settings = menuBar()->addMenu(tr("&Settings"));
 	settings->addAction(displayRadar);
 	settings->addAction(programSettings);
+	settings->addAction(objectSettings);
 	
 	debug = menuBar()->addMenu(tr("&Debug"));
 	debug->addAction(reloadShaders);
@@ -115,6 +120,11 @@ void MainWindow::openCB() {
 
 void MainWindow::displaySettingsCB() {
 	SettingsForm form(glWidget);
+	form.exec();
+}
+
+void MainWindow::displayObjectSettingsCB() {
+	ObjectForm form;
 	form.exec();
 }
 

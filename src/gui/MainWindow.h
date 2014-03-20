@@ -29,6 +29,7 @@ private slots:
 	void bundlerPointsPassCB();
 	void displayRadarCB();
 	void displaySettingsCB();
+	void displayObjectSettingsCB();
 	
 	void reloadShadersCB();
 
@@ -57,6 +58,7 @@ private:
 	QAction *displayRadar;
 	QAction *reloadShaders;
 	QAction *programSettings;
+	QAction *objectSettings;
 	
 	QActionGroup * texGroup;
 

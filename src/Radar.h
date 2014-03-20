@@ -41,7 +41,7 @@ public:
 		glm::vec4 tmp;
 		
 		for(auto &cam : cameras) {
-			tmp = object->mvm * glm::vec4(cam, 1.0f);
+			tmp = object->getMvm() * glm::vec4(cam, 1.0f);
 			if(tmp.x < xlimits.s) xlimits.s = tmp.x;
 			if(tmp.x > xlimits.t) xlimits.t = tmp.x;
 			if(tmp.z < ylimits.s) ylimits.s = tmp.z;
@@ -110,12 +110,12 @@ public:
 
 		const Points &cameras = object->pointData->getCameraPositions();
 		const Vectors &cameraDirections = object->pointData->getCameraDirections();
-		const glm::mat4 vecMat = glm::inverse(glm::transpose(object->mvm));
+		const glm::mat4 vecMat = glm::inverse(glm::transpose(object->getMvm()));
 
 		glBegin(GL_LINES);
 			glColor4f(0.3f, 0.3f, 0.3f, 1.0f);
 			for(uint i = 0; i < cameraDirections.size(); ++i) {
-				p1 =  object->mvm * glm::vec4(cameras.at(i), 1.0f);
+				p1 =  object->getMvm() * glm::vec4(cameras.at(i), 1.0f);
 				dir = vecMat * glm::vec4(cameraDirections.at(i), 1.0f);
 				drawLine(p1, dir);
 			}
@@ -133,7 +133,7 @@ public:
 		glColor4f(0.3f, 0.3f, 0.3f, 1.0f);
 		glBegin(GL_POINTS);
 			for(auto &cam : cameras) {
-				tmp = object->mvm * glm::vec4(cam, 1.0f);
+				tmp = object->getMvm() * glm::vec4(cam, 1.0f);
 				drawPoint(tmp);
 			}
 		glEnd();
@@ -149,7 +149,7 @@ public:
 			glColor4f(0.0f, 0.0f, 1.0f, 1.0f);
 			for(auto &tex : *camerasUsed) {
 				glm::vec3 v = -1 * glm::transpose(tex.photo->camera.rotate) * tex.photo->camera.translate;
-				tmp =  object->mvm * glm::vec4(v, 1.0f);
+				tmp =  object->getMvm() * glm::vec4(v, 1.0f);
 				drawPoint(tmp);
 			}			
 		glEnd();

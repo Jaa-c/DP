@@ -6,6 +6,7 @@
 #include "../RenderPass/BundlerPointsRenderPass.h"
 #include "../io/CalibrationLoader.h"
 #include "../io/ImageLoader.h"
+#include "../Settings.h"
 
 #include <QtGui/QMouseEvent>
 #include <QtGui/QMessageBox>
@@ -21,7 +22,8 @@ void GLWidget::paintGL() {
 	
 	if(object) {
 		camera.updateCameraViewMatrix();
-		glm::vec3 viewDir = object->getCentroidPosition() + camera.getCameraPosition();		 
+		object->rotate(Settings::objectRotate);
+		glm::vec3 viewDir = object->getCentroidPosition() + camera.getCameraPosition();
 		//textureHandler->updateTextures(viewDir, object->mvm, Settings::usingTextures);
 		
 		renderPassHandler.draw(object);
