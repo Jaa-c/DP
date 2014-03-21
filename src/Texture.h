@@ -53,15 +53,22 @@ public:
 		if(!photo || photo->image.empty()) {
 			return NULL;
 		}
-		assert(photo->image.size() == (uint) photo->size.x * photo->size.y * 3);
+		assert(photo->image.size() == (uint) (photo->size.x + photo->rowPadding) * photo->size.y * 3);
 		return &photo->image[0];
 	}
 	
-	const glm::ivec2 getSize() const {
+	const glm::ivec2 getRealSize() const {
 		if(!photo) {
 			return glm::ivec2(0, 0);
 		}
 		return photo->size;
+	}
+	
+	const glm::ivec2 getSizeWithPadding() const {
+		if(!photo) {
+			return glm::ivec2(0, 0);
+		}
+		return glm::ivec2(photo->size.x + photo->rowPadding, photo->size.y);
 	}
 	
 	friend std::ostream & operator << (std::ostream& os, const Texture &tex) {

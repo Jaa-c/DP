@@ -58,7 +58,7 @@ public:
 				 | aiProcess_OptimizeGraph);
 				
 		if(scene == nullptr) {
-			Log::e("[ModelLoader] unable to load file: %s", importer.GetErrorString());
+			Log::e("[DataLoader] unable to load file: %s", importer.GetErrorString());
 			throw "Error while loading file \n" + file + "\n" + importer.GetErrorString();
 		}
 		
@@ -109,7 +109,7 @@ public:
 		centroid /= outVertices.size();
 		
 		offset = -centroid;//(max + min)/2.0f;//glm::vec3(0, 0, -max.z*2); //
-		Log::i("[ModelLoader] Loaded mesh with %d faces and %d vertices.", faces, outVertices.size());
+		Log::i("[DataLoader] Loaded mesh with %d faces and %d vertices.", faces, outVertices.size());
 	}
 
 	/**
@@ -124,7 +124,8 @@ public:
 		const std::string filename,
 		std::vector<rgb> &raw,
 		int &width,
-		int &height
+		int &height,
+		uint &rowPadding
 	) {
         struct jpeg_decompress_struct cinfo;
         struct jpeg_error_mgr jerr;
@@ -147,8 +148,10 @@ public:
         jpeg_start_decompress(&cinfo);
 		width = cinfo.output_width;
 		height = cinfo.output_height;
+		
+		rowPadding = 4 - width % 4;
 
-        raw.reserve(width * height * cinfo.num_components);
+        raw.reserve((width+rowPadding) * height * cinfo.num_components);
 
         row[0] = new unsigned char[width * cinfo.num_components];
 
@@ -158,13 +161,17 @@ public:
 			for(int i = 0; i < width * cinfo.num_components; i++) {
 				raw.push_back(row[0][i]);
 			}
+			for(uint i = 0; i < rowPadding * cinfo.num_components; ++i) {
+				raw.push_back((unsigned char) 0);
+			}
         }
+		//width += rowPadding; //TODO !?
 		
         jpeg_finish_decompress(&cinfo);
         jpeg_destroy_decompress(&cinfo);
         fclose(infile);
         delete [] row[0];
-		Log::i("Loaded image " + filename);
+		Log::i("[DataLoader] Loaded image " + filename);
         return true;
 	}
 	
@@ -174,20 +181,28 @@ public:
      * @param reference to vector of rgb data
 	 * @return true if loaded OK
      */
-	static void loadRAW(const std::string &filename, std::vector<rgb> &raw, int &width, int &height) {
+	static void loadRAW(
+		const std::string &filename, 
+		std::vector<rgb> &raw, 
+		int &width, 
+		int &height,
+		uint &rowPadding
+	) {
 		// Read input file
 		if (fileExists(filename)) {
 			std::ifstream input(filename, std::ios::in | std::ifstream::binary);
 			input.read(reinterpret_cast<char*> (&width), sizeof(int));
 			input.read((char*) (&height), sizeof(int));
-			const size_t size = width * height * 3;
+			input.read((char*) (&rowPadding), sizeof(int));
+			
+			const size_t size = (width + rowPadding) * height * 3;
 			raw.resize(size);
 			input.read((char*) &raw[0], raw.size() * sizeof(rgb));
 			
-			Log::i("Loaded image: " + filename + " %d x %d", width, height);
+			Log::i("[DataLoader] Loaded image: " + filename + " %d x %d", width, height);
 		}
 		else {
-			Log::e("File does not exist: " + filename);
+			Log::e("[DataLoader] File does not exist: " + filename);
 		}
 	}
 	

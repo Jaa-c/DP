@@ -125,10 +125,10 @@ public:
 			string name = fileList.at(i);
 			ImageData img(name);
 			if(imgLoader.loadImage(imageFolder, name, img)) {
-				data.push_back(Photo(i, img.image, img.size, cam));
+				data.push_back(Photo(i, img.image, img.size, img.rowPadding, cam));
 			}
 			
-			if(i > 3) break; //tmp
+			if(i > 6) break; //tmp
 			
 		}		
 	

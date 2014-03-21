@@ -26,7 +26,7 @@ void GLWidget::paintGL() {
 		camera.updateCameraViewMatrix();
 		object->rotate(Settings::objectRotate);
 		glm::vec3 viewDir = object->getCentroidPosition() + camera.getCameraPosition();
-		//textureHandler->updateTextures(viewDir, object->mvm, Settings::usingTextures);
+		textureHandler->updateTextures(viewDir, object->getMvm(), Settings::usingTextures);
 		
 		renderPassHandler.draw(object);
 		glUseProgram(0);

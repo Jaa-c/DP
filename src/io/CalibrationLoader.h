@@ -51,7 +51,7 @@ public:
 				for(uint i = 0; i < cameras.size(); ++i) {
 					const ImageData &img = imgData.at(i);
 					const CameraPosition &cp = cameras.at(i);
-					outPhotos.push_back(Photo(i, img.image, img.size, cp));
+					outPhotos.push_back(Photo(i, img.image, img.size, img.rowPadding, cp));
 				}
 
 				pointData = std::shared_ptr<PointData>(new PointData(outPhotos, bundlerData.getPoints()));

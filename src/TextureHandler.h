@@ -36,13 +36,19 @@ struct CameraPosition {
 struct Photo {
 	const uint ID;
 	const Image image;
-	const glm::ivec2 size;
+	const glm::ivec2 size; 
+	const uint rowPadding;
 	const CameraPosition camera;
 	
 	bool current;
 	
-	Photo(const uint ID, const Image image, const glm::ivec2 size, const CameraPosition camera) :
-	ID(ID), image(image), size(size), camera(camera) {}
+	Photo(
+		const uint ID, 
+		const Image image, 
+		const glm::ivec2 size, 
+		const uint rowPadding, 
+		const CameraPosition camera
+	) :	ID(ID), image(image), size(size), rowPadding(rowPadding), camera(camera) {}
 };
 
 #include "Texture.h" //TODO!

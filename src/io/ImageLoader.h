@@ -24,6 +24,7 @@ struct ImageData {
 	std::string path;
 	Image image;
 	glm::ivec2 size;
+	uint rowPadding;
 	
 	ImageData(const std::string &path) : path(path) {}
 };
@@ -88,8 +89,8 @@ public:
 			if(sfx != JPG) {
 				return false; //some other file
 			}
-			DataLoader::loadJPEG(folder + name, id.image, id.size.x, id.size.y);
-			assert(id.image.size() == (uint) id.size.x * id.size.y * 3);
+			DataLoader::loadJPEG(folder + name, id.image, id.size.x, id.size.y, id.rowPadding);
+			assert(id.image.size() == (uint) (id.size.x + id.rowPadding) * id.size.y * 3);
 
 			//this should be probbably elsewhere 
 			#if defined(_WIN32)
@@ -99,12 +100,13 @@ public:
 			#endif
 			std::fstream binaryFile(rawFile, std::ios::out | std::ios::binary);
 			binaryFile.write((char *) &id.size.x, sizeof(id.size));
+			binaryFile.write((char *) &id.rowPadding, sizeof(id.rowPadding));
 			binaryFile.write((char *) &id.image[0], 3 * sizeof(rgb) * id.image.size());
 			binaryFile.close();
 			Log::i("Created file: " + rawFile);
 		}
 		else {
-			DataLoader::loadRAW(rawFile, id.image, id.size.x, id.size.y);
+			DataLoader::loadRAW(rawFile, id.image, id.size.x, id.size.y, id.rowPadding);
 		}
 		if(progress && expectedCount != 0) {
 			prgVal += 100 / (float) expectedCount;

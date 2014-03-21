@@ -32,7 +32,14 @@ class Renderer {
 			
 			glGenTextures(1, &texture.textureID);
 			glBindTexture(texture.target, texture.textureID);
-			glTexImage2D(texture.target, 0, GL_RGB, texture.getSize().x, texture.getSize().y, 0, GL_RGB, GL_UNSIGNED_BYTE, texture.getImageStart());
+			
+			
+//			glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+//			glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+//			glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
+//			glPixelStorei(GL_UNPACK_SKIP_ROWS, 0);
+			
+			glTexImage2D(texture.target, 0, GL_RGB, texture.getSizeWithPadding().x, texture.getSizeWithPadding().y, 0, GL_RGB, GL_UNSIGNED_BYTE, texture.getImageStart());
 			glBindTexture(texture.target, 0);
 			
 			glGenSamplers(1, &texture.samplerID);
