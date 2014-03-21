@@ -69,6 +69,8 @@ private:
 	}
 	
 public:
+	const std::string fileName;
+	
 	GLuint vaoID;
 	GLuint texCoordsID;
 	GLuint verticesID;
@@ -80,7 +82,7 @@ public:
 	std::shared_ptr<PointData> pointData;
 	
 	
-	ObjectData(std::string file) : ok(true),
+	ObjectData(std::string file) : ok(true), fileName(file),	
 		vaoID(GL_ID_NONE), texCoordsID(GL_ID_NONE), verticesID(GL_ID_NONE), 
 		normalsID(GL_ID_NONE), indicesID(GL_ID_NONE), 
 		textures(NULL), pointData(NULL)

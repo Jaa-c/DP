@@ -12,6 +12,15 @@ ObjectForm::ObjectForm() {
 	widget.setupUi(this);
 	
 	prevRotationValue = Settings::objectRotate;
+	
+	widget.rotValueX->setText(QString::number(Settings::objectRotate.x));
+	widget.rotSliderX->setValue(Settings::objectRotate.x);
+	
+	widget.rotValueY->setText(QString::number(Settings::objectRotate.y));
+	widget.rotSliderY->setValue(Settings::objectRotate.y);
+	
+	widget.rotValueZ->setText(QString::number(Settings::objectRotate.z));
+	widget.rotSliderZ->setValue(Settings::objectRotate.z);
 }
 
 ObjectForm::~ObjectForm() {

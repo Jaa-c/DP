@@ -8,6 +8,7 @@
 #ifndef LOG_H
 #define	LOG_H
 
+#include <iostream>
 #include <memory>
 #include <cstdarg>
 #include <cstring>

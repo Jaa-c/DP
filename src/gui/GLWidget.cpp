@@ -16,6 +16,8 @@
 #include <ctime>
 #include <sys/time.h>
 
+const std::string GLWidget::settingsExt = "-settings.conf";
+
 void GLWidget::paintGL() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -52,6 +54,10 @@ void GLWidget::createScene(
 		std::string file1,
 		std::string file2)
 {
+	if(object) {
+		std::string file = object->fileName + settingsExt;
+		Settings::serialize(file);
+	}
 	DELETE(textureHandler);
 	DELETE(object);
 	DELETE(radar);
@@ -67,12 +73,12 @@ void GLWidget::createScene(
 	};
 	
 	try {
+		Settings::deserialize(geom + settingsExt);
 		textureHandler = new TextureHandler();
 		CalibrationLoader cl(textureHandler, prgcb);
 		cl.loadData(type, photos, file1, file2);
 		
 		object = new ObjectData(geom);
-		//object->mvm = glm::rotate(object->mvm, 180.f, glm::vec3(1.0f, 0.0f, 0.0f));
 		object->pointData = cl.getPointData();
 		
 		radar = new Radar(object, &camera, controlls);
@@ -168,7 +174,7 @@ void GLWidget::setDisplayRadar(bool value) {
 }
 
 
-GLWidget::GLWidget(const QGLFormat& format, int w, int h, QWidget* parent) : 
+GLWidget::GLWidget(const QGLFormat& format, int w, int h, QWidget* parent) :
 	QGLWidget(format, parent),
 	camera(w, h), 
 	renderer(&camera),
@@ -179,13 +185,15 @@ GLWidget::GLWidget(const QGLFormat& format, int w, int h, QWidget* parent) :
 {		
 	controlls = &Controlls::getInstance();
 	controlls->setPointers(&camera, &shaderHandler);
-	
+
 	fps = 0;
     srand((unsigned)std::time(0)); 
 	gettimeofday(&start, NULL);
 }
 
 GLWidget::~GLWidget() {
+	Settings::serialize(object->fileName + settingsExt);
+	
 	DELETE(textureHandler);
 	DELETE(object);
 	DELETE(radar);

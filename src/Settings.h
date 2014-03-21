@@ -15,9 +15,11 @@
 class Settings {
 	
 	Settings() {}
+	
+    static const QByteArray fileHeaderByteArray;
 
 public:
-	static int usingTextures;
+	static quint32 usingTextures;
 	static glm::vec3 objectRotate;
 	
 	static void serialize(std::string file);

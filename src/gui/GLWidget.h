@@ -29,6 +29,8 @@ class GLWidget : public QGLWidget
 {
 	Q_OBJECT
 	
+	static const std::string settingsExt;
+			
 	RenderPassHandler renderPassHandler;
 	Camera camera;
 	ShaderHandler shaderHandler;
