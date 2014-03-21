@@ -19,6 +19,10 @@
         <itemPath>src/io/Rz3Parser.h</itemPath>
         <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/io/parser.h</itemPath>
       </logicalFolder>
+      <logicalFolder name="f3" displayName="kdtree" projectFiles="true">
+        <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/kdtree/KDTree.h</itemPath>
+        <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/kdtree/KDTreeNodes.h</itemPath>
+      </logicalFolder>
       <logicalFolder name="RenderPass" displayName="RenderPass" projectFiles="true">
         <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/RenderPass/BasicTexturingRenderPass.h</itemPath>
         <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/RenderPass/BundlerPointsRenderPass.h</itemPath>
@@ -272,6 +276,16 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/kdtree/KDTree.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/kdtree/KDTreeNodes.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="src/gui/GLWidget.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/gui/MainWindow.h" ex="false" tool="3" flavor2="0">
@@ -482,6 +496,16 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/kdtree/KDTree.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/kdtree/KDTreeNodes.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="src/gui/GLWidget.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/gui/MainWindow.h" ex="false" tool="3" flavor2="0">
@@ -677,6 +701,16 @@
             flavor2="0">
       </item>
       <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/io/parser.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/kdtree/KDTree.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/kdtree/KDTreeNodes.h"
             ex="false"
             tool="3"
             flavor2="0">

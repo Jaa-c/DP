@@ -31,6 +31,12 @@ struct CameraPosition {
 	glm::vec3 getDirection() const {
 		return glm::vec3(-rotate[2]);
 	}
+	
+	CameraPosition() {
+		focalL = 0;
+		d1 = 0;
+		d2 = 0;
+	}
 };
 
 struct Photo {
@@ -48,7 +54,9 @@ struct Photo {
 		const glm::ivec2 size, 
 		const uint rowPadding, 
 		const CameraPosition camera
-	) :	ID(ID), image(image), size(size), rowPadding(rowPadding), camera(camera) {}
+	) :	ID(ID), image(image), size(size), rowPadding(rowPadding), camera(camera) {
+		current = false;
+	}
 };
 
 #include "Texture.h" //TODO!

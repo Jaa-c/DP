@@ -61,8 +61,8 @@ void main() {
 	vec3 col = texture2DRect(u_texture0[u_textureIndices[index]], coords).rgb;
 	vec3 color = min((.2f + col) * diffuse + specular * .3f, 1.0f);
 
-	//color.r = coords.x / 2400;
-	//color.g = coords.y / 3200;
+	//color.r = coords.x / 4096;
+	//color.g = coords.y / 4096;
 	//color.b = 0;
 	//if(In.v_texIndex == 0) color.r += .2f;
 	//if(In.v_texIndex == 1) color.g += .2f;

@@ -8,7 +8,7 @@
 #include <QApplication>
 #include <QtGui/QtGui>
 
-MainWindow::MainWindow(QApplication *app, int w, int h) {
+MainWindow::MainWindow(QApplication *app, int w, int h) : view(nullptr) {
 	//Menu
 	createActions();
 	createMenus();
@@ -30,14 +30,15 @@ MainWindow::MainWindow(QApplication *app, int w, int h) {
 
 void MainWindow::initAppState() {
 
-//	glWidget->createScene(
-//		"/home/jaa/Documents/FEL/DP/data/debug/statue.obj",
-//		"/home/jaa/Documents/FEL/DP/data/debug/bundle.out",
-//		"/home/jaa/Documents/FEL/DP/data/debug/photos/"
-//	);
 }
 
 void MainWindow::initScene() {
+	if(texturingRP->isChecked()) {
+		glWidget->addRenderPass(RenderPass::TEXTURING_PASS);
+	}
+	if(radarRP->isChecked()) {
+		glWidget->addRenderPass(RenderPass::RADAR_PASS);
+	}
 	texturingRP->setChecked(true);
 	radarRP->setChecked(true);
 }

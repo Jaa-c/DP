@@ -57,6 +57,7 @@ public:
 		CalibrationLoader::FileType type,
 		std::string file1,
 		std::string file2 = "");
+	void deleteScene();
 	
 	virtual bool eventFilter(QObject *obj, QEvent *event);
 	

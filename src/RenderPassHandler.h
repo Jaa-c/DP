@@ -40,7 +40,14 @@ public:
 	void remove(RenderPass::RenderPassType type) {
 		RenderPass * p = passes.at((uint) type);
 		passes.erase(type);
-		if(p) delete p;
+		DELETE(p);
+	}
+	
+	void removeAll() {
+		for(dataType p :passes) {
+			DELETE(p.second);
+		}
+		passes.clear();
 	}
 	
 	void resetShaderIDs() {

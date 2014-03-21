@@ -44,13 +44,7 @@ void GLWidget::paintGL() {
 	this->update(); //TODO
 }
 
-void GLWidget::createScene(
-		std::string geom, 
-		std::string photos, 
-		CalibrationLoader::FileType type,
-		std::string file1,
-		std::string file2)
-{
+void GLWidget::deleteScene() {
 	if(object) {
 		std::string file = object->fileName + settingsExt;
 		Settings::serialize(file);
@@ -59,7 +53,21 @@ void GLWidget::createScene(
 	DELETE(object);
 	
 	camera.resetView();
+	renderPassHandler.removeAll();
 	
+	glClearColor(0.7f, 0.7f, 0.7f, 0);
+}
+
+void GLWidget::createScene(
+		std::string geom, 
+		std::string photos, 
+		CalibrationLoader::FileType type,
+		std::string file1,
+		std::string file2)
+{
+	if(object) {
+		throw std::string("Error while creating scene!");
+	}
 	QProgressDialog progress("Loading data", "", 0, 100, this);
 	progress.setValue(0);
 	progress.show();
@@ -192,7 +200,9 @@ GLWidget::GLWidget(const QGLFormat& format, int w, int h, QWidget* parent) :
 }
 
 GLWidget::~GLWidget() {
-	Settings::serialize(object->fileName + settingsExt);
+	if(object) {
+		Settings::serialize(object->fileName + settingsExt);
+	}
 	
 	DELETE(textureHandler);
 	DELETE(object);
