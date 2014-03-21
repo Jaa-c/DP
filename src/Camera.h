@@ -42,7 +42,7 @@ public:
 	}
 	
 	void resetView() {
-		cameraPos = glm::vec3(0.0f, 0.0f, 0.0f);
+		cameraPos = glm::vec3(0.0f, 0.0f, -5.0f);
 		cameraRot = glm::vec3(0.0f, 0.0f, 0.0f);
 
 		cameraPosLag = cameraPos;

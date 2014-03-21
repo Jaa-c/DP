@@ -106,8 +106,9 @@ public:
 			faces += mesh->mNumFaces;
 		}
 		
-		offset = -(max + min)/2.0f;
 		centroid /= outVertices.size();
+		
+		offset = -centroid;//(max + min)/2.0f;//glm::vec3(0, 0, -max.z*2); //
 		Log::i("[ModelLoader] Loaded mesh with %d faces and %d vertices.", faces, outVertices.size());
 	}
 
