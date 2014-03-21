@@ -8,11 +8,12 @@
 #ifndef RENDERPASSHANDLER_H
 #define	RENDERPASSHANDLER_H
 
-#include <unordered_map>
+#include <map>
 
 
 class RenderPassHandler {
-	typedef std::unordered_map<uint, RenderPass *> PassList;
+	//typedef std::unordered_map<uint, RenderPass *> PassList;
+	typedef std::map<uint, RenderPass *> PassList;
 	typedef std::pair<uint, RenderPass *> dataType;
 	
 	PassList passes;

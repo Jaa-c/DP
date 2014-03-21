@@ -15,11 +15,15 @@ class RenderPass {
 	friend class Rendered;
 	
 public:	
+	/**
+	 * Note that the order in this enum is the order in which the passes
+	 * are drawn. So the first types are drawn first.
+	 */
 	enum RenderPassType {
 		BASIC_TEXTURING_PASS = 0,
 		TEXTURING_PASS,
 		BUNDLER_POINTS_PASS,
-		RADAR_PASS,
+		RADAR_PASS, //should be last
 		PASS_SIZE	
 	};
 	
