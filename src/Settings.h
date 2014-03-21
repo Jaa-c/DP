@@ -16,11 +16,15 @@ class Settings {
 	
 	Settings() {}
 	
-    static const QByteArray fileHeaderByteArray;
-
 public:
+	/// number of textures currently being used for texturing
 	static quint32 usingTextures;
+	/// object default rotation
 	static glm::vec3 objectRotate;
+	/// radar position on screen
+	static glm::vec2 radarPos;
+	/// radar width and height
+	static glm::vec2 radarSize;
 	
 	static void serialize(std::string file);
 	static void deserialize(std::string file);

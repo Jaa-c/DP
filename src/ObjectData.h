@@ -25,13 +25,15 @@ private:
 public:
 	GLuint pointsVBO;
 	GLuint camPosVBO;
-	PointData(const std::vector<Photo> &photos, const Points &bundlerPoints) : pointsVBO(GL_ID_NONE), camPosVBO(GL_ID_NONE) {
+	PointData(const std::vector<Photo> &photos, const Points *bundlerPoints = nullptr) : pointsVBO(GL_ID_NONE), camPosVBO(GL_ID_NONE) {
 		for(auto &photo : photos) {
 			glm::vec3 v = -1 * glm::transpose(photo.camera.rotate) * photo.camera.translate;
 			cameraPos.push_back(v);
 			cameraDirections.push_back(photo.camera.getDirection());
 		}
-		pointData = bundlerPoints;
+		if(bundlerPoints) {
+			pointData = *bundlerPoints;
+		}
 	}
 	
 	const Points &getPointData() const {

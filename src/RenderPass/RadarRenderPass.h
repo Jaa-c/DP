@@ -1,41 +1,50 @@
 /* 
- * File:   Radar.h
+ * File:   RadarRenderPass.h
  * Author: jaa
  *
- * Created on 23. leden 2014, 20:09
+ * Created on 21. březen 2014, 16:20
  */
 
-#ifndef RADAR_H
-#define	RADAR_H
+#ifndef RADARRENDERPASS_H
+#define	RADARRENDERPASS_H
+
+#include "../Settings.h"
+#include "RenderPass.h"
 
 #include <GL/glew.h>
 
-#include "TextureHandler.h"
-
-class Radar {
-
-	ObjectData *object;
-	Camera *camera;
-	Controlls *controlls;
+class RadarRenderPass : public RenderPass {
 	
-	GLint x, y;
-	GLsizei width, height;
+	Camera &camera;
+	
 	
 	//coordinates mapped on radar
 	glm::vec2 xr, yr;
-	
-	bool ok;
+	int x, y, width, height;
 	
 public:
-	Radar(ObjectData *object, Camera *camera, Controlls *controlls) : 
-		object(object), camera(camera), controlls(controlls) {
-		ok = true;
-		//compute which coordinates should map on radar (xr, yr)
+	
+	RadarRenderPass(Renderer *r, ShaderHandler *sh, TextureHandler *th, Camera &camera) : 
+		RenderPass(RADAR_PASS, r, sh, th), camera(camera) {}
+	
+	
+	~RadarRenderPass() {
+
+	}
+	
+	/**
+	 * TODO: refactor if there is time
+	 * Please don't look any further.
+     */
+	void draw(ObjectData *object) {
 		if(!object->pointData) {
-			ok = false;
 			return;
 		}
+		
 		const Points &cameras = object->pointData->getCameraPositions();
+		const Vectors &cameraDirections = object->pointData->getCameraDirections();
+		const glm::mat4 vecMat = glm::inverse(glm::transpose(object->getMvm()));
+		
 		glm::vec2 xlimits(10e5, -10e5);
 		glm::vec2 ylimits(10e5, -10e5);
 		glm::vec4 tmp;
@@ -58,23 +67,11 @@ public:
 		yr.x = (ylimits.y + ylimits.x) / 2.0f - size;
 		yr.y = (ylimits.y + ylimits.x) / 2.0f + size;
 		
-
-	}
-	
-	void setPosition(GLint x, GLint y, GLsizei width, GLsizei height) {
-		this->x = x;
-		this->y = y;
-		this->width = width;
-		this->height = height;
-	}
-	
-	/**
-	 * Please don't look any further.
-     */
-	void draw(std::vector<Texture> *camerasUsed) {
-		if(!ok) {
-			return;
-		}
+		x = Settings::radarPos.x;
+		y = Settings::radarPos.y;
+		width = Settings::radarSize.x;
+		height = Settings::radarSize.y;
+		
 		GLint viewport[4] = {0};
 		glGetIntegerv(GL_VIEWPORT, viewport);
 
@@ -103,14 +100,11 @@ public:
 		glEnable(GL_POINT_SIZE);
 		glPointSize(4.0);
 
-		glm::vec4 tmp, p1, dir;
+		glm::vec4 p1, dir;
 		glm::vec3 c, k;
 		c = object->getCentroidPosition();
-		k = -camera->getCameraPosition();
+		k = -camera.getCameraPosition();
 
-		const Points &cameras = object->pointData->getCameraPositions();
-		const Vectors &cameraDirections = object->pointData->getCameraDirections();
-		const glm::mat4 vecMat = glm::inverse(glm::transpose(object->getMvm()));
 
 		glBegin(GL_LINES);
 			glColor4f(0.3f, 0.3f, 0.3f, 1.0f);
@@ -121,7 +115,7 @@ public:
 			}
 
 			glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
-			glm::vec3 viewDir = -camera->getCameraViewDirection();
+			glm::vec3 viewDir = -camera.getCameraViewDirection();
 			drawLine(k, viewDir);
 
 			glColor4f(0.0f, 0.0f, 0.0f, 0.5f);
@@ -147,7 +141,7 @@ public:
 			drawPoint(c);
 
 			glColor4f(0.0f, 0.0f, 1.0f, 1.0f);
-			for(auto &tex : *camerasUsed) {
+			for(auto &tex : textureHandler->getTextures()) {
 				glm::vec3 v = -1 * glm::transpose(tex.photo->camera.rotate) * tex.photo->camera.translate;
 				tmp =  object->getMvm() * glm::vec4(v, 1.0f);
 				drawPoint(tmp);
@@ -202,11 +196,9 @@ private:
 		}
 		return true;
 	}
-
-
+	
 };
 
 
-
-#endif	/* RADAR_H */
+#endif	/* RADARRENDERPASS_H */
 

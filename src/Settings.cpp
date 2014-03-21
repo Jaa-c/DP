@@ -5,9 +5,10 @@
 #include "Log.h"
 #include "Settings.h"
 
-const QByteArray Settings::fileHeaderByteArray;
 quint32	Settings::usingTextures = 4;
 glm::vec3 Settings::objectRotate = glm::vec3(0, 0, 0);
+glm::vec2 Settings::radarPos = glm::vec2(10, 10);
+glm::vec2 Settings::radarSize = glm::vec2(250, 250);
 	
 void Settings::reset() {
 	Settings::usingTextures = 4;

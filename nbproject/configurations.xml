@@ -22,6 +22,7 @@
       <logicalFolder name="RenderPass" displayName="RenderPass" projectFiles="true">
         <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/RenderPass/BasicTexturingRenderPass.h</itemPath>
         <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/RenderPass/BundlerPointsRenderPass.h</itemPath>
+        <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/RenderPass/RadarRenderPass.h</itemPath>
         <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/RenderPass/RenderPass.h</itemPath>
         <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/RenderPass/TexturingRenderPass.h</itemPath>
       </logicalFolder>
@@ -29,7 +30,6 @@
       <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/Controlls.h</itemPath>
       <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/Log.h</itemPath>
       <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/ObjectData.h</itemPath>
-      <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/Radar.h</itemPath>
       <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/RenderPassHandler.h</itemPath>
       <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/Renderer.h</itemPath>
       <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/Settings.h</itemPath>
@@ -122,17 +122,17 @@
             tool="3"
             flavor2="0">
       </item>
-      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/Radar.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
       <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/RenderPass/BasicTexturingRenderPass.h"
             ex="false"
             tool="3"
             flavor2="0">
       </item>
       <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/RenderPass/BundlerPointsRenderPass.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/RenderPass/RadarRenderPass.h"
             ex="false"
             tool="3"
             flavor2="0">
@@ -332,17 +332,17 @@
             tool="3"
             flavor2="0">
       </item>
-      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/Radar.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
       <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/RenderPass/BasicTexturingRenderPass.h"
             ex="false"
             tool="3"
             flavor2="0">
       </item>
       <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/RenderPass/BundlerPointsRenderPass.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/RenderPass/RadarRenderPass.h"
             ex="false"
             tool="3"
             flavor2="0">
@@ -531,17 +531,17 @@
             tool="3"
             flavor2="0">
       </item>
-      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/Radar.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
       <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/RenderPass/BasicTexturingRenderPass.h"
             ex="false"
             tool="3"
             flavor2="0">
       </item>
       <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/RenderPass/BundlerPointsRenderPass.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/RenderPass/RadarRenderPass.h"
             ex="false"
             tool="3"
             flavor2="0">

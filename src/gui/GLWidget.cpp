@@ -4,6 +4,7 @@
 #include "../RenderPass/BasicTexturingRenderPass.h"
 #include "../RenderPass/TexturingRenderPass.h"
 #include "../RenderPass/BundlerPointsRenderPass.h"
+#include "../RenderPass/RadarRenderPass.h"
 #include "../io/CalibrationLoader.h"
 #include "../io/ImageLoader.h"
 #include "../Settings.h"
@@ -30,10 +31,6 @@ void GLWidget::paintGL() {
 		
 		renderPassHandler.draw(object);
 		glUseProgram(0);
-
-		if(false && displayRadar) {
-			radar->draw(&textureHandler->getTextures());
-		}
 	}
 	
 	gettimeofday(&end, NULL);
@@ -60,11 +57,11 @@ void GLWidget::createScene(
 	}
 	DELETE(textureHandler);
 	DELETE(object);
-	DELETE(radar);
 	
 	camera.resetView();
 	
 	QProgressDialog progress("Loading data", "", 0, 100, this);
+	progress.setValue(0);
 	progress.show();
 	
 	auto prgcb = [&progress] (int p) {
@@ -80,9 +77,6 @@ void GLWidget::createScene(
 		
 		object = new ObjectData(geom);
 		object->pointData = cl.getPointData();
-		
-		radar = new Radar(object, &camera, controlls);
-		radar->setPosition(10, 10, 250, 250);
 		
 		controlls->setPhotos(&textureHandler->getPhotos());
 
@@ -154,6 +148,13 @@ void GLWidget::addRenderPass(RenderPass::RenderPassType pass) {
 				new BundlerPointsRenderPass(&renderer, &shaderHandler, textureHandler)
 			);
 			break;
+		case RenderPass::RADAR_PASS:
+			renderPassHandler.add(
+				RenderPass::RADAR_PASS,
+				new RadarRenderPass(&renderer, &shaderHandler, textureHandler, camera)
+			);
+			break;
+			
 		default:
 			return;
 	}
@@ -179,7 +180,6 @@ GLWidget::GLWidget(const QGLFormat& format, int w, int h, QWidget* parent) :
 	camera(w, h), 
 	renderer(&camera),
 	textureHandler(NULL), 
-	radar(NULL), 
 	object(NULL),
 	displayRadar(false)
 {		
@@ -196,5 +196,4 @@ GLWidget::~GLWidget() {
 	
 	DELETE(textureHandler);
 	DELETE(object);
-	DELETE(radar);
 }

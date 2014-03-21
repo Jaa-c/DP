@@ -39,7 +39,7 @@ void MainWindow::initAppState() {
 
 void MainWindow::initScene() {
 	texturingRP->setChecked(true);
-	displayRadar->setChecked(true);
+	radarRP->setChecked(true);
 }
 
 void MainWindow::createActions() {
@@ -69,9 +69,9 @@ void MainWindow::createActions() {
 	bundlerPointsRP->setCheckable(true);
 	connect(bundlerPointsRP, SIGNAL(changed()), this, SLOT(bundlerPointsPassCB()));
 	
-	displayRadar = new QAction(tr("Display &radar"), this);
-	displayRadar->setCheckable(true);
-	connect(displayRadar, SIGNAL(changed()), this, SLOT(displayRadarCB()));
+	radarRP = new QAction(tr("Display &radar"), this);
+	radarRP->setCheckable(true);
+	connect(radarRP, SIGNAL(changed()), this, SLOT(radarPassCB()));
 	
 	programSettings = new QAction(tr("Program &settings"), this);
 	connect(programSettings, SIGNAL(triggered()), this, SLOT(displaySettingsCB()));
@@ -94,12 +94,12 @@ void MainWindow::createMenus() {
 	renderPass->addAction(texturingRP);
 	renderPass->addAction(basicTexturingRP);
 	renderPass->addAction(bundlerPointsRP);
+	renderPass->addAction(radarRP);
 	
 //	view = menuBar()->addMenu(tr("&View"));
 //	view->addAction(displayRadar);
 	
 	settings = menuBar()->addMenu(tr("&Settings"));
-	settings->addAction(displayRadar);
 	settings->addAction(programSettings);
 	settings->addAction(objectSettings);
 	
@@ -159,8 +159,13 @@ void MainWindow::bundlerPointsPassCB() {
 	}
 }
 
-void MainWindow::displayRadarCB() {
-	glWidget->setDisplayRadar(displayRadar->isChecked());
+void MainWindow::radarPassCB() {
+	if(radarRP->isChecked()) {
+		glWidget->addRenderPass(RenderPass::RADAR_PASS);
+	}
+	else {
+		glWidget->removeRenderPass(RenderPass::RADAR_PASS);
+	}
 }
 
 MainWindow::~MainWindow() {
@@ -175,7 +180,7 @@ MainWindow::~MainWindow() {
 	DELETE(texturingRP);
 	DELETE(basicTexturingRP);
 	DELETE(bundlerPointsRP);
-	DELETE(displayRadar);
+	DELETE(radarRP);
 	
 	DELETE(texGroup);
 	

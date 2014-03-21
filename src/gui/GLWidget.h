@@ -16,7 +16,6 @@
 #include "../io/ImageLoader.h"
 #include "../Renderer.h"
 #include "../Controlls.h"
-#include "../Radar.h"
 #include "../io/CalibrationLoader.h"
 
 #include "../RenderPassHandler.h"
@@ -37,7 +36,6 @@ class GLWidget : public QGLWidget
 	Renderer renderer;
 	
 	TextureHandler *textureHandler;
-	Radar *radar;
 	ObjectData *object;
 	Controlls * controlls;
 	

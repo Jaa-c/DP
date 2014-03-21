@@ -27,7 +27,7 @@ private slots:
 	void texturingPassCB();
 	void basicTexturingPassCB();
 	void bundlerPointsPassCB();
-	void displayRadarCB();
+	void radarPassCB();
 	void displaySettingsCB();
 	void displayObjectSettingsCB();
 	
@@ -55,7 +55,7 @@ private:
 	QAction *texturingRP;
 	QAction *basicTexturingRP;
 	QAction *bundlerPointsRP;
-	QAction *displayRadar;
+	QAction *radarRP;
 	QAction *reloadShaders;
 	QAction *programSettings;
 	QAction *objectSettings;

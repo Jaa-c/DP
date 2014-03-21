@@ -54,13 +54,15 @@ public:
 					outPhotos.push_back(Photo(i, img.image, img.size, img.rowPadding, cp));
 				}
 
-				pointData = std::shared_ptr<PointData>(new PointData(outPhotos, bundlerData.getPoints()));
+				pointData = std::shared_ptr<PointData>(new PointData(outPhotos, &bundlerData.getPoints()));
 				break;
 			}
 			case RZ3:
 			{
 				Rz3Parser rz3Parser(imgLoader, calibrationFile, rz3images, photosFolder);
 				outPhotos = rz3Parser.parseFile();
+				pointData = std::shared_ptr<PointData>(new PointData(outPhotos));
+				break;
 			}
 		} 
 	
