@@ -128,12 +128,12 @@ public:
 			//-----------
 			string name = fileList.at(i);
 			
-			ImageData img(name);
-			if(imgLoader.loadImage(imageFolder, name, img)) {
-				data.push_back(Photo(i, img.image, img.size, img.rowPadding, cam));
+			ImageData img;
+			if(imgLoader.checkImage(imageFolder, name, img)) {
+				data.push_back(Photo(i, img.path, img.size, img.rowPadding, cam));
 			}
 			
-			if(i > 1) break; //tmp
+			if(i > 10) break; //tmp
 		}		
 	
 		return data;

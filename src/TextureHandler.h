@@ -14,10 +14,11 @@
 #include <unordered_map>
 #include <queue>
 
+#include "globals.h"
 #include "glm/glm.hpp"
 #include "glm/core/type_mat3x3.hpp"
 #include "io/BundlerParser.h"
-#include "io/ImageLoader.h"
+#include "kdtree/KDTree.h"
 
 struct CameraPosition {
 	glm::mat3 rotate;
@@ -41,24 +42,27 @@ struct CameraPosition {
 
 struct Photo {
 	const uint ID;
-	const Image image;
+	const std::string name;
 	const glm::ivec2 size; 
 	const uint rowPadding;
 	const CameraPosition camera;
+	
+	Image image;
 	
 	bool current;
 	
 	Photo(
 		const uint ID, 
-		const Image image, 
+		const std::string name,
 		const glm::ivec2 size, 
 		const uint rowPadding, 
 		const CameraPosition camera
-	) :	ID(ID), image(image), size(size), rowPadding(rowPadding), camera(camera) {
+	) :	ID(ID), name(name), size(size), rowPadding(rowPadding), camera(camera) {
 		current = false;
 	}
 };
 
+#include "io/ImageLoader.h"
 #include "Texture.h" //TODO!
 
 class TextureHandler {

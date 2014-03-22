@@ -22,7 +22,7 @@ using namespace std;
 /**
  * kd-tree!
  */
-template<NodeType, const int D = 3 >
+template<class NodeType, const int D = 3 >
 class KDTree {
 	typedef vector< NodeType *> points;
 	typedef typename vector< NodeType *>::iterator points_it;
@@ -48,32 +48,32 @@ class KDTree {
 	 * @param point point in question
 	 * @return bucket in which the point belongs
 	 */
-	Leaf<D> * findBucket(const NodeType *point) const {
+	Leaf<NodeType, D> * findBucket(const NodeType *point) const {
 		Inner* node = root;
 		while (true) {
 			if ((*point)[node->dimension] <= node->split) {
 				if (!node->left) {
 					if (node->right->isLeaf())
-						return (Leaf<D> *) node->right;
+						return (Leaf<NodeType, D> *) node->right;
 					else {
 						node = (Inner *) node->right;
 						continue;
 					}
 				}
 				if (node->left->isLeaf())
-					return (Leaf<D> *) node->left;
+					return (Leaf<NodeType, D> *) node->left;
 				node = (Inner *) node->left;
 			} else {
 				if (!node->right) {
 					if (node->left->isLeaf())
-						return (Leaf<D> *) node->left;
+						return (Leaf<NodeType, D> *) node->left;
 					else {
 						node = (Inner *) node->left;
 						continue;
 					}
 				}
 				if (node->right->isLeaf())
-					return (Leaf<D> *) node->right;
+					return (Leaf<NodeType, D> *) node->right;
 				node = (Inner *) node->right;
 			}
 		}
@@ -86,7 +86,7 @@ class KDTree {
 	 * @param sqrtb if false, the returned distance is squared
 	 * @return distance between points
 	 */
-	inline const float distance(const NodeType * p1, const NodeType * p2, bool sqrtb = false) {
+	inline float distance(const NodeType * p1, const NodeType * p2, bool sqrtb = false) {
 		float dist = 0;
 		for (int d = 0; d < D; d++) {
 			float tmp = fabs((*p1)[d] - (*p2)[d]);
@@ -105,7 +105,7 @@ class KDTree {
 	 * @param max max coords of a hyper reectangle
 	 * @return squared distance
 	 */
-	inline const float minBoundsDistance(const NodeType * point, const float * min, const float * max) {
+	inline float minBoundsDistance(const NodeType * point, const float * min, const float * max) {
 		float dist = 0;
 		for (int d = 0; d < D; d++) {
 			if ((*point)[d] < min[d]) {
@@ -150,7 +150,7 @@ public:
 	 * Returns the number of visited nodes during last search
 	 * @return number of visited nodes
 	 */
-	const int getVisitedNodes() const {
+	int getVisitedNodes() const {
 		return visitedNodes;
 	}
 
@@ -158,7 +158,7 @@ public:
 	 * Bounding box of the tree
 	 * @return array of size 2D, format: xmin, xmax, ymin, ymax, ...
 	 */
-	const float *getBoundingBox() const {
+	float *getBoundingBox() const {
 		return &boundingBox[0];
 	}
 
@@ -166,7 +166,7 @@ public:
 	 * Returns number of points in the tree
 	 * @return number of points in the tree
 	 */
-	const int size() const {
+	int size() const {
 		return sizep;
 	}
 
@@ -215,12 +215,12 @@ public:
 		}
 
 		//construct the tree
-		stack < Constr < D >> stack;
-		stack.push(Constr<D>(*adata, boundingBox, root));
+		stack<Constr<NodeType, D>> stack;
+		stack.push(Constr<NodeType, D>(*adata, boundingBox, root));
 
 		while (!stack.empty()) {
 
-			Constr<D> curr = stack.top();
+			Constr<NodeType, D> curr = stack.top();
 			stack.pop();
 			points * data = &curr.data;
 			float* bounds = &curr.bounds[0];
@@ -273,9 +273,9 @@ public:
 					float b[2 * D];
 					std::copy(bounds, bounds + 2 * D, &b[0]);
 					b[2 * dim + 1] = split;
-					stack.push(Constr<D>(left, &b[0], node));
+					stack.push(Constr<NodeType, D>(left, &b[0], node));
 				} else {
-					Leaf<D> * leaf = new Leaf<D>(parent, left);
+					Leaf<NodeType, D> * leaf = new Leaf<NodeType, D>(parent, left);
 					parent->left = leaf;
 				}
 			}
@@ -288,9 +288,9 @@ public:
 					float b[2 * D];
 					std::copy(bounds, bounds + 2 * D, &b[0]);
 					b[2 * dim] = split;
-					stack.push(Constr<D>(right, &b[0], node));
+					stack.push(Constr<NodeType, D>(right, &b[0], node));
 				} else {
-					Leaf<D> * leaf = new Leaf<D>(parent, right);
+					Leaf<NodeType, D> * leaf = new Leaf<NodeType, D>(parent, right);
 					parent->right = leaf;
 				}
 			}
@@ -309,7 +309,7 @@ public:
 			return;
 		}
 		sizep++;
-		Leaf<D> * leaf = findBucket(point);
+		Leaf<NodeType, D> * leaf = findBucket(point);
 		if (leaf->bucket.size() < bucketSize) {
 			leaf->add(point);
 			return; //OK, bucket is not full yet
@@ -318,9 +318,9 @@ public:
 			data.push_back(point); //add the point to bucket
 			//create new inner node
 			Inner * node = new Inner(leaf->parent);
-			if ((Leaf<D> *)leaf->parent->left == leaf) {
+			if ((Leaf<NodeType, D> *)leaf->parent->left == leaf) {
 				leaf->parent->left = node;
-			} else if ((Leaf<D> *)leaf->parent->right == leaf) {
+			} else if ((Leaf<NodeType, D> *)leaf->parent->right == leaf) {
 				leaf->parent->right = node;
 			} else {
 				cerr << "somethig is very wrong! Point not inserted.\n";
@@ -365,10 +365,10 @@ public:
 			}
 
 			//create two new leafs
-			Leaf<D> * left = new Leaf<D>(node, l);
+			Leaf<NodeType, D> * left = new Leaf<NodeType, D>(node, l);
 			node->left = left;
 
-			Leaf<D> * right = new Leaf<D>(node, r);
+			Leaf<NodeType, D> * right = new Leaf<NodeType, D>(node, r);
 			node->right = right;
 
 		}
@@ -382,7 +382,7 @@ public:
 	 */
 	NodeType * nearestNeighbor(const NodeType *query) {
 		visitedNodes = 0;
-		Leaf<D> *leaf = findBucket(query);
+		Leaf<NodeType, D> *leaf = findBucket(query);
 		/** squared distance of the current nearest neigbor */
 		float dist = numeric_limits<float>::max();
 		/** current best NN */
@@ -400,7 +400,7 @@ public:
 		}
 
 		ExtendedNode<D> firstNode(leaf->parent);
-		if ((Leaf<D> *)leaf->parent->left == leaf)
+		if ((Leaf<NodeType, D> *)leaf->parent->left == leaf)
 			firstNode.status = LEFT;
 		else
 			firstNode.status = RIGHT;
@@ -472,7 +472,7 @@ public:
 
 				if (node) {
 					if (node->isLeaf()) { // if node is leaf we search the bucket
-						Leaf<D> * leaf = (Leaf<D> *) node;
+						Leaf<NodeType, D> * leaf = (Leaf<NodeType, D> *) node;
 						///BOB test
 						if (minBoundsDistance(query, leaf->min, leaf->max) < dist) {
 							points *bucket = &leaf->bucket;
@@ -557,7 +557,7 @@ public:
 	 */
 	vector< NodeType * > circularQuery(const NodeType *query, const float radius) {
 		//visitedNodes = 0; //comment for kNN
-		Leaf<D> *leaf = findBucket(query);
+		Leaf<NodeType, D> *leaf = findBucket(query);
 		vector< NodeType * > data;
 		float r = radius * radius;
 
@@ -571,7 +571,7 @@ public:
 		}
 
 		ExtendedNode<D> firstNode(leaf->parent);
-		if ((Leaf<D> *)leaf->parent->left == leaf)
+		if ((Leaf<NodeType, D> *)leaf->parent->left == leaf)
 			firstNode.status = LEFT;
 		else
 			firstNode.status = RIGHT;
@@ -643,7 +643,7 @@ public:
 
 				if (node) {
 					if (node->isLeaf()) { // if node is leaf we search the bucket
-						Leaf<D> * leaf = (Leaf<D> *) node;
+						Leaf<NodeType, D> * leaf = (Leaf<NodeType, D> *) node;
 						///BOB test
 						if (minBoundsDistance(query, leaf->min, leaf->max) < r) {
 							visitedNodes++;
@@ -682,7 +682,7 @@ public:
 	 */
 	NodeType * simpleNearestNeighbor(const NodeType *query) {
 		visitedNodes = 0;
-		Leaf<D> *leaf = findBucket(query);
+		Leaf<NodeType, D> *leaf = findBucket(query);
 		float dist = numeric_limits<float>::max();
 		NodeType * nearest;
 
@@ -707,7 +707,7 @@ public:
 
 		exInner n;
 		n.first = leaf->parent;
-		if ((Leaf<D> *)leaf->parent->left == leaf)
+		if ((Leaf<NodeType, D> *)leaf->parent->left == leaf)
 			n.second = LEFT;
 		else
 			n.second = RIGHT;
@@ -739,7 +739,7 @@ public:
 			for (int i = 0; i < 2; i++) {
 				if (nodes[i]) { //check node 
 					if ((nodes[i])->isLeaf()) {
-						points *bucket = &((Leaf<D> *)(nodes[i]))->bucket;
+						points *bucket = &((Leaf<NodeType, D> *)(nodes[i]))->bucket;
 						for (points_it it = bucket->begin(); it != bucket->end(); ++it) {
 							//(*it)->setColor(255, 255, 0);
 							visitedNodes++;

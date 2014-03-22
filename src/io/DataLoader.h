@@ -175,15 +175,8 @@ public:
         return true;
 	}
 	
-	/**
-	 * Loads raw image to rgb array
-     * @param filename path to the image
-     * @param reference to vector of rgb data
-	 * @return true if loaded OK
-     */
-	static void loadRAW(
-		const std::string &filename, 
-		std::vector<rgb> &raw, 
+	static void loadRawInfo(
+		const std::string &filename,
 		int &width, 
 		int &height,
 		uint &rowPadding
@@ -194,15 +187,39 @@ public:
 			input.read(reinterpret_cast<char*> (&width), sizeof(int));
 			input.read((char*) (&height), sizeof(int));
 			input.read((char*) (&rowPadding), sizeof(int));
+						
+			Log::i("[DataLoader] Loaded image info: " + filename + " %d x %d", width, height);
+		}
+		else {
+			Log::e("[DataLoader] File does not exist: " + filename);
+		}
+	}
+	
+	/**
+	 * Loads raw image to rgb array
+     * @param filename path to the image
+     * @param reference to vector of rgb data
+	 * @return true if loaded OK
+     */
+	static void loadRAWData (
+		const std::string &filename, 
+		std::vector<rgb> &raw, 
+		const int &width, 
+		const int &height,
+		const uint &rowPadding
+	) {
+		// Read input file
+		if (fileExists(filename)) {
+			std::ifstream input(filename, std::ios::in | std::ifstream::binary);
+			input.seekg(3 * sizeof(int));
 			
 			const size_t size = (width + rowPadding) * height * 3;
 			raw.resize(size);
 			input.read((char*) &raw[0], raw.size() * sizeof(rgb));
-			
-			Log::i("[DataLoader] Loaded image: " + filename + " %d x %d", width, height);
+			//Log::i("[DataLoader] Loaded image: " + filename + " %d x %d", width, height);
 		}
 		else {
-			Log::e("[DataLoader] File does not exist: " + filename);
+			//Log::e("[DataLoader] File does not exist: " + filename);
 		}
 	}
 	

@@ -43,7 +43,7 @@ static inline string &trim(string &s) {
 	return ltrim(rtrim(s));
 }
 
-
+/**
 static std::ostream & operator<<(std::ostream &os, const glm::mat3 &m) {
 	for(int i = 0; i < 3; ++i) {
 		for(int j = 0; j < 3; ++j) {
@@ -62,6 +62,7 @@ static std::ostream & operator<<(std::ostream &os, const glm::mat4 &m) {
 		os << "\n";
 	}
 	return os;
-}
+}*/
+
 #endif	/* PARSER_H */
 

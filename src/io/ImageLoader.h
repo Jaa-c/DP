@@ -19,14 +19,13 @@
 #endif
 
 #include "DataLoader.h"
+#include "../TextureHandler.h"
 
 struct ImageData {
 	std::string path;
 	Image image;
 	glm::ivec2 size;
 	uint rowPadding;
-	
-	ImageData(const std::string &path) : path(path) {}
 };
 
 class ImageLoader {
@@ -46,8 +45,8 @@ class ImageLoader {
 			while ((de = readdir(dp)) != NULL) {
 				std::string name(de->d_name);
 				if(name.length() > 3) {
-					ImageData id(name);
-					if(loadImage(path, name, id)) {
+					ImageData id;
+					if(checkImage(path, name, id)) {
 						data.push_back(id);
 					}
 				}
@@ -71,18 +70,23 @@ public:
 		expectedCount = 0;
 	}
 	
-	const std::vector<ImageData> loadAllImages(const std::string path) {
+	const std::vector<ImageData> checkAllImages(const std::string path) {
 		if(path.substr(path.length()-1, 1) != "/")
 			return readDirectory(path + "/");
 		else
 			return readDirectory(path);
 			
 	}
+	
+	void loadImage(Photo &p) {
+		DataLoader::loadRAWData(p.name, p.image, p.size.x, p.size.y, p.rowPadding);
+	} 
 
-	bool loadImage(const std::string &folder,const std::string &name, ImageData& id) {
+	bool checkImage(const std::string &folder,const std::string &name, ImageData& id) {
 		std::string raw = name.substr(0, name.length()-3);
 		raw += RAW;
 		std::string rawFile = folder + RAW + "/" + raw;
+		id.path = rawFile;
 		if(!DataLoader::fileExists(rawFile)) {
 			std::string sfx = name.substr(name.length()-3, 3);
 			std::transform(sfx.begin(), sfx.end(), sfx.begin(), ::tolower);
@@ -106,7 +110,7 @@ public:
 			Log::i("Created file: " + rawFile);
 		}
 		else {
-			DataLoader::loadRAW(rawFile, id.image, id.size.x, id.size.y, id.rowPadding);
+			DataLoader::loadRawInfo(rawFile, id.size.x, id.size.y, id.rowPadding);
 		}
 		if(progress && expectedCount != 0) {
 			prgVal += 100 / (float) expectedCount;

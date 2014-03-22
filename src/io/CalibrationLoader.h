@@ -45,13 +45,13 @@ public:
 				BundlerParser bundlerData(calibrationFile);
 				const std::vector<CameraPosition> cameras = bundlerData.parseFile();
 				imgLoader.setExpectedCount(cameras.size());
-				const std::vector<ImageData> imgData = imgLoader.loadAllImages(photosFolder);
+				const std::vector<ImageData> imgData = imgLoader.checkAllImages(photosFolder);
 
 				outPhotos.reserve(cameras.size());
 				for(uint i = 0; i < cameras.size(); ++i) {
 					const ImageData &img = imgData.at(i);
 					const CameraPosition &cp = cameras.at(i);
-					outPhotos.push_back(Photo(i, img.image, img.size, img.rowPadding, cp));
+					outPhotos.push_back(Photo(i, img.path, img.size, img.rowPadding, cp));
 				}
 
 				pointData = std::shared_ptr<PointData>(new PointData(outPhotos, &bundlerData.getPoints()));

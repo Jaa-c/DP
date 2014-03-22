@@ -26,7 +26,7 @@ struct Node {
 	Inner * parent;
 
 	/** Returns true if node is leaf */
-	const bool isLeaf() const {
+	bool isLeaf() const {
 		return leaf;
 	}
 
@@ -36,7 +36,7 @@ struct Node {
 protected:
 
 	/** Constructor for child classes */
-	Node(const bool leaf, Inner* parent) : leaf(leaf), parent(parent) {
+	Node(const bool leaf, Inner* parent) : parent(parent), leaf(leaf) {
 	}
 
 private:
@@ -72,7 +72,7 @@ struct Inner : Node {
  * Contains only list of pointers to points
  * 
  */
-template<NodeType, const int D = 3 >
+template<class NodeType, const int D = 3 >
 struct Leaf : Node {
 	std::vector< NodeType * > bucket;
 	/** lower bound, BOB test */
@@ -86,7 +86,7 @@ struct Leaf : Node {
 			max[d] = 0;
 		}
 		for (typename std::vector< NodeType * >::iterator it = bucket.begin(); it != bucket.end(); ++it) {
-			Point<D> * p = *it;
+			NodeType * p = *it;
 			for (int d = 0; d < D; d++) {
 				if ((*p)[d] > max[d]) max[d] = (*p)[d];
 				if ((*p)[d] < min[d]) min[d] = (*p)[d];
@@ -105,7 +105,7 @@ struct Leaf : Node {
 		}
 	}
 
-	const float getDensity() const {
+	float getDensity() const {
 		float vol = 1;
 		for (int d = 0; d < D; d++) {
 			vol *= max[d] - min[d];
@@ -219,7 +219,7 @@ struct ExtendedNode {
 /**
  * Structure on the stack tree construction
  */
-template<NodeType, const int D = 3 >
+template<class NodeType, const int D = 3 >
 struct Constr {
 	std::vector< NodeType *> data;
 	float bounds[2 * D];
