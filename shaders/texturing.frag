@@ -18,7 +18,6 @@ in block {
 	smooth vec4 v_position;
 	smooth vec4 v_viewPos;
 	smooth vec3 v_normal;
-	//flat   int	v_texIndex;
 } In;
 
 layout(location = 0) out vec4 a_FragColor;
@@ -27,9 +26,36 @@ layout(location = 0) out vec4 a_FragColor;
 
 void projectCoords(in int index, in vec4 pos, out vec2 coords) {
 	TextureData data = ub_texData[index];
+
+	/*DEBUG *
+	mat3 Rx = mat3(
+		-1,  0,  0, 
+		0, 1,  0, 
+		0,  0, 1);
+	mat3 R = mat3(
+		1,  0,  0, 
+		0, -1,  0, 
+		0,  0, -1);
+	vec3 t = vec3(11.3142, 10.638, 90.6819); 
+	/**
+	R = mat3 (0.999939, -0.000229313, -0.0110699, 
+			 -0.000216107, -0.999999, 0.00119414, 
+			 -0.0110702, -0.00119167, -0.999938); 
+	t = vec3(7.14296, 11.0314, 90.6954); /**/
+
+	/**
+	R = mat3 (0.999735, -0.00052924, -0.0230192,
+		     -0.000518993, -1, 0.000451126, 
+			 -0.0230194, -0.000439059, -0.999735);
+	t = vec3( 2.31985, 10.9196, 90.7393); /**/
+
+
+	//vec3 c = Rx * R * pos.xyz + t;
+
 	vec3 c = (data.u_TextureRt * pos).xyz;
-	coords.x = -c.x/c.z * data.u_TextureFL + data.u_TextureSize.x * 0.5f;
-	coords.y =  c.y/c.z * data.u_TextureFL + data.u_TextureSize.y * 0.5f;
+	coords.x =  -c.x/c.z * data.u_TextureFL + data.u_TextureSize.x * 0.5f;
+	coords.y =   c.y/c.z * data.u_TextureFL + data.u_TextureSize.y * 0.5f;
+
 }
 
 bool inRange(in int index, in vec2 coords) {
@@ -61,7 +87,7 @@ void main() {
 	vec3 col = texture2DRect(u_texture0[u_textureIndices[index]], coords).rgb;
 	vec3 color = min((.2f + col) * diffuse + specular * .3f, 1.0f);
 
-	//color.r = coords.x / 4096;
+	//color.r = coords.x / 4094;
 	//color.g = coords.y / 4096;
 	//color.b = 0;
 	//if(In.v_texIndex == 0) color.r += .2f;

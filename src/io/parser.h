@@ -44,5 +44,24 @@ static inline string &trim(string &s) {
 }
 
 
+static std::ostream & operator<<(std::ostream &os, const glm::mat3 &m) {
+	for(int i = 0; i < 3; ++i) {
+		for(int j = 0; j < 3; ++j) {
+			os << m[i][j] << " ";
+		}
+		os << "\n";
+	}
+	return os;
+}
+
+static std::ostream & operator<<(std::ostream &os, const glm::mat4 &m) {
+	for(int i = 0; i < 4; ++i) {
+		for(int j = 0; j < 4; ++j) {
+			os << m[i][j] << " ";
+		}
+		os << "\n";
+	}
+	return os;
+}
 #endif	/* PARSER_H */
 

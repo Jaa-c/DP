@@ -117,28 +117,23 @@ public:
 			std::getline(infile, line);
 			std::getline(infile, line);
 			
-			
-			cam.Rt = glm::mat4(glm::transpose(cam.rotate));
+			glm::mat3 Rx(-1, 0, 0, 0, 1, 0, 0, 0, 1); //change the sign of X
+			cam.Rt = glm::mat4(Rx * glm::transpose(cam.rotate));
 			cam.Rt[3][0] = cam.translate[0];
 			cam.Rt[3][1] = cam.translate[1];
 			cam.Rt[3][2] = cam.translate[2];
 			
+			//std::cout << cam.Rt << "\n";
+			
 			//-----------
 			string name = fileList.at(i);
-//			std::cout << name << ":\n";
-//			for(int i = 0; i < 4; ++i) {
-//				for(int j = 0; j < 4; ++j)
-//					std::cout << cam.Rt[i][j] << " ";
-//				std::cout << "\n";
-//			}
-//			std::cout << "\n";
+			
 			ImageData img(name);
 			if(imgLoader.loadImage(imageFolder, name, img)) {
 				data.push_back(Photo(i, img.image, img.size, img.rowPadding, cam));
 			}
 			
-			if(i > 15) break; //tmp
-			
+			if(i > 1) break; //tmp
 		}		
 	
 		return data;
