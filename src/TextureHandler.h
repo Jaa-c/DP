@@ -80,7 +80,7 @@ class TextureHandler {
 	std::vector<Photo> photos;
 	std::vector<Texture> textures;
 	
-	std::vector<Photo *> currentPhotos;
+	std::vector<Photo *> nearPhotos;
 	
 	/// indices of the best textures in the texture array bound to the shader
 	std::vector<int> bestTexIdx;
@@ -105,7 +105,9 @@ public:
 		const glm::mat4 &mvm, 
 		const uint count
 	) {
-		currentPhotos = kdtree.kNearestNeighbors<glm::vec3>(&cameraPos, 30); //TODO
+		nearPhotos = kdtree.kNearestNeighbors<glm::vec3>(&cameraPos, 5); //TODO
+//		nearPhotos.clear();
+//		nearPhotos.push_back(kdtree.nearestNeighbor<glm::vec3>(&cameraPos));
 		std::vector<Photo*> currentPhotos = getClosestCameras(viewDir, mvm, count);
 		//std::cout << "\nbest photo id : " << (*currentPhotos.begin())->ID << "\n";
 		
@@ -179,9 +181,13 @@ private:
 		};
 		
 		std::set<Photo*, decltype(comp)> result(comp);
-		for(Photo &p : photos) {
-			p.current = false;
-			result.insert(&p);
+//		for(Photo &p : photos) {
+//			p.current = false;
+//			result.insert(&p);
+//		}
+		for(Photo *p : nearPhotos) {
+			p->current = false;
+			result.insert(p);
 		}
 		auto beg = result.begin();
 		std::advance(beg, count);

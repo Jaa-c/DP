@@ -26,8 +26,10 @@ void GLWidget::paintGL() {
 	if(object) {
 		camera.updateCameraViewMatrix();
 		object->rotate(Settings::objectRotate);
-		glm::vec3 viewDir = object->getCentroidPosition() + camera.getCameraPosition();
-		textureHandler->updateTextures(camera.getCameraPosition(), viewDir, object->getMvm(), Settings::usingTextures);
+		glm::vec3 viewDir = object->getCentroidPosition() - camera.getCameraPosition();
+		
+		glm::vec3 c(glm::inverse(object->getMvm()) * glm::vec4(camera.getCameraPosition(), 1.0));
+		textureHandler->updateTextures(c, viewDir, object->getMvm(), Settings::usingTextures);
 		
 		renderPassHandler.draw(object);
 		glUseProgram(0);
@@ -87,6 +89,7 @@ void GLWidget::createScene(
 		
 		object = new ObjectData(geom);
 		object->pointData = cl.getPointData();
+		object->rotate(Settings::objectRotate);
 		
 		controlls->setPhotos(&textureHandler->getPhotos());
 

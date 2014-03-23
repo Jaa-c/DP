@@ -26,7 +26,7 @@ class Camera {
 	
 	const float inertia = 0.08f; //mouse inertia
 	const float rotateSpeed = 0.2f; //mouse rotate speed (sensitivity)
-	const float walkSpeed = 0.25f; //walking speed (wasd)
+	const float walkSpeed = 0.50f; //walking speed (wasd)
 	
 public:
 	enum Move {
@@ -42,7 +42,7 @@ public:
 	}
 	
 	void resetView() {
-		cameraPos = glm::vec3(0.0f, 0.0f, -5.0f);
+		cameraPos = glm::vec3(0.0f, 0.0f, 5.0f);
 		cameraRot = glm::vec3(0.0f, 0.0f, 0.0f);
 
 		cameraPosLag = cameraPos;
@@ -67,30 +67,30 @@ public:
 		// view transform
 		g_CameraViewMatrix = glm::rotate(glm::mat4(1.0f), cameraRotLag[0], glm::vec3(1.0, 0.0, 0.0));
 		g_CameraViewMatrix = glm::rotate(g_CameraViewMatrix, cameraRotLag[1], glm::vec3(0.0, 1.0, 0.0));
-		g_CameraViewMatrix = glm::translate(g_CameraViewMatrix, cameraPosLag);
+		g_CameraViewMatrix = glm::translate(g_CameraViewMatrix, -cameraPosLag);
 	}
 	
 	void move(Move dir) {
 		switch(dir) {
 			case BACK:
-				cameraPos[0] -= g_CameraViewMatrix[0][2] * walkSpeed;
-				cameraPos[1] -= g_CameraViewMatrix[1][2] * walkSpeed;
-				cameraPos[2] -= g_CameraViewMatrix[2][2] * walkSpeed;
-				break;
-			case FORWARD:
 				cameraPos[0] += g_CameraViewMatrix[0][2] * walkSpeed;
 				cameraPos[1] += g_CameraViewMatrix[1][2] * walkSpeed;
 				cameraPos[2] += g_CameraViewMatrix[2][2] * walkSpeed;
 				break;
-			case LEFT:
-				cameraPos[0] += g_CameraViewMatrix[0][0] * walkSpeed;
-				cameraPos[1] += g_CameraViewMatrix[1][0] * walkSpeed;
-				cameraPos[2] += g_CameraViewMatrix[2][0] * walkSpeed;
+			case FORWARD:
+				cameraPos[0] -= g_CameraViewMatrix[0][2] * walkSpeed;
+				cameraPos[1] -= g_CameraViewMatrix[1][2] * walkSpeed;
+				cameraPos[2] -= g_CameraViewMatrix[2][2] * walkSpeed;
 				break;
-			case RIGHT:
+			case LEFT:
 				cameraPos[0] -= g_CameraViewMatrix[0][0] * walkSpeed;
 				cameraPos[1] -= g_CameraViewMatrix[1][0] * walkSpeed;
 				cameraPos[2] -= g_CameraViewMatrix[2][0] * walkSpeed;
+				break;
+			case RIGHT:
+				cameraPos[0] += g_CameraViewMatrix[0][0] * walkSpeed;
+				cameraPos[1] += g_CameraViewMatrix[1][0] * walkSpeed;
+				cameraPos[2] += g_CameraViewMatrix[2][0] * walkSpeed;
 				break;
 		}
 	}

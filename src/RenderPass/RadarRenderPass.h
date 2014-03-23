@@ -103,8 +103,7 @@ public:
 		glm::vec4 p1, dir;
 		glm::vec3 c, k;
 		c = object->getCentroidPosition();
-		k = -camera.getCameraPosition();
-
+		k = camera.getCameraPosition();
 
 		glBegin(GL_LINES);
 			glColor4f(0.3f, 0.3f, 0.3f, 1.0f);
@@ -139,13 +138,18 @@ public:
 
 			glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
 			drawPoint(c);
-
-			glColor4f(0.0f, 0.0f, 1.0f, 1.0f);
-			for(auto &tex : textureHandler->getTextures()) {
-				glm::vec3 v = -1 * glm::transpose(tex.photo->camera.rotate) * tex.photo->camera.translate;
-				tmp =  object->getMvm() * glm::vec4(v, 1.0f);
+			
+			glColor4f(1.0f, 1.0f, 0.0f, 1.0f); //current in RAM
+			for(auto *p : textureHandler->nearPhotos) {
+				tmp = object->getMvm() * glm::vec4(p->camera.position, 1.0f);
 				drawPoint(tmp);
-			}			
+			}
+
+//			glColor4f(0.0f, 0.0f, 1.0f, 1.0f); //current on GPU
+//			for(auto &tex : textureHandler->getTextures()) {
+//				tmp = object->getMvm() * glm::vec4(tex.photo->camera.position, 1.0f);
+//				drawPoint(tmp);
+//			}
 		glEnd();
 
 		glMatrixMode(GL_PROJECTION);
