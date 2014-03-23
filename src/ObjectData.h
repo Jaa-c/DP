@@ -27,8 +27,7 @@ public:
 	GLuint camPosVBO;
 	PointData(const std::vector<Photo> &photos, const Points *bundlerPoints = nullptr) : pointsVBO(GL_ID_NONE), camPosVBO(GL_ID_NONE) {
 		for(auto &photo : photos) {
-			glm::vec3 v = -1 * glm::transpose(photo.camera.rotate) * photo.camera.translate;
-			cameraPos.push_back(v);
+			cameraPos.push_back(photo.camera.position);
 			cameraDirections.push_back(photo.camera.getDirection());
 		}
 		if(bundlerPoints) {

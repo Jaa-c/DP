@@ -105,11 +105,8 @@ public:
 		const glm::mat4 &mvm, 
 		const uint count
 	) {
-		nearPhotos = kdtree.kNearestNeighbors<glm::vec3>(&cameraPos, 5); //TODO
-//		nearPhotos.clear();
-//		nearPhotos.push_back(kdtree.nearestNeighbor<glm::vec3>(&cameraPos));
+		nearPhotos = kdtree.kNearestNeighbors<glm::vec3>(&cameraPos, 5); 
 		std::vector<Photo*> currentPhotos = getClosestCameras(viewDir, mvm, count);
-		//std::cout << "\nbest photo id : " << (*currentPhotos.begin())->ID << "\n";
 		
 		int i = 0;
 		bestTexIdx.clear();

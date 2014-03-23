@@ -118,15 +118,13 @@ public:
 			std::getline(infile, line);
 			
 			glm::mat3 Rx(-1, 0, 0, 0, 1, 0, 0, 0, 1); //change the sign of X
-			cam.Rt = glm::mat4(Rx * glm::transpose(cam.rotate));
+			cam.Rt = glm::mat4(Rx * (cam.rotate));
 			cam.Rt[3][0] = cam.translate[0];
 			cam.Rt[3][1] = cam.translate[1];
 			cam.Rt[3][2] = cam.translate[2];
 			
-			cam.position = -1 * glm::transpose(cam.rotate) * cam.translate; //TODO: check
-			
-			//std::cout << cam.Rt << "\n";
-			
+			cam.position = -1 * Rx * cam.rotate * cam.translate; //TODO: check
+	
 			//-----------
 			string name = fileList.at(i);
 			
