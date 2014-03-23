@@ -27,7 +27,7 @@ void GLWidget::paintGL() {
 		camera.updateCameraViewMatrix();
 		object->rotate(Settings::objectRotate);
 		glm::vec3 viewDir = object->getCentroidPosition() + camera.getCameraPosition();
-		textureHandler->updateTextures(viewDir, object->getMvm(), Settings::usingTextures);
+		textureHandler->updateTextures(camera.getCameraPosition(), viewDir, object->getMvm(), Settings::usingTextures);
 		
 		renderPassHandler.draw(object);
 		glUseProgram(0);
@@ -82,6 +82,8 @@ void GLWidget::createScene(
 		textureHandler = new TextureHandler();
 		CalibrationLoader cl(textureHandler, prgcb);
 		cl.loadData(type, photos, file1, file2);
+		
+		textureHandler->buildTree();
 		
 		object = new ObjectData(geom);
 		object->pointData = cl.getPointData();

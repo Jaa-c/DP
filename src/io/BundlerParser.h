@@ -77,6 +77,8 @@ public:
 			cam.Rt[3][1] = cam.translate[1];
 			cam.Rt[3][2] = cam.translate[2];
 			
+			cam.position = -1 * glm::transpose(cam.rotate) * cam.translate;
+			
 			cameras.push_back(cam);
 		}
 		

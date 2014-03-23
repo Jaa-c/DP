@@ -29,7 +29,7 @@ class KDTree {
 	typedef pair<Inner *, Visited> exInner; //DEPRECATED, only in simple method
 
 	/** Size of the bucket*/
-	const static int bucketSize = 10;
+	const static int bucketSize = 5;
 
 	/** root of the tree */
 	Inner * root;
@@ -48,7 +48,8 @@ class KDTree {
 	 * @param point point in question
 	 * @return bucket in which the point belongs
 	 */
-	Leaf<NodeType, D> * findBucket(const NodeType *point) const {
+	template<class Query = NodeType>
+	Leaf<NodeType, D> * findBucket(const Query *point) const {
 		Inner* node = root;
 		while (true) {
 			if ((*point)[node->dimension] <= node->split) {
@@ -86,7 +87,8 @@ class KDTree {
 	 * @param sqrtb if false, the returned distance is squared
 	 * @return distance between points
 	 */
-	inline float distance(const NodeType * p1, const NodeType * p2, bool sqrtb = false) {
+	template<class Query = NodeType>
+	inline float distance(const Query * p1, const NodeType * p2, bool sqrtb = false) {
 		float dist = 0;
 		for (int d = 0; d < D; d++) {
 			float tmp = fabs((*p1)[d] - (*p2)[d]);
@@ -105,7 +107,8 @@ class KDTree {
 	 * @param max max coords of a hyper reectangle
 	 * @return squared distance
 	 */
-	inline float minBoundsDistance(const NodeType * point, const float * min, const float * max) {
+	template<class Query = NodeType>
+	inline float minBoundsDistance(const Query * point, const float * min, const float * max) {
 		float dist = 0;
 		for (int d = 0; d < D; d++) {
 			if ((*point)[d] < min[d]) {
@@ -380,9 +383,10 @@ public:
 	 * @param query the point whose NN we search
 	 * @return nearest neigbor
 	 */
-	NodeType * nearestNeighbor(const NodeType *query) {
+	template<class Query = NodeType>
+	NodeType * nearestNeighbor(const Query *query) {
 		visitedNodes = 0;
-		Leaf<NodeType, D> *leaf = findBucket(query);
+		Leaf<NodeType, D> *leaf = findBucket<Query>(query);
 		/** squared distance of the current nearest neigbor */
 		float dist = numeric_limits<float>::max();
 		/** current best NN */
@@ -392,7 +396,7 @@ public:
 		for (points_it it = leaf->bucket.begin(); it != leaf->bucket.end(); ++it) {
 			visitedNodes++;
 			//(*it)->setColor(0, 255, 0); //debug
-			float tmp = distance(query, *it);
+			float tmp = distance<Query>(query, *it);
 			if (tmp < dist && tmp > 0) { //ie points are not the same!
 				dist = tmp;
 				nearest = *it;
@@ -474,12 +478,12 @@ public:
 					if (node->isLeaf()) { // if node is leaf we search the bucket
 						Leaf<NodeType, D> * leaf = (Leaf<NodeType, D> *) node;
 						///BOB test
-						if (minBoundsDistance(query, leaf->min, leaf->max) < dist) {
+						if (minBoundsDistance<Query>(query, leaf->min, leaf->max) < dist) {
 							points *bucket = &leaf->bucket;
 							for (points_it it = bucket->begin(); it != bucket->end(); ++it) {
 								visitedNodes++;
 								//(*it)->setColor(255, 255, 0); //debug
-								float tmp = distance(query, *it);
+								float tmp = distance<Query>(query, *it);
 								if (tmp < dist && tmp > 0) { //ie points are not the same!
 									dist = tmp;
 									nearest = *it;
@@ -510,10 +514,11 @@ public:
 	 * @param k the number of points we look for
 	 * @return vector of kNN
 	 */
-	vector< NodeType * > kNearestNeighbors(const NodeType *query, const int k) {
+	template<class Query = NodeType>
+	vector< NodeType * > kNearestNeighbors(const Query *query, const int k) {
 		visitedNodes = 0;
-		NodeType *n = nearestNeighbor(query);
-		float r = distance(n, query, true) * (1 + 2 / (float) D);
+		NodeType *n = nearestNeighbor<Query>(query);
+		float r = distance<Query>(query, n, true) * (1 + 2 / (float) D);
 
 		vector< NodeType * > knn;
 
@@ -532,7 +537,7 @@ public:
 		//C++11, I guess it's OK to use it
 		sort(knn.begin(), knn.end(),
 				[query, this](const NodeType * a, const NodeType * b) -> bool {
-					return distance(a, query) < distance(b, query);
+					return distance<Query>(query, a) < distance(query, b);
 				});
 
 		vector< NodeType * > result;
@@ -555,16 +560,17 @@ public:
 	 * @param radius radius of the sphere
 	 * @return list of points inside
 	 */
-	vector< NodeType * > circularQuery(const NodeType *query, const float radius) {
+	template<class Query = NodeType>
+	vector< NodeType * > circularQuery(const Query *query, const float radius) {
 		//visitedNodes = 0; //comment for kNN
-		Leaf<NodeType, D> *leaf = findBucket(query);
+		Leaf<NodeType, D> *leaf = findBucket<Query>(query);
 		vector< NodeType * > data;
 		float r = radius * radius;
 
 		//find nearest point in the bucket
 		for (points_it it = leaf->bucket.begin(); it != leaf->bucket.end(); ++it) {
 			visitedNodes++;
-			float tmp = distance(query, *it, false);
+			float tmp = distance<Query>(query, *it, false);
 			if (tmp < r) { //ie points are not the same!
 				data.push_back(*it);
 			}
@@ -645,11 +651,11 @@ public:
 					if (node->isLeaf()) { // if node is leaf we search the bucket
 						Leaf<NodeType, D> * leaf = (Leaf<NodeType, D> *) node;
 						///BOB test
-						if (minBoundsDistance(query, leaf->min, leaf->max) < r) {
+						if (minBoundsDistance<Query>(query, leaf->min, leaf->max) < r) {
 							visitedNodes++;
 							points *bucket = &leaf->bucket;
 							for (points_it it = bucket->begin(); it != bucket->end(); ++it) {
-								float tmp = distance(query, *it, false);
+								float tmp = distance<Query>(query, *it, false);
 								if (tmp < r) { //ie points are not the same!
 									data.push_back(*it);
 								}

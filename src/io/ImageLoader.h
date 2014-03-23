@@ -109,9 +109,9 @@ public:
 			binaryFile.close();
 			Log::i("Created file: " + rawFile);
 		}
-		else {
-			DataLoader::loadRawInfo(rawFile, id.size.x, id.size.y, id.rowPadding);
-		}
+		
+		DataLoader::loadRawInfo(rawFile, id.size.x, id.size.y, id.rowPadding);
+		
 		if(progress && expectedCount != 0) {
 			prgVal += 100 / (float) expectedCount;
 			if(prgVal > 1) {

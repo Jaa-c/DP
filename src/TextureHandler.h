@@ -25,6 +25,8 @@ struct CameraPosition {
 	glm::vec3 translate;
 	glm::mat4 Rt;
 	
+	glm::vec3 position;
+	
 	float focalL;
 	float d1, d2;
 	
@@ -60,6 +62,10 @@ struct Photo {
 	) :	ID(ID), name(name), size(size), rowPadding(rowPadding), camera(camera) {
 		current = false;
 	}
+	
+	int operator[] (const int i) const {
+		return camera.position[i];
+	}
 };
 
 #include "io/ImageLoader.h"
@@ -68,24 +74,39 @@ struct Photo {
 class TextureHandler {
 	///loads data into photos w/out exposing it as public
 	friend class CalibrationLoader; 
+	/// displays kdtree data, so let's give it access, mostly debug
+	friend class RadarRenderPass;
 	
 	std::vector<Photo> photos;
-	
 	std::vector<Texture> textures;
+	
+	std::vector<Photo *> currentPhotos;
 	
 	/// indices of the best textures in the texture array bound to the shader
 	std::vector<int> bestTexIdx;
 	
+	KDTree<Photo> kdtree;
+	
 public:	
 	TextureHandler() {}
+	
+	void buildTree() {
+		kdtree.construct(&photos);	
+	}
 		
 	const std::vector<Photo> & getPhotos() const {
 		return photos;
 	}
 	
 	//TODO SLOW, but not priority
-	void updateTextures(const glm::vec3 & dir, const glm::mat4 &mvm, const uint count) {
-		std::vector<Photo*> currentPhotos = getClosestCameras(dir, mvm, count);
+	void updateTextures(
+		const glm::vec3 &cameraPos, 
+		const glm::vec3 &viewDir, 
+		const glm::mat4 &mvm, 
+		const uint count
+	) {
+		currentPhotos = kdtree.kNearestNeighbors<glm::vec3>(&cameraPos, 30); //TODO
+		std::vector<Photo*> currentPhotos = getClosestCameras(viewDir, mvm, count);
 		//std::cout << "\nbest photo id : " << (*currentPhotos.begin())->ID << "\n";
 		
 		int i = 0;

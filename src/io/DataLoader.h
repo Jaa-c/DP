@@ -171,7 +171,6 @@ public:
         jpeg_destroy_decompress(&cinfo);
         fclose(infile);
         delete [] row[0];
-		Log::i("[DataLoader] Loaded image " + filename);
         return true;
 	}
 	
