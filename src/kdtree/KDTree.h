@@ -537,7 +537,7 @@ public:
 		//C++11, I guess it's OK to use it
 		sort(knn.begin(), knn.end(),
 				[query, this](const NodeType * a, const NodeType * b) -> bool {
-					return distance<Query>(query, a) < distance(query, b);
+					return distance<Query>(query, a) < distance<Query>(query, b);
 				});
 
 		vector< NodeType * > result;

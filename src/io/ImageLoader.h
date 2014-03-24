@@ -78,7 +78,7 @@ public:
 			
 	}
 	
-	void loadImage(Photo &p) {
+	static void loadImage(Photo &p) {
 		DataLoader::loadRAWData(p.name, p.image, p.size.x, p.size.y, p.rowPadding);
 	} 
 

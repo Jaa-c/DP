@@ -26,7 +26,7 @@ class Camera {
 	
 	const float inertia = 0.08f; //mouse inertia
 	const float rotateSpeed = 0.2f; //mouse rotate speed (sensitivity)
-	const float walkSpeed = 0.50f; //walking speed (wasd)
+	const float walkSpeed = 0.90f; //walking speed (wasd)
 	
 public:
 	enum Move {

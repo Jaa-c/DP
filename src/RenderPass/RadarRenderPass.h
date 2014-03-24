@@ -140,8 +140,8 @@ public:
 			drawPoint(c);
 			
 			glColor4f(1.0f, 1.0f, 0.0f, 1.0f); //current in RAM
-			for(auto *p : textureHandler->nearPhotos) {
-				tmp = object->getMvm() * glm::vec4(p->camera.position, 1.0f);
+			for(auto p : textureHandler->nearPhotos) {
+				tmp = object->getMvm() * glm::vec4(p.second->camera.position, 1.0f);
 				drawPoint(tmp);
 			}
 

@@ -122,7 +122,7 @@ public:
 			cam.Rt[3][0] = cam.translate[0];
 			cam.Rt[3][1] = cam.translate[1];
 			cam.Rt[3][2] = cam.translate[2];
-			
+						
 			cam.position = -1 * Rx * cam.rotate * cam.translate; //TODO: check
 	
 			//-----------
@@ -133,7 +133,7 @@ public:
 				data.push_back(Photo(i, img.path, img.size, img.rowPadding, cam));
 			}
 			
-			//if(i > 10) break; //tmp
+			//if(i > 2) break; //tmp
 		}		
 	
 		return data;

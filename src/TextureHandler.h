@@ -80,7 +80,7 @@ class TextureHandler {
 	std::vector<Photo> photos;
 	std::vector<Texture> textures;
 	
-	std::vector<Photo *> nearPhotos;
+	std::unordered_map<int, Photo *> nearPhotos;
 	
 	/// indices of the best textures in the texture array bound to the shader
 	std::vector<int> bestTexIdx;
@@ -105,7 +105,35 @@ public:
 		const glm::mat4 &mvm, 
 		const uint count
 	) {
-		nearPhotos = kdtree.kNearestNeighbors<glm::vec3>(&cameraPos, 5); 
+		
+		std::vector<Photo *> toLoad, toDelete;
+		std::vector<Photo *> currNearPhotos = kdtree.kNearestNeighbors<glm::vec3>(&cameraPos, 5);
+		
+		
+		std::unordered_map<int, Photo *> result;
+		for(Photo *p : currNearPhotos) {
+			result.insert(std::pair<int, Photo *>(p->ID, p));
+			if(p->image.size() == 0) {
+				toLoad.push_back(p);
+			}
+		}
+		
+		for(std::pair<int, Photo *> p : nearPhotos) {
+			if(result.find(p.first) == result.end()) {
+				toDelete.push_back(p.second);
+			}
+		}
+		
+		for(Photo *p : toLoad) {
+			//ImageLoader::loadImage(*p);
+		}
+		
+		nearPhotos = result;
+		
+		for(Photo *p : toDelete) {
+			p->image.clear();
+		}
+		
 		std::vector<Photo*> currentPhotos = getClosestCameras(viewDir, mvm, count);
 		
 		int i = 0;
@@ -182,9 +210,9 @@ private:
 //			p.current = false;
 //			result.insert(&p);
 //		}
-		for(Photo *p : nearPhotos) {
-			p->current = false;
-			result.insert(p);
+		for(std::pair<int, Photo *> p : nearPhotos) {
+			p.second->current = false;
+			result.insert(p.second);
 		}
 		auto beg = result.begin();
 		std::advance(beg, count);
