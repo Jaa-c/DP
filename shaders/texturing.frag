@@ -51,10 +51,8 @@ void projectCoords(in int index, in vec4 pos, out vec2 coords) {
 
 
 	//vec3 c = Rx * R * pos.xyz + t;
-
 	vec3 c = (data.u_TextureRt * pos).xyz;
-	coords.x =  c.x/c.z * data.u_TextureFL + data.u_TextureSize.x * 0.5f;
-	coords.y =  c.y/c.z * data.u_TextureFL + data.u_TextureSize.y * 0.5f;
+	coords =  c.xy/c.z * data.u_TextureFL + data.u_TextureSize.xy * 0.5f;
 
 }
 

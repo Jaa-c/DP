@@ -122,12 +122,12 @@ public:
 			
 			glm::mat3 Rx(1, 0, 0, 0, 1, 0, 0, 0, 1); //change the sign of X
 			cam.Rt = glm::mat4(Rx * (rotate));
-			glm::vec3 t = Rx *  rotate * translate;
+			glm::vec3 t = Rx * rotate * translate;
 			cam.Rt[3][0] = -t[0];
 			cam.Rt[3][1] = -t[1];
 			cam.Rt[3][2] = -t[2];
 						
-			cam.position = translate;//-1 * Rx * cam.rotate * cam.translate; //TODO: check
+			cam.position = translate; //TODO: check
 			cam.direction = rotate[2];
 			//-----------
 			string name = fileList.at(i);

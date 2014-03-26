@@ -79,6 +79,11 @@ public:
 			cam.Rt[3][0] = translate[0];
 			cam.Rt[3][1] = translate[1];
 			cam.Rt[3][2] = translate[2];
+			cam.Rt = glm::mat4(
+					-1, 0, 0, 0, 
+					 0, 1, 0, 0, 
+					 0, 0, 1, 0, 
+					 0, 0, 0, 1) * cam.Rt; //change the sign of X
 			
 			cam.position = -1 * glm::transpose(rotate) * translate;
 			cam.direction = -rotate[2];
