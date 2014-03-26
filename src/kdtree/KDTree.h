@@ -10,6 +10,7 @@
 #ifndef KDTREE_H
 #define KDTREE_H
 
+#include <iostream>
 #include <vector>
 #include <stack>
 #include <queue>
@@ -542,7 +543,7 @@ public:
 
 		vector< NodeType * > result;
 		int size = (k + 1 < knn.size()) ? k + 1 : knn.size();
-		result.insert(result.end(), knn.begin() + 1, knn.begin() + size);
+		result.insert(result.end(), knn.begin(), knn.begin() + size);
 
 		return result;
 	}

@@ -14,10 +14,12 @@
 #include <unordered_map>
 #include <queue>
 
+#include <QThreadPool>
+#include <QRunnable>
+
 #include "globals.h"
 #include "glm/glm.hpp"
 #include "glm/core/type_mat3x3.hpp"
-#include "io/BundlerParser.h"
 #include "kdtree/KDTree.h"
 
 struct CameraPosition {
@@ -51,6 +53,7 @@ struct Photo {
 	
 	Image image;
 	
+	bool loading; //possible union?
 	bool current;
 	
 	Photo(
@@ -61,6 +64,7 @@ struct Photo {
 		const CameraPosition camera
 	) :	ID(ID), name(name), size(size), rowPadding(rowPadding), camera(camera) {
 		current = false;
+		loading = false;
 	}
 	
 	int operator[] (const int i) const {
@@ -69,9 +73,36 @@ struct Photo {
 };
 
 #include "io/ImageLoader.h"
-#include "Texture.h" //TODO!
+#include "io/BundlerParser.h"
+#include "Texture.h" //TODO
 
-class TextureHandler {
+
+class ImgLoader : public QObject, public QRunnable {
+	Q_OBJECT
+
+	Photo &p;
+
+	virtual void run() {
+		ImageLoader::loadImage(p);
+		p.loading = false;
+		emit result(&p);
+	}
+
+signals:
+	void result(Photo *);
+
+public:
+	ImgLoader(Photo &p) 
+		: QRunnable(), p(p) 
+	{
+
+	}
+
+};
+
+class TextureHandler : public QObject {
+	Q_OBJECT
+	
 	///loads data into photos w/out exposing it as public
 	friend class CalibrationLoader; 
 	/// displays kdtree data, so let's give it access, mostly debug
@@ -87,8 +118,15 @@ class TextureHandler {
 	
 	KDTree<Photo> kdtree;
 	
+public slots:
+	void getResult(Photo *p) {
+		nearPhotos.insert(std::pair<int, Photo *>(p->ID, p));
+	}
+	
 public:	
-	TextureHandler() {}
+	TextureHandler() {
+		QThreadPool::globalInstance()->setMaxThreadCount(40);
+	}
 	
 	void buildTree() {
 		kdtree.construct(&photos);	
@@ -107,30 +145,36 @@ public:
 	) {
 		
 		std::vector<Photo *> toLoad, toDelete;
-		std::vector<Photo *> currNearPhotos = kdtree.kNearestNeighbors<glm::vec3>(&cameraPos, 5);
+		std::vector<Photo *> currNearPhotos = kdtree.kNearestNeighbors<glm::vec3>(&cameraPos, 20);
 		
-		
-		std::unordered_map<int, Photo *> result;
+		std::unordered_map<int, Photo *> result; //TODO: test if better than vector lookup
 		for(Photo *p : currNearPhotos) {
 			result.insert(std::pair<int, Photo *>(p->ID, p));
-			if(p->image.size() == 0) {
+			if(p->image.size() == 0 && !p->loading) {
 				toLoad.push_back(p);
 			}
 		}
 		
 		for(std::pair<int, Photo *> p : nearPhotos) {
-			if(result.find(p.first) == result.end()) {
+			if(result.find(p.first) == result.end()) { 
 				toDelete.push_back(p.second);
 			}
 		}
 		
 		for(Photo *p : toLoad) {
-			//ImageLoader::loadImage(*p);
+			p->loading = true;
+			ImgLoader *loader = new ImgLoader(*p);
+			connect(loader, SIGNAL(result(Photo *)), SLOT(getResult(Photo *)), Qt::QueuedConnection);
+			QThreadPool::globalInstance()->start(loader);
 		}
 		
-		nearPhotos = result;
+		if(nearPhotos.size() == 0) {
+			return;
+		}
+//		nearPhotos = result;
 		
 		for(Photo *p : toDelete) {
+			nearPhotos.erase(p->ID);
 			p->image.clear();
 		}
 		
@@ -206,13 +250,12 @@ private:
 		};
 		
 		std::set<Photo*, decltype(comp)> result(comp);
-//		for(Photo &p : photos) {
-//			p.current = false;
-//			result.insert(&p);
-//		}
+		
 		for(std::pair<int, Photo *> p : nearPhotos) {
 			p.second->current = false;
-			result.insert(p.second);
+			//if(p.second->image.size() != 0) {
+				result.insert(p.second);
+			//}
 		}
 		auto beg = result.begin();
 		std::advance(beg, count);

@@ -145,11 +145,11 @@ public:
 				drawPoint(tmp);
 			}
 
-//			glColor4f(0.0f, 0.0f, 1.0f, 1.0f); //current on GPU
-//			for(auto &tex : textureHandler->getTextures()) {
-//				tmp = object->getMvm() * glm::vec4(tex.photo->camera.position, 1.0f);
-//				drawPoint(tmp);
-//			}
+			glColor4f(0.0f, 0.0f, 1.0f, 1.0f); //current on GPU
+			for(auto &tex : textureHandler->getTextures()) {
+				tmp = object->getMvm() * glm::vec4(tex.photo->camera.position, 1.0f);
+				drawPoint(tmp);
+			}
 		glEnd();
 
 		glMatrixMode(GL_PROJECTION);
