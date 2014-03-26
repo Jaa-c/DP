@@ -18,6 +18,7 @@
 #include <QRunnable>
 
 #include "globals.h"
+#include "Settings.h"
 #include "glm/glm.hpp"
 #include "glm/core/type_mat3x3.hpp"
 #include "kdtree/KDTree.h"
@@ -138,7 +139,7 @@ public:
 		return photos;
 	}
 	
-	//TODO SLOW, but not priority
+	//TODO needs some optimizations...
 	void updateTextures(
 		const glm::vec3 &cameraPos, 
 		const glm::vec3 &viewDir, 
@@ -183,7 +184,23 @@ public:
 		
 		std::vector<Photo*> currentPhotos = getClosestCameras(viewDir, mvm, count);
 		
-		int i = 0;
+		///mostly DEBUG
+		if(Settings::usePrefferedCamera) {
+			Photo *p = &photos[Settings::prefferedCamera];
+			if(p->image.size() == 0) {
+				ImageLoader::loadImage(*p);
+			}
+			auto it = std::find(currentPhotos.begin(), currentPhotos.end(), p);
+			if(it != currentPhotos.end()) {
+				std::iter_swap(currentPhotos.begin(), it);
+			}
+			else {
+				currentPhotos.insert(currentPhotos.begin(), p);
+				currentPhotos.pop_back();
+			}
+		}
+		
+		uint i = 0;
 		bestTexIdx.clear();
 		bestTexIdx.resize(std::max(count, (uint) textures.size()));
 		
@@ -192,7 +209,8 @@ public:
 			bestTexIdx[i] = -1;
 			//compare textures and current photos
 			//if there is a match - OK, remove photo, no need to change texture
-			for(auto &tex : textures) {
+			for(Texture &tex : textures) {
+				tex.photo->current = false;
 				if((*it)->ID == tex.photo->ID) {
 					(*it)->current = true;
 					currentPhotos.erase(it);
@@ -228,7 +246,7 @@ public:
 			textures.push_back(Texture(GL_TEXTURE_RECTANGLE, textures.size(), p));
 			while(bestTexIdx[i] != -1) i++;
 			bestTexIdx[i] = textures.at(textures.size()-1).unit;
-		}	
+		}
 	}
 	
 	std::vector<Texture> & getTextures() {
@@ -255,7 +273,6 @@ private:
 		std::set<Photo*, decltype(comp)> result(comp);
 		
 		for(std::pair<int, Photo *> p : nearPhotos) {
-			p.second->current = false;
 			//if(p.second->image.size() != 0) {
 				result.insert(p.second);
 			//}

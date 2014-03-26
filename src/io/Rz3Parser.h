@@ -117,13 +117,14 @@ public:
 			std::getline(infile, line);
 			std::getline(infile, line);
 			
-			glm::mat3 Rx(-1, 0, 0, 0, 1, 0, 0, 0, 1); //change the sign of X
+			glm::mat3 Rx(1, 0, 0, 0, 1, 0, 0, 0, 1); //change the sign of X
 			cam.Rt = glm::mat4(Rx * (cam.rotate));
-			cam.Rt[3][0] = cam.translate[0];
-			cam.Rt[3][1] = cam.translate[1];
-			cam.Rt[3][2] = cam.translate[2];
+			glm::vec3 t = Rx *  cam.rotate * cam.translate;
+			cam.Rt[3][0] = -t[0];
+			cam.Rt[3][1] = -t[1];
+			cam.Rt[3][2] = -t[2];
 						
-			cam.position = -1 * Rx * cam.rotate * cam.translate; //TODO: check
+			cam.position = cam.translate;//-1 * Rx * cam.rotate * cam.translate; //TODO: check
 	
 			//-----------
 			string name = fileList.at(i);
@@ -133,7 +134,7 @@ public:
 				data.push_back(Photo(i, img.path, img.size, img.rowPadding, cam));
 			}
 			
-			//if(i > 2) break; //tmp
+			if(i > 40) break;
 		}		
 	
 		return data;

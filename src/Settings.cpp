@@ -9,10 +9,14 @@ quint32	Settings::usingTextures = 4;
 glm::vec3 Settings::objectRotate = glm::vec3(0, 0, 0);
 glm::vec2 Settings::radarPos = glm::vec2(10, 10);
 glm::vec2 Settings::radarSize = glm::vec2(250, 250);
+bool Settings::usePrefferedCamera = false;
+uint Settings::prefferedCamera = 0;
 	
 void Settings::reset() {
 	Settings::usingTextures = 4;
 	Settings::objectRotate = glm::vec3(0, 0, 0);
+	Settings::usePrefferedCamera = false;
+	Settings::prefferedCamera = 0;
 }
 
 

@@ -26,6 +26,10 @@ public:
 	/// radar width and height
 	static glm::vec2 radarSize;
 	
+	///DEBUG
+	static bool usePrefferedCamera;
+	static uint prefferedCamera;
+	
 	static void serialize(std::string file);
 	static void deserialize(std::string file);
 	static void reset();

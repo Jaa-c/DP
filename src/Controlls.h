@@ -9,6 +9,7 @@
 #define	CONTROLLS_H
 
 #include "io/BundlerParser.h"
+#include "Settings.h"
 #include "glm/core/type_mat4x4.hpp"
 
 #include <Qt> 
@@ -61,8 +62,9 @@ public:
 				camera->move(Camera::RIGHT);
 				break;
 			case 'P':
-				camera->switchFreewalk();
-				setCameraParams();
+				//camera->switchFreewalk();
+				//setCameraParams();
+				Settings::usePrefferedCamera = !Settings::usePrefferedCamera;
 				break;
 			case 'R':// recompile shaders
 				shaderHandler->resetShaders();
@@ -73,13 +75,15 @@ public:
 					if(cameraId < 0) {
 						cameraId = photos->size()-1;
 					}
-					setCameraParams();
-					}
+					//setCameraParams();
+					Settings::prefferedCamera = cameraId;
+				}
 				break;
 			case Qt::Key_Right:
 				if(photos) {
 					cameraId = (cameraId + 1) % photos->size();
-					setCameraParams();
+					//setCameraParams();
+					Settings::prefferedCamera = cameraId;
 				}
 				break;
 		}
