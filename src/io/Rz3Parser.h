@@ -102,7 +102,10 @@ public:
 			std::getline(infile, line);
 			rewriteSS(ss, line);
 			
-			ss >> tmp >> tmp >> cam.translate[0] >> cam.translate[1] >> cam.translate[2];
+			glm::vec3 translate;
+			glm::mat3 rotate;
+			
+			ss >> tmp >> tmp >> translate[0] >> translate[1] >> translate[2];
 						
 			std::getline(infile, line);
 			rewriteSS(ss, line);
@@ -110,22 +113,22 @@ public:
 			ss >> tmp >> tmp;
 			
 			for(int j = 0; j < 3; j++) {
-				ss >> cam.rotate[j][0];
-				ss >> cam.rotate[j][1];
-				ss >> cam.rotate[j][2];				
+				ss >> rotate[j][0];
+				ss >> rotate[j][1];
+				ss >> rotate[j][2];				
 			}
 			std::getline(infile, line);
 			std::getline(infile, line);
 			
 			glm::mat3 Rx(1, 0, 0, 0, 1, 0, 0, 0, 1); //change the sign of X
-			cam.Rt = glm::mat4(Rx * (cam.rotate));
-			glm::vec3 t = Rx *  cam.rotate * cam.translate;
+			cam.Rt = glm::mat4(Rx * (rotate));
+			glm::vec3 t = Rx *  rotate * translate;
 			cam.Rt[3][0] = -t[0];
 			cam.Rt[3][1] = -t[1];
 			cam.Rt[3][2] = -t[2];
 						
-			cam.position = cam.translate;//-1 * Rx * cam.rotate * cam.translate; //TODO: check
-	
+			cam.position = translate;//-1 * Rx * cam.rotate * cam.translate; //TODO: check
+			cam.direction = rotate[2];
 			//-----------
 			string name = fileList.at(i);
 			
@@ -134,7 +137,7 @@ public:
 				data.push_back(Photo(i, img.path, img.size, img.rowPadding, cam));
 			}
 			
-			if(i > 40) break;
+			if(i > 80) break;
 		}		
 	
 		return data;

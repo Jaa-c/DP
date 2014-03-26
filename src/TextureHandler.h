@@ -24,19 +24,13 @@
 #include "kdtree/KDTree.h"
 
 struct CameraPosition {
-	glm::mat3 rotate;
-	glm::vec3 translate;
 	glm::mat4 Rt;
 	
 	glm::vec3 position;
+	glm::vec3 direction;
 	
 	float focalL;
 	float d1, d2;
-	
-	//maybe just save this
-	glm::vec3 getDirection() const {
-		return glm::vec3(-rotate[2]);
-	}
 	
 	CameraPosition() {
 		focalL = 0;
@@ -265,8 +259,8 @@ private:
 		const glm::mat4 vecMat = glm::inverse(glm::transpose(mvm));
 		
 		auto comp = [vecMat, dir](const Photo* a, const Photo* b) {
-			const glm::vec3 ta = glm::vec3(vecMat * glm::vec4(a->camera.getDirection(), 1.0f));
-			const glm::vec3 tb = glm::vec3(vecMat * glm::vec4(b->camera.getDirection(), 1.0f));
+			const glm::vec3 ta = glm::vec3(vecMat * glm::vec4(a->camera.direction, 1.0f));
+			const glm::vec3 tb = glm::vec3(vecMat * glm::vec4(b->camera.direction, 1.0f));
 			return glm::dot(ta, dir) > glm::dot(tb, dir);
 		};
 		

@@ -28,7 +28,7 @@ public:
 	PointData(const std::vector<Photo> &photos, const Points *bundlerPoints = nullptr) : pointsVBO(GL_ID_NONE), camPosVBO(GL_ID_NONE) {
 		for(auto &photo : photos) {
 			cameraPos.push_back(photo.camera.position);
-			cameraDirections.push_back(photo.camera.getDirection());
+			cameraDirections.push_back(photo.camera.direction);
 		}
 		if(bundlerPoints) {
 			pointData = *bundlerPoints;

@@ -57,28 +57,31 @@ public:
 			ss >> cam.d1;
 			ss >> cam.d2;
 			
+			glm::vec3 translate;
+			glm::mat3 rotate;
+			
 			for(int j = 0; j < 3; j++) {
 				std::getline(infile, line);
 				ss.str(line);
-				ss >> cam.rotate[j][0];
-				ss >> cam.rotate[j][1];
-				ss >> cam.rotate[j][2];				
+				ss >> rotate[j][0];
+				ss >> rotate[j][1];
+				ss >> rotate[j][2];				
 			}
 			
 			std::getline(infile, line);
 			ss.str(line);
 			
-			ss >> cam.translate[0];
-			ss >> cam.translate[1];
-			ss >> cam.translate[2];
+			ss >> translate[0];
+			ss >> translate[1];
+			ss >> translate[2];
 			
-			cam.Rt = glm::mat4(glm::transpose(cam.rotate));
-			cam.Rt[3][0] = cam.translate[0];
-			cam.Rt[3][1] = cam.translate[1];
-			cam.Rt[3][2] = cam.translate[2];
+			cam.Rt = glm::mat4(glm::transpose(rotate));
+			cam.Rt[3][0] = translate[0];
+			cam.Rt[3][1] = translate[1];
+			cam.Rt[3][2] = translate[2];
 			
-			cam.position = -1 * glm::transpose(cam.rotate) * cam.translate;
-			
+			cam.position = -1 * glm::transpose(rotate) * translate;
+			cam.direction = -rotate[2];
 			cameras.push_back(cam);
 		}
 		

@@ -114,7 +114,7 @@ public:
 			}
 
 			glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
-			glm::vec3 viewDir = -camera.getCameraViewDirection();
+			glm::vec3 viewDir = camera.getCameraViewDirection();
 			drawLine(k, viewDir);
 
 			glColor4f(0.0f, 0.0f, 0.0f, 0.5f);

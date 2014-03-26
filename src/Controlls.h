@@ -117,13 +117,12 @@ public:
 		 camera->resizeWindow(width, height);
 	}	
 	
-	void setCameraParams() {
-		if(photos) {
-			Log::d("using camera: %d", cameraId);
-			const CameraPosition * cam = &photos->at(cameraId).camera;
-			camera->setCameraParams(cam->rotate, cam->translate);	
-		}
-	}
+//	void setCameraParams() {
+//		if(photos) {
+//			Log::d("using camera: %d", cameraId);
+//			const CameraPosition * cam = &photos->at(cameraId).camera;
+//		}
+//	}
 	
 	const Photo * getCurrentPhoto() {
 		return &photos->at(cameraId);
