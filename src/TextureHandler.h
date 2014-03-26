@@ -125,7 +125,9 @@ public slots:
 	
 public:	
 	TextureHandler() {
-		QThreadPool::globalInstance()->setMaxThreadCount(40);
+		//I want low nober of threads I don't want to waint long a get 
+		//all pictures at once, rather get them "sequentially" 
+		QThreadPool::globalInstance()->setMaxThreadCount(4);
 	}
 	
 	void buildTree() {
@@ -145,7 +147,7 @@ public:
 	) {
 		
 		std::vector<Photo *> toLoad, toDelete;
-		std::vector<Photo *> currNearPhotos = kdtree.kNearestNeighbors<glm::vec3>(&cameraPos, 20);
+		std::vector<Photo *> currNearPhotos = kdtree.kNearestNeighbors<glm::vec3>(&cameraPos, 30);
 		
 		std::unordered_map<int, Photo *> result; //TODO: test if better than vector lookup
 		for(Photo *p : currNearPhotos) {
@@ -164,10 +166,10 @@ public:
 		for(Photo *p : toLoad) {
 			p->loading = true;
 			ImgLoader *loader = new ImgLoader(*p);
-			connect(loader, SIGNAL(result(Photo *)), SLOT(getResult(Photo *)), Qt::QueuedConnection);
+			connect(loader, SIGNAL(result(Photo *)), SLOT(getResult(Photo *)), Qt::QueuedConnection); //Qt::DirectConnection
 			QThreadPool::globalInstance()->start(loader);
 		}
-		
+				
 		if(nearPhotos.size() == 0) {
 			return;
 		}
@@ -176,6 +178,7 @@ public:
 		for(Photo *p : toDelete) {
 			nearPhotos.erase(p->ID);
 			p->image.clear();
+			p->image.shrink_to_fit();
 		}
 		
 		std::vector<Photo*> currentPhotos = getClosestCameras(viewDir, mvm, count);
