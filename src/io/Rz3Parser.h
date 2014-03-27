@@ -137,7 +137,7 @@ public:
 				data.push_back(Photo(i, img.path, img.size, img.rowPadding, cam));
 			}
 			
-			if(i > 80) break;
+			//if(i > 80) break;
 		}		
 	
 		return data;

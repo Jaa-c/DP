@@ -129,7 +129,7 @@ public:
 	}
 	
 	const Vector getCameraViewDirection() const {
-		return -glm::vec3(g_CameraViewMatrix[0][2], g_CameraViewMatrix[1][2], g_CameraViewMatrix[2][2]);
+		return glm::vec3(g_CameraViewMatrix[0][2], g_CameraViewMatrix[1][2], g_CameraViewMatrix[2][2]);
 	}
 
 
