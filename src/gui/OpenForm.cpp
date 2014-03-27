@@ -14,7 +14,7 @@ OpenForm::OpenForm(GLWidget * glw) : glWidget(glw) {
 	openForm.setupUi(this);
 	openForm.tabWidget->setCurrentIndex(0);
 	//DEBUG TEMP
-	switch(1) {
+	switch(0) {
 		case 0:
 			openForm.geometryPath->setText("/home/jaa/Documents/FEL/DP/data/dum/dil09.obj");
 			//openForm.photosPath->setText("/home/jaa/Documents/FEL/DP/data/dum/09");
