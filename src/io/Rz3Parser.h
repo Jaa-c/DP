@@ -102,10 +102,9 @@ public:
 			std::getline(infile, line);
 			rewriteSS(ss, line);
 			
-			glm::vec3 translate;
 			glm::mat3 rotate;
 			
-			ss >> tmp >> tmp >> translate[0] >> translate[1] >> translate[2];
+			ss >> tmp >> tmp >> cam.position[0] >> cam.position[1] >> cam.position[2];
 						
 			std::getline(infile, line);
 			rewriteSS(ss, line);
@@ -120,14 +119,12 @@ public:
 			std::getline(infile, line);
 			std::getline(infile, line);
 			
-			glm::mat3 Rx(1, 0, 0, 0, 1, 0, 0, 0, 1); //change the sign of X
-			cam.Rt = glm::mat4(Rx * (rotate));
-			glm::vec3 t = Rx * rotate * translate;
+			cam.Rt = glm::mat4(glm::transpose(rotate));
+			glm::vec3 t = glm::transpose(rotate) * cam.position;
 			cam.Rt[3][0] = -t[0];
 			cam.Rt[3][1] = -t[1];
 			cam.Rt[3][2] = -t[2];
-						
-			cam.position = translate; //TODO: check
+			
 			cam.direction = rotate[2];
 			//-----------
 			string name = fileList.at(i);
