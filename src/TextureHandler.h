@@ -49,7 +49,6 @@ struct Photo {
 	Image image;
 	
 	bool loading; //possible union?
-	bool current;
 	
 	Photo(
 		const uint ID, 
@@ -58,7 +57,6 @@ struct Photo {
 		const uint rowPadding, 
 		const CameraPosition camera
 	) :	ID(ID), name(name), size(size), rowPadding(rowPadding), camera(camera) {
-		current = false;
 		loading = false;
 	}
 	
@@ -199,16 +197,16 @@ public:
 		bestTexIdx.resize(std::max(count, (uint) textures.size()));
 		
 		for(auto it = currentPhotos.begin(); it != currentPhotos.end(); ) {
+			Photo *p = *it;
 			bool erased = false;
 			bestTexIdx[i] = -1;
 			//compare textures and current photos
 			//if there is a match - OK, remove photo, no need to change texture
 			for(Texture &tex : textures) {
-				tex.photo->current = false;
-				if((*it)->ID == tex.photo->ID) {
-					(*it)->current = true;
-					currentPhotos.erase(it);
+				if(p->ID == tex.photo->ID) {
+					tex.current = true;
 					erased = true;
+					currentPhotos.erase(it);
 					bestTexIdx[i] = tex.unit;//TODO: check!!
 					i++;
 					break;
@@ -222,7 +220,7 @@ public:
 		for(auto it = textures.begin(); it < textures.end(); ) {
 			Texture &tex = *it;
 			//remove textures that are no longer used
-			if(!tex.photo->current) {
+			if(!tex.current) {
 				if(!currentPhotos.empty()) {
 					tex.setImage(*currentPhotos.begin());
 					currentPhotos.erase(currentPhotos.begin());
@@ -232,6 +230,7 @@ public:
 					continue; //important, otherwise iterator is incremented 2x
 				}
 			}
+			tex.current = false;
 			++it;
 		}
 		

@@ -17,7 +17,7 @@ class CameraPosition;
 
 class Texture {	
 public:	
-	Photo * photo;
+	const Photo * photo;
 	
 	GLenum target; //todo: should be const
 	GLuint unit; //todo: should be const
@@ -25,21 +25,25 @@ public:
 	GLuint textureID;
 	GLuint samplerID;
 	
+	bool current; // flag for loading
+	
 	Texture(const GLenum target, const GLuint unit) : 
 		photo(NULL), target(target), unit(unit), 
-		textureID(GL_ID_NONE), samplerID(GL_ID_NONE) 
+		textureID(GL_ID_NONE), samplerID(GL_ID_NONE),
+		current(false)
 	{
 	
 	}
 	
-	Texture(const GLenum target, const GLuint unit, Photo * photo) : 
+	Texture(const GLenum target, const GLuint unit, const Photo * photo) : 
 		photo(photo), target(target), unit(unit), 
-		textureID(GL_ID_NONE), samplerID(GL_ID_NONE) 
+		textureID(GL_ID_NONE), samplerID(GL_ID_NONE) ,
+		current(false)
 	{
 	
 	}
 	
-	void setImage(Photo * photo) {
+	void setImage(const Photo * photo) {
 		if(photo->ID != this->photo->ID) {
 			if(glIsTexture(textureID)) { //TODO
 				glDeleteTextures(1, &textureID);

@@ -62,9 +62,10 @@ public:
 				camera->move(Camera::RIGHT);
 				break;
 			case 'P':
-				//camera->switchFreewalk();
-				//setCameraParams();
 				Settings::usePrefferedCamera = !Settings::usePrefferedCamera;
+				if(Settings::usePrefferedCamera) {
+					Log::i("Using preffered camera mode.");
+				}
 				break;
 			case 'R':// recompile shaders
 				shaderHandler->resetShaders();
