@@ -12,6 +12,7 @@
 
 class TexturingRenderPass : public RenderPass {
 		
+	GLuint loc_viewDir;
 	GLuint loc_textureCount;
 	GLuint loc_textureIndices;
 	GLuint textureDataUB;
@@ -37,7 +38,8 @@ public:
 			getDefaultUniformLocations();
 			
 			loc_textureCount = glGetUniformLocation(programID, "u_textureCount");
-			loc_textureIndices =  glGetUniformLocation(programID, "u_textureIndices");
+			loc_textureIndices = glGetUniformLocation(programID, "u_textureIndices");
+			loc_viewDir = glGetUniformLocation(programID, "u_viewDir");
 			textureDataUB = GL_ID_NONE;
 			
 			// the binding point must be smaller than GL_MAX_UNIFORM_BUFFER_BINDINGS
@@ -87,6 +89,9 @@ public:
 		std::vector<int> &indices = textureHandler->getBestTexIdx();
 		glUniform1iv(loc_textureIndices, indices.size(), &indices[0]);
 		
+		glm::vec3 viewDir = object->getCentroidPosition() - renderer->getCamera()->getCameraPosition();
+		glUniform3fv(loc_viewDir, 1, &viewDir[0]);
+		
 		renderer->setUniformLocations(&uLocs);
 		
 		renderer->bindCameraMatrices();
@@ -100,3 +105,4 @@ public:
 
 #endif	/* TEXTURINGRENDERPASS_H */
 
+ 

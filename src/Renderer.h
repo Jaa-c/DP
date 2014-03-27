@@ -16,6 +16,8 @@
 #include "Camera.h"
 #include "RenderPass/RenderPass.h"
 
+#include "glm/gtc/matrix_inverse.hpp"
+
 
 class Renderer {
 	GLuint planeVao;
@@ -135,7 +137,10 @@ public:
 		
 		if(!camera->isCameraStatic()) { //if we are moving
 			glm::mat4 modelView =  *camera->getModelViewMatrix() * data.getMvm();
-			glUniformMatrix4fv(ulocs->at(RenderPass::MODELVIEW_MATRIX), 1, GL_FALSE, &modelView[0][0]);		
+			glUniformMatrix4fv(ulocs->at(RenderPass::MODELVIEW_MATRIX), 1, GL_FALSE, &modelView[0][0]);
+			
+			glm::mat3 normalMatrix = glm::inverseTranspose(glm::mat3(data.getMvm()));
+			glUniformMatrix3fv(ulocs->at(RenderPass::NORMAL_MATRIX), 1, GL_FALSE, &normalMatrix[0][0]);
 		}
 		//initialize buffers
 		if (data.vaoID == GL_ID_NONE) {
@@ -228,7 +233,7 @@ public:
 	}
 	
 	
-	const Camera * getCamera() const{
+	const Camera * getCamera() const {
 		return camera;
 	}
 };

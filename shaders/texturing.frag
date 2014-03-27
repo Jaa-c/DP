@@ -14,6 +14,9 @@ uniform int u_textureCount;
 uniform int u_textureIndices[32];
 uniform sampler2DRect u_texture0[32];
 
+uniform vec3 u_viewDir; //debug
+uniform mat3 u_NormalMatrix;
+
 in block {
 	smooth vec4 v_position;
 	smooth vec4 v_viewPos;
@@ -26,34 +29,8 @@ layout(location = 0) out vec4 a_FragColor;
 
 void projectCoords(in int index, in vec4 pos, out vec2 coords) {
 	TextureData data = ub_texData[index];
-
-	/*DEBUG *
-	mat3 Rx = mat3(
-		-1,  0,  0, 
-		0, 1,  0, 
-		0,  0, 1);
-	mat3 R = mat3(
-		1,  0,  0, 
-		0, -1,  0, 
-		0,  0, -1);
-	vec3 t = vec3(11.3142, 10.638, 90.6819); 
-	/**
-	R = mat3 (0.999939, -0.000229313, -0.0110699, 
-			 -0.000216107, -0.999999, 0.00119414, 
-			 -0.0110702, -0.00119167, -0.999938); 
-	t = vec3(7.14296, 11.0314, 90.6954); /**/
-
-	/**
-	R = mat3 (0.999735, -0.00052924, -0.0230192,
-		     -0.000518993, -1, 0.000451126, 
-			 -0.0230194, -0.000439059, -0.999735);
-	t = vec3( 2.31985, 10.9196, 90.7393); /**/
-
-
-	//vec3 c = Rx * R * pos.xyz + t;
 	vec3 c = (data.u_TextureRt * pos).xyz;
 	coords =  c.xy/c.z * data.u_TextureFL + data.u_TextureSize.xy * 0.5f;
-
 }
 
 bool inRange(in int index, in vec2 coords) {
@@ -68,7 +45,7 @@ void main() {
 
 	vec3 N = normalize(In.v_normal);
 	vec3 L = normalize(lp - In.v_viewPos.xyz);
-	float diffuse = max(dot(N, L), 0.5f);
+	float diffuse = max(dot(N, L), 0.8f);
 
 	vec3 E = normalize(-In.v_viewPos.xyz);
 	vec3 R = normalize(-reflect(L, N));
@@ -77,19 +54,33 @@ void main() {
 
 	vec2 coords;
 	int index = -1;
+	float dotProd;
 	do {
 		index++;
 		projectCoords(u_textureIndices[index], In.v_position, coords);
-	} while(index + 1 < u_textureCount && !inRange(u_textureIndices[index], coords));
+		//mat4 Rt = ub_texData[u_textureIndices[index]].u_TextureRt;
+		//dotProd = dot(N, vec3(Rt[2][0], Rt[2][1], Rt[2][2]));
+	} while(
+		//dotProd > -1 &&
+		index + 1 < u_textureCount && 
+		!inRange(u_textureIndices[index], coords)
+	);
 
 	vec3 col = texture2DRect(u_texture0[u_textureIndices[index]], coords).rgb;
 	vec3 color = min((.2f + col) * diffuse + specular * .3f, 1.0f);
 
-	//color.r = coords.x / 4094;
-	//color.g = coords.y / 4096;
-	//color.b = 0;
-	//if(In.v_texIndex == 0) color.r += .2f;
-	//if(In.v_texIndex == 1) color.g += .2f;
-		
+	mat4 Rt = ub_texData[u_textureIndices[index]].u_TextureRt;
+	
+	vec3 camDir = u_NormalMatrix *  vec3(Rt[0][2], Rt[1][2], Rt[2][2]);
+
+	dotProd = dot(N, normalize(camDir));
+	if(dotProd > -0.5)
+		color.r = 1;
+	//color.r = (1 + dotProd) /2.f;
+	//color.g = (1 + dotProd) /2.f;
+	//color.b = (1 + dotProd) /2.f;
+	
+	//color = N;
+
 	a_FragColor = vec4(color, 1.0f);
 }

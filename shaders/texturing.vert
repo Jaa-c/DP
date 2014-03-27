@@ -15,10 +15,9 @@ out block {
 } Out;
 
 void main () {
-	
 	Out.v_position =  vec4(a_position, 1.0f);
 	Out.v_viewPos = u_ModelViewMatrix * Out.v_position;
-	Out.v_normal = a_normal;
+	Out.v_normal = u_NormalMatrix * a_normal;
 
 	gl_Position = u_ProjectionMatrix * Out.v_viewPos;
 }

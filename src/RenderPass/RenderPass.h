@@ -30,6 +30,7 @@ public:
 	enum UniformLocations {
 		PROJECTION_MATRIX = 0,
 		MODELVIEW_MATRIX,
+		NORMAL_MATRIX,
 		TEXTURE0,
 		COLOR,
 		UNIFORM_LOC_SIZE
@@ -74,6 +75,7 @@ protected:
 		uLocs.resize(UNIFORM_LOC_SIZE);
 		uLocs[PROJECTION_MATRIX] = glGetUniformLocation(programID, "u_ProjectionMatrix");
 		uLocs[MODELVIEW_MATRIX] = glGetUniformLocation(programID, "u_ModelViewMatrix");
+		uLocs[NORMAL_MATRIX] = glGetUniformLocation(programID, "u_NormalMatrix");
 		uLocs[TEXTURE0] = glGetUniformLocation(programID, "u_texture0");
 		uLocs[COLOR] = glGetUniformLocation(programID, "u_color");
 	}

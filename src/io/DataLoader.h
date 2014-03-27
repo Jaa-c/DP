@@ -51,12 +51,25 @@ public:
 	) {
 		Assimp::Importer importer;
 		//importer.SetPropertyFloat(AI_CONFIG_PP_GSN_MAX_SMOOTHING_ANGLE, 80.0f); 
+//		const aiScene* scene = importer.ReadFile(file,
+//				 (aiProcessPreset_TargetRealtime_Quality
+//				 & ~aiProcess_FindDegenerates)
+//				 & ~aiProcess_GenSmoothNormals
+//				 | aiProcess_GenNormals
+//				 | aiProcess_OptimizeMeshes
+//				 | aiProcess_OptimizeGraph);
+		
+		importer.SetPropertyFloat(AI_CONFIG_PP_GSN_MAX_SMOOTHING_ANGLE, 45.f);
 		const aiScene* scene = importer.ReadFile(file,
-				 (aiProcessPreset_TargetRealtime_Quality
-				 & ~aiProcess_FindDegenerates)
-				 | aiProcess_OptimizeMeshes
-				 | aiProcess_OptimizeGraph);
-				
+				aiProcess_ImproveCacheLocality |
+				aiProcess_Triangulate |
+				aiProcess_SortByPType |
+				aiProcess_FindInvalidData  |
+				aiProcess_GenSmoothNormals |
+				aiProcess_OptimizeMeshes |
+				aiProcess_OptimizeGraph |
+				0);
+		
 		if(scene == nullptr) {
 			Log::e("[DataLoader] unable to load file: %s", importer.GetErrorString());
 			throw "Error while loading file \n" + file + "\n" + importer.GetErrorString();
