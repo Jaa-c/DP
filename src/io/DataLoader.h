@@ -138,7 +138,8 @@ public:
 		std::vector<rgb> &raw,
 		int &width,
 		int &height,
-		uint &rowPadding
+		uint &rowPadding,
+		int scaleDenom = 1
 	) {
         struct jpeg_decompress_struct cinfo;
         struct jpeg_error_mgr jerr;
@@ -155,14 +156,16 @@ public:
         cinfo.err = jpeg_std_error(&jerr);
 
         jpeg_create_decompress(&cinfo);
-        jpeg_stdio_src(&cinfo, infile);
+        jpeg_stdio_src(&cinfo, infile);				
         jpeg_read_header(&cinfo, TRUE);
+		
+		cinfo.scale_denom = scaleDenom;
 
         jpeg_start_decompress(&cinfo);
 		width = cinfo.output_width;
 		height = cinfo.output_height;
 		
-		rowPadding = 4 - width % 4;
+		rowPadding = width % 4;
 
         raw.reserve((width+rowPadding) * height * cinfo.num_components);
 

@@ -23,9 +23,13 @@
 
 struct ImageData {
 	std::string path;
-	Image image;
+	RGBData image;
 	glm::ivec2 size;
 	uint rowPadding;
+	
+	RGBData thumbImage;
+	glm::ivec2 thumbSize;
+	uint thumbRowPadding;
 };
 
 class ImageLoader {
@@ -35,6 +39,8 @@ class ImageLoader {
 		
 	const std::string RAW = "raw";
 	const std::string JPG = "jpg";
+	const std::string THUMB = "thumb.";
+	static const int thumbExpectedSize = 256;
 	
 	std::vector<ImageData> readDirectory(const std::string& path) {
 		std::vector<ImageData> data;
@@ -83,9 +89,10 @@ public:
 	} 
 
 	bool checkImage(const std::string &folder,const std::string &name, ImageData& id) {
-		std::string raw = name.substr(0, name.length()-3);
-		raw += RAW;
-		std::string rawFile = folder + RAW + "/" + raw;
+		std::string fileName = name.substr(0, name.length()-3);
+		std::string rawFile = folder + RAW + "/" + fileName + RAW;
+		std::string rawThumb = folder + RAW + "/" + fileName + THUMB +  RAW;
+		
 		id.path = rawFile;
 		if(!DataLoader::fileExists(rawFile)) {
 			std::string sfx = name.substr(name.length()-3, 3);
@@ -108,9 +115,28 @@ public:
 			binaryFile.write((char *) &id.image[0], 3 * sizeof(rgb) * id.image.size());
 			binaryFile.close();
 			Log::i("Created file: " + rawFile);
+			
+			//create thumb:
+			uint targetLvl = 0;
+			uint val = id.size.x / thumbExpectedSize;
+			while(val >>= 1) ++targetLvl;
+			uint scaleDen = std::min(1 << targetLvl, 8);
+			
+			DataLoader::loadJPEG(folder + name, id.thumbImage, 
+					id.thumbSize.x, id.thumbSize.y, id.thumbRowPadding, scaleDen);
+			assert(id.thumbImage.size() == (uint) (id.thumbSize.x + id.thumbRowPadding) * id.thumbSize.y * 3);
+			
+			std::fstream thumbFile(rawThumb, std::ios::out | std::ios::binary);
+			thumbFile.write((char *) &id.thumbSize.x, sizeof(id.size));
+			thumbFile.write((char *) &id.thumbRowPadding, sizeof(id.thumbRowPadding));
+			thumbFile.write((char *) &id.thumbImage[0], 3 * sizeof(rgb) * id.thumbImage.size());
+			thumbFile.close();
+			
 		}
-		
-		DataLoader::loadRawInfo(rawFile, id.size.x, id.size.y, id.rowPadding);
+		else {
+			DataLoader::loadRawInfo(rawFile, id.size.x, id.size.y, id.rowPadding);
+			DataLoader::loadRAWData(rawThumb, id.thumbImage, id.thumbSize.x, id.thumbSize.y, id.thumbRowPadding);
+		}
 		
 		if(progress && expectedCount != 0) {
 			prgVal += 100 / (float) expectedCount;

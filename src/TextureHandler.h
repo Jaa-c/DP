@@ -39,6 +39,19 @@ struct CameraPosition {
 	}
 };
 
+struct Image {
+	RGBData data;
+	const glm::ivec2 size; 
+	const uint rowPadding;
+	
+	Image(const glm::ivec2 size, const uint rowPadding) :
+		size(size), rowPadding(rowPadding) { }
+	
+	Image(RGBData image, const glm::ivec2 size, const uint rowPadding) :
+		data(image), size(size), rowPadding(rowPadding) {}
+
+};
+
 struct Photo {
 	const uint ID;
 	const std::string name;
@@ -46,7 +59,7 @@ struct Photo {
 	const uint rowPadding;
 	const CameraPosition camera;
 	
-	Image image;
+	RGBData image;
 	
 	bool loading; //possible union?
 	
