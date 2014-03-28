@@ -80,10 +80,10 @@ public:
 	void drawTextures(std::vector<Texture> * textures) {
 		std::vector<GLint> units;
 		for(auto &tex : *textures)  {
-			if(tex.photo->image.size() != 0) { //TODO, TEMP - remove
+			//if(tex.photo->image.size() != 0) { //TODO, TEMP - remove
 				drawTexture(tex);
 				units.push_back(tex.unit);
-			}
+			//}
 		}
 		glUniform1iv(ulocs->at(RenderPass::TEXTURE0), textures->size(), &units[0]);
 	}

@@ -54,25 +54,27 @@ public:
 	};
 	
 	const rgb *getImageStart() const {
-		if(!photo || photo->image.empty()) {
+		if(!photo || photo->getImage().data.empty()) {
 			return NULL;
 		}
-		assert(photo->image.size() == (uint) (photo->size.x + photo->rowPadding) * photo->size.y * 3);
-		return &photo->image[0];
+		const Image &im = photo->getImage();
+		assert(im.data.size() == (uint) (im.size.x + im.rowPadding) * im.size.y * 3);
+		return &im.data[0];
 	}
 	
 	const glm::ivec2 getRealSize() const {
 		if(!photo) {
 			return glm::ivec2(0, 0);
 		}
-		return photo->size;
+		return photo->getImage().size;
 	}
 	
 	const glm::ivec2 getSizeWithPadding() const {
 		if(!photo) {
 			return glm::ivec2(0, 0);
 		}
-		return glm::ivec2(photo->size.x + photo->rowPadding, photo->size.y);
+		const Image &im = photo->getImage();
+		return glm::ivec2(im.size.x + im.rowPadding, im.size.y);
 	}
 	
 	friend std::ostream & operator << (std::ostream& os, const Texture &tex) {

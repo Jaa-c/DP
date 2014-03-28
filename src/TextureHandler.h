@@ -52,29 +52,42 @@ struct Image {
 
 };
 
-struct Photo {
+class Photo {
+	friend class TextureHandler;
+	friend class ImageLoader;
+	
+	Image image;
+	Image thumbnail;
+	
+public:
 	const uint ID;
 	const std::string name;
-	const glm::ivec2 size; 
-	const uint rowPadding;
 	const CameraPosition camera;
-	
-	RGBData image;
-	
+		
 	bool loading; //possible union?
 	
 	Photo(
 		const uint ID, 
 		const std::string name,
+		const CameraPosition camera,
 		const glm::ivec2 size, 
-		const uint rowPadding, 
-		const CameraPosition camera
-	) :	ID(ID), name(name), size(size), rowPadding(rowPadding), camera(camera) {
-		loading = false;
-	}
+		const uint rowPadding,
+		RGBData thumb,
+		const glm::ivec2 tSize, 
+		const uint tRowPadding
+	) :	image(size, rowPadding),
+		thumbnail(thumb, tSize, tRowPadding),
+		ID(ID), name(name), camera(camera), loading(false) { }
 	
 	int operator[] (const int i) const {
 		return camera.position[i];
+	}
+	
+	const Image& getImage() const {
+		if(image.data.size() != 0)
+			return image;
+		else
+			return thumbnail;	
 	}
 };
 
@@ -158,7 +171,7 @@ public:
 		std::unordered_map<int, Photo *> result; //TODO: test if better than vector lookup
 		for(Photo *p : currNearPhotos) {
 			result.insert(std::pair<int, Photo *>(p->ID, p));
-			if(p->image.size() == 0 && !p->loading) {
+			if(p->image.data.size() == 0 && !p->loading) {
 				toLoad.push_back(p);
 			}
 		}
@@ -183,8 +196,8 @@ public:
 		
 		for(Photo *p : toDelete) {
 			nearPhotos.erase(p->ID);
-			p->image.clear();
-			p->image.shrink_to_fit();
+			p->image.data.clear();
+			p->image.data.shrink_to_fit();
 		}
 		
 		std::vector<Photo*> currentPhotos = getClosestCameras(viewDir, mvm, count);
@@ -192,7 +205,7 @@ public:
 		///mostly DEBUG
 		if(Settings::usePrefferedCamera) {
 			Photo *p = &photos[Settings::prefferedCamera];
-			if(p->image.size() == 0) {
+			if(p->image.data.size() == 0) {
 				ImageLoader::loadImage(*p);
 			}
 			auto it = std::find(currentPhotos.begin(), currentPhotos.end(), p);

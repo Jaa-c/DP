@@ -131,7 +131,10 @@ public:
 			
 			ImageData img;
 			if(imgLoader.checkImage(imageFolder, name, img)) {
-				data.push_back(Photo(i, img.path, img.size, img.rowPadding, cam));
+				data.push_back(
+					Photo(i, img.path, cam, 
+						img.size, img.rowPadding, 
+						img.thumbImage, img.thumbSize, img.thumbRowPadding));
 			}
 			
 			//if(i > 80) break;

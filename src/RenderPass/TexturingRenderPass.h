@@ -76,7 +76,7 @@ public:
 				//int offset = i * sizeOfTextureData;
 				glBufferSubData(GL_UNIFORM_BUFFER, offset, sizeof(glm::mat4), &p->camera.Rt[0][0]);
 				offset += 16 * sizeof(float);
-				glBufferSubData(GL_UNIFORM_BUFFER, offset, sizeof(glm::ivec2) , &p->size);
+				glBufferSubData(GL_UNIFORM_BUFFER, offset, sizeof(glm::ivec2) , &p->getImage().size);
 				offset += 2 * sizeof(int);
 				glBufferSubData(GL_UNIFORM_BUFFER, offset, sizeof(float), &p->camera.focalL);
 				offset += 2 * sizeof(float); //note that this is std140 alignment!

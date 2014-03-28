@@ -85,7 +85,7 @@ public:
 	}
 	
 	static void loadImage(Photo &p) {
-		DataLoader::loadRAWData(p.name, p.image, p.size.x, p.size.y, p.rowPadding);
+		DataLoader::loadRAWData(p.name, p.image.data, p.image.size.x, p.image.size.y, p.image.rowPadding);
 	} 
 
 	bool checkImage(const std::string &folder,const std::string &name, ImageData& id) {
