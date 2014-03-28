@@ -52,35 +52,33 @@ void main() {
 	
 	float specular = pow(max(dot(R, E), 0.0f), 256.0f);
 
+	const float dirLimit = 0.4; //0 = perpendicular, 1 = same direction
 	vec2 coords;
-	int index = -1;
-	float dotProd;
-	do {
-		index++;
-		projectCoords(u_textureIndices[index], In.v_position, coords);
-		//mat4 Rt = ub_texData[u_textureIndices[index]].u_TextureRt;
-		//dotProd = dot(N, vec3(Rt[2][0], Rt[2][1], Rt[2][2]));
-	} while(
-		//dotProd > -1 &&
-		index + 1 < u_textureCount && 
-		!inRange(u_textureIndices[index], coords)
-	);
-
-	vec3 col = texture2DRect(u_texture0[u_textureIndices[index]], coords).rgb;
-	vec3 color = min((.2f + col) * diffuse + specular * .3f, 1.0f);
-
-	mat4 Rt = ub_texData[u_textureIndices[index]].u_TextureRt;
+	float weight;
 	
-	vec3 camDir = u_NormalMatrix *  vec3(Rt[0][2], Rt[1][2], Rt[2][2]);
+	vec3 bestCoords = vec3(0.0, -1.0f, -1.0f);
+	float bestWeight = 0.0f;
+	for(int i = 0; i < u_textureCount; ++i) {
+		weight = 1.f / float(i); //TODO
 
-	dotProd = dot(N, normalize(camDir));
-	if(dotProd > -0.5)
-		color.r = 1;
-	//color.r = (1 + dotProd) /2.f;
-	//color.g = (1 + dotProd) /2.f;
-	//color.b = (1 + dotProd) /2.f;
-	
-	//color = N;
+		projectCoords(u_textureIndices[i], In.v_position, coords);
+		weight *= float(inRange(u_textureIndices[i], coords));
+
+		mat4 Rt = ub_texData[u_textureIndices[i]].u_TextureRt;
+		float dirDiff = dot(N, normalize(u_NormalMatrix *  vec3(Rt[0][2], Rt[1][2], Rt[2][2])));
+		weight *= -(dirDiff + 1.f) / (1.f - dirLimit) + 1;
+
+		if(weight > bestWeight) { //TODO
+			bestWeight = weight;
+			bestCoords.x = i;
+			bestCoords.yz = coords;
+		}
+	}
+
+	vec3 col = texture2DRect(u_texture0[u_textureIndices[int(bestCoords.x)]], bestCoords.yz).rgb;
+	vec3 color = min((.2f + col) * diffuse + specular * .2f, 1.0f);
+
+	if(bestWeight == 0) color.r = 1;
 
 	a_FragColor = vec4(color, 1.0f);
 }
