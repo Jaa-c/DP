@@ -115,7 +115,9 @@ class ImgLoader : public QObject, public QRunnable {
 	Photo &p;
 
 	virtual void run() {
-		ImageLoader::loadImage(p);
+		if(p.loading) { //It could have been canceled
+			ImageLoader::loadImage(p);
+		}
 		emit result(&p);
 	}
 
