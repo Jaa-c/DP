@@ -34,6 +34,7 @@
       <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/Controlls.h</itemPath>
       <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/Log.h</itemPath>
       <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/ObjectData.h</itemPath>
+      <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/Photo.h</itemPath>
       <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/RenderPassHandler.h</itemPath>
       <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/Renderer.h</itemPath>
       <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/Settings.h</itemPath>
@@ -122,6 +123,11 @@
             flavor2="0">
       </item>
       <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/ObjectData.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/Photo.h"
             ex="false"
             tool="3"
             flavor2="0">
@@ -346,6 +352,11 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/Photo.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/RenderPass/BasicTexturingRenderPass.h"
             ex="false"
             tool="3"
@@ -551,6 +562,11 @@
             flavor2="0">
       </item>
       <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/ObjectData.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/Photo.h"
             ex="false"
             tool="3"
             flavor2="0">

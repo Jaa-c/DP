@@ -18,92 +18,13 @@
 #include <QThreadPool>
 #include <QRunnable>
 
-#include "globals.h"
-#include "Settings.h"
 #include "glm/glm.hpp"
 #include "glm/core/type_mat3x3.hpp"
+#include "globals.h"
+#include "Settings.h"
 #include "kdtree/KDTree.h"
 
-struct CameraPosition {
-	glm::mat4 Rt;
-	
-	glm::vec3 position;
-	glm::vec3 direction;
-	
-	float focalL;
-	float d1, d2;
-	
-	CameraPosition() {
-		focalL = 0;
-		d1 = 0;
-		d2 = 0;
-	}
-};
-
-struct Image {
-	RGBData data;
-	const glm::ivec2 size; 
-	const uint rowPadding;
-	
-	Image(const glm::ivec2 size, const uint rowPadding) :
-		size(size), rowPadding(rowPadding) { }
-	
-	Image(RGBData image, const glm::ivec2 size, const uint rowPadding) :
-		data(image), size(size), rowPadding(rowPadding) {}
-
-};
-
-class Photo {
-	friend class TextureHandler;
-	friend class ImageLoader;
-	
-	Image image;
-	Image thumbnail;
-	
-public:
-	const uint ID;
-	const std::string name;
-	const CameraPosition camera;
-	float thumbScale;
-		
-	bool loading;
-	
-	Photo(
-		const uint ID, 
-		const std::string name,
-		const CameraPosition camera,
-		const glm::ivec2 size, 
-		const uint rowPadding,
-		RGBData thumb,
-		const glm::ivec2 tSize, 
-		const uint tRowPadding
-	) :	image(size, rowPadding),
-		thumbnail(thumb, tSize, tRowPadding),
-		ID(ID), name(name), camera(camera), loading(false) 
-	{ 
-		thumbScale = image.size.x / (float) thumbnail.size.x;
-	}
-	
-	int operator[] (const int i) const {
-		return camera.position[i];
-	}
-	
-	const  Image& getImage() const {
-		if(!loading && image.data.size() != 0)
-			return image;
-		else
-			return thumbnail;	
-	}
-	
-	float getImageScale() const {
-		if(!loading && image.data.size() != 0)
-			return 1.0f;
-		else
-			return thumbScale;
-	}
-	
-};
-
+#include "Photo.h"
 #include "io/ImageLoader.h"
 #include "io/BundlerParser.h"
 #include "Texture.h" //TODO
