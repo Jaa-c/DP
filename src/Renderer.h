@@ -27,23 +27,18 @@ class Renderer {
 	
 	
 	void drawTexture(Texture &texture) {
-		if(texture.getImageStart() == NULL) {
+		if(!texture.checkTexture()) {
 			return; //no texture avaiable!
 		}
 		if(texture.textureID == GL_ID_NONE) {
 			
 			glGenTextures(1, &texture.textureID);
 			glBindTexture(texture.target, texture.textureID);
-			
-			
-//			glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-//			glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
-//			glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
-//			glPixelStorei(GL_UNPACK_SKIP_ROWS, 0);
-			
-			glTexImage2D(texture.target, 0, GL_RGB, texture.getSizeWithPadding().x, texture.getSizeWithPadding().y, 0, GL_RGB, GL_UNSIGNED_BYTE, texture.getImageStart());
-			glBindTexture(texture.target, 0);
-			
+						
+			glTexImage2D(texture.target, 0, GL_RGB8, texture.getSizeWithPadding().x, 
+					texture.getSizeWithPadding().y, 0, GL_RGB, GL_UNSIGNED_BYTE, texture.getImageStart());
+		}
+		if(texture.samplerID == GL_ID_NONE) {
 			glGenSamplers(1, &texture.samplerID);
 			glSamplerParameteri(texture.samplerID, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 			glSamplerParameteri(texture.samplerID, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -80,10 +75,8 @@ public:
 	void drawTextures(std::vector<Texture> * textures) {
 		std::vector<GLint> units;
 		for(auto &tex : *textures)  {
-			//if(tex.photo->image.size() != 0) { //TODO, TEMP - remove
-				drawTexture(tex);
-				units.push_back(tex.unit);
-			//}
+			drawTexture(tex);
+			units.push_back(tex.unit);
 		}
 		glUniform1iv(ulocs->at(RenderPass::TEXTURE0), textures->size(), &units[0]);
 	}

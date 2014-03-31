@@ -40,7 +40,7 @@ class ImageLoader {
 	const std::string RAW = "raw";
 	const std::string JPG = "jpg";
 	const std::string THUMB = "thumb.";
-	static const int thumbExpectedSize = 256;
+	static const int thumbExpectedSize = 512;
 	
 	std::vector<ImageData> readDirectory(const std::string& path) {
 		std::vector<ImageData> data;

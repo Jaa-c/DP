@@ -74,7 +74,7 @@ public:
 		
 		GLint viewport[4] = {0};
 		glGetIntegerv(GL_VIEWPORT, viewport);
-
+		
 		glMatrixMode(GL_PROJECTION);
 		glPushMatrix();
 		glLoadIdentity();
@@ -82,7 +82,7 @@ public:
 		glMatrixMode(GL_MODELVIEW);
 		glPushMatrix();
 		glLoadIdentity();
-
+		
 		glDisable(GL_DEPTH_TEST);
 		glDisable(GL_LIGHTING);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -96,8 +96,8 @@ public:
 			glVertex2i(x, y+height);
 		glEnd();
 
-		glEnable(GL_POINT);
-		glEnable(GL_POINT_SIZE);
+		//glEnable(GL_POINT);
+		//glEnable(GL_POINT_SIZE);
 		glPointSize(4.0);
 
 		glm::vec4 p1, dir;

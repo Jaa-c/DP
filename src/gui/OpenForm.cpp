@@ -17,7 +17,7 @@ OpenForm::OpenForm(GLWidget * glw) : glWidget(glw) {
 	switch(0) {
 		case 0:
 			openForm.geometryPath->setText("/home/jaa/Documents/FEL/DP/data/dum/dil09nn.obj");
-			openForm.photosPath->setText("/usr/data/09");	
+			openForm.photosPath->setText("/home/jaa/Documents/FEL/DP/data/dum/09/");//usr/data/09");	
 			openForm.rz3Path->setText("/home/jaa/Documents/FEL/DP/data/dum/09_done.rz3");
 			openForm.rz3Images->setText("/home/jaa/Documents/FEL/DP/data/dum/09_pictures0_OK.txt");
 			openForm.tabWidget->setCurrentIndex(1);

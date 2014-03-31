@@ -78,6 +78,7 @@ void main() {
 	vec3 col = texture2DRect(u_texture0[u_textureIndices[int(bestCoords.x)]], bestCoords.yz).rgb;
 	vec3 color = min((.2f + col) * diffuse + specular * .2f, 1.0f);
 
+	if(ub_texData[u_textureIndices[int(bestCoords.x)]].u_TextureSize.x == 512) color.b = 0.5;
 	if(bestWeight == 0) color.r = 1;
 
 	a_FragColor = vec4(color, 1.0f);

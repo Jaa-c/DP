@@ -226,7 +226,14 @@ public:
 		// Read input file
 		if (fileExists(filename)) {
 			std::ifstream input(filename, std::ios::in | std::ifstream::binary);
-			input.seekg(3 * sizeof(int));
+			if(width * height == 0) {
+				input.read((char*) (&width), sizeof(int));
+				input.read((char*) (&height), sizeof(int));
+				input.read((char*) (&rowPadding), sizeof(int));
+			} 
+			else {
+				input.seekg(3 * sizeof(int));
+			}
 			
 			const size_t size = (width + rowPadding) * height * 3;
 			raw.resize(size);

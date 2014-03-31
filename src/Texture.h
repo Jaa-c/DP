@@ -16,6 +16,8 @@
 class CameraPosition;
 
 class Texture {	
+	uint prevImgSize;
+	
 public:	
 	const Photo * photo;
 	
@@ -32,7 +34,7 @@ public:
 		textureID(GL_ID_NONE), samplerID(GL_ID_NONE),
 		current(false)
 	{
-	
+		prevImgSize = 0;
 	}
 	
 	Texture(const GLenum target, const GLuint unit, const Photo * photo) : 
@@ -40,23 +42,38 @@ public:
 		textureID(GL_ID_NONE), samplerID(GL_ID_NONE) ,
 		current(false)
 	{
+		prevImgSize = 0;	
+	}
 	
+	bool checkTexture() {
+		if(!photo || photo->getImage().data.empty()) {
+			return false;
+		}
+		if(prevImgSize != photo->getImage().data.size()) {
+			if(textureID != GL_ID_NONE) {
+				reset(); //switch thumbnail to photo
+			}
+			prevImgSize = photo->getImage().data.size();
+		}
+		return true;
 	}
 	
 	void setImage(const Photo * photo) {
 		if(photo->ID != this->photo->ID) {
-			if(glIsTexture(textureID)) { //TODO
-				glDeleteTextures(1, &textureID);
-			}
-			textureID = GL_ID_NONE;
+			reset();
 			this->photo = photo;
+			prevImgSize = photo->getImage().data.size();
 		}
 	};
 	
-	const rgb *getImageStart() const {
-		if(!photo || photo->getImage().data.empty()) {
-			return NULL;
+	void reset() {
+		if(glIsTexture(textureID)) { //TODO
+			glDeleteTextures(1, &textureID);
 		}
+		textureID = GL_ID_NONE;
+	}
+	
+	const rgb *getImageStart() const {
 		const Image &im = photo->getImage();
 		assert(im.data.size() == (uint) (im.size.x + im.rowPadding) * im.size.y * 3);
 		return &im.data[0];

@@ -32,6 +32,8 @@ void GLWidget::paintGL() {
 		textureHandler->updateTextures(c, viewDir, object->getMvm(), Settings::usingTextures);
 		
 		renderPassHandler.draw(object);
+		
+		glCheckError(); //DEBUG
 		glUseProgram(0);
 	}
 	

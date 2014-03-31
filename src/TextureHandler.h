@@ -13,6 +13,7 @@
 #include <set>
 #include <unordered_map>
 #include <queue>
+#include <thread>
 
 #include <QThreadPool>
 #include <QRunnable>
@@ -63,8 +64,9 @@ public:
 	const uint ID;
 	const std::string name;
 	const CameraPosition camera;
+	float thumbScale;
 		
-	bool loading; //possible union?
+	bool loading;
 	
 	Photo(
 		const uint ID, 
@@ -77,18 +79,29 @@ public:
 		const uint tRowPadding
 	) :	image(size, rowPadding),
 		thumbnail(thumb, tSize, tRowPadding),
-		ID(ID), name(name), camera(camera), loading(false) { }
+		ID(ID), name(name), camera(camera), loading(false) 
+	{ 
+		thumbScale = image.size.x / (float) thumbnail.size.x;
+	}
 	
 	int operator[] (const int i) const {
 		return camera.position[i];
 	}
 	
-	const Image& getImage() const {
-		if(image.data.size() != 0)
+	const  Image& getImage() const {
+		if(!loading && image.data.size() != 0)
 			return image;
 		else
 			return thumbnail;	
 	}
+	
+	float getImageScale() const {
+		if(!loading && image.data.size() != 0)
+			return 1.0f;
+		else
+			return thumbScale;
+	}
+	
 };
 
 #include "io/ImageLoader.h"
@@ -103,7 +116,6 @@ class ImgLoader : public QObject, public QRunnable {
 
 	virtual void run() {
 		ImageLoader::loadImage(p);
-		p.loading = false;
 		emit result(&p);
 	}
 
@@ -139,22 +151,34 @@ class TextureHandler : public QObject {
 	
 public slots:
 	void getResult(Photo *p) {
-		nearPhotos.insert(std::pair<int, Photo *>(p->ID, p));
+		if(!p->loading) { //already deleted
+			p->image.data.clear();
+			p->image.data.shrink_to_fit();
+		}
+		else {
+			p->loading = false;
+		}
 	}
 	
 public:	
 	TextureHandler() {
 		//I want low nober of threads I don't want to waint long a get 
-		//all pictures at once, rather get them "sequentially" 
-		QThreadPool::globalInstance()->setMaxThreadCount(4);
+		//all pictures at once, rather get them "sequentially"
+		uint thr = std::thread::hardware_concurrency();
+		thr = std::max((uint) 2, thr - 2);
+		QThreadPool::globalInstance()->setMaxThreadCount(thr);
+		Log::i("Using %d threads for image load.", thr);
 	}
 	
 	void buildTree() {
 		kdtree.construct(&photos);	
 	}
-		
-	const std::vector<Photo> & getPhotos() const {
-		return photos;
+	
+	void loadFullImage(Photo &p) {
+		p.loading = true;
+		ImgLoader *loader = new ImgLoader(p);
+		connect(loader, SIGNAL(result(Photo *)), SLOT(getResult(Photo *)), Qt::QueuedConnection); //Qt::DirectConnection
+		QThreadPool::globalInstance()->start(loader);
 	}
 	
 	//TODO needs some optimizations...
@@ -183,18 +207,16 @@ public:
 		}
 		
 		for(Photo *p : toLoad) {
-			p->loading = true;
-			ImgLoader *loader = new ImgLoader(*p);
-			connect(loader, SIGNAL(result(Photo *)), SLOT(getResult(Photo *)), Qt::QueuedConnection); //Qt::DirectConnection
-			QThreadPool::globalInstance()->start(loader);
+			//add it right now, since we have thubnails
+			nearPhotos.insert(std::pair<int, Photo *>(p->ID, p));
 		}
 				
 		if(nearPhotos.size() == 0) {
 			return;
 		}
-//		nearPhotos = result;
 		
 		for(Photo *p : toDelete) {
+			p->loading = false;
 			nearPhotos.erase(p->ID);
 			p->image.data.clear();
 			p->image.data.shrink_to_fit();
@@ -206,7 +228,7 @@ public:
 		if(Settings::usePrefferedCamera) {
 			Photo *p = &photos[Settings::prefferedCamera];
 			if(p->image.data.size() == 0) {
-				ImageLoader::loadImage(*p);
+				loadFullImage(*p);
 			}
 			auto it = std::find(currentPhotos.begin(), currentPhotos.end(), p);
 			if(it != currentPhotos.end()) {
@@ -248,7 +270,9 @@ public:
 			//remove textures that are no longer used
 			if(!tex.current) {
 				if(!currentPhotos.empty()) {
-					tex.setImage(*currentPhotos.begin());
+					Photo *p = *currentPhotos.begin();
+					tex.setImage(p);
+					loadFullImage(*p);
 					currentPhotos.erase(currentPhotos.begin());
 				}
 				else { //lowered the number of textures
@@ -263,9 +287,14 @@ public:
 		i = 0;
 		for(auto p : currentPhotos) {
 			textures.push_back(Texture(GL_TEXTURE_RECTANGLE, textures.size(), p));
+			loadFullImage(*p);
 			while(bestTexIdx[i] != -1) i++;
 			bestTexIdx[i] = textures.at(textures.size()-1).unit;
 		}
+	}
+			
+	const std::vector<Photo> & getPhotos() const {
+		return photos;
 	}
 	
 	std::vector<Texture> & getTextures() {
