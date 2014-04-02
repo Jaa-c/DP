@@ -19,7 +19,7 @@ class Texture {
 	uint prevImgSize;
 	
 public:	
-	const Photo * photo;
+	Photo * photo;
 	
 	GLenum target; //todo: should be const
 	GLuint unit; //todo: should be const
@@ -37,12 +37,16 @@ public:
 		prevImgSize = 0;
 	}
 	
-	Texture(const GLenum target, const GLuint unit, const Photo * photo) : 
+	Texture(const GLenum target, const GLuint unit, Photo * photo) : 
 		photo(photo), target(target), unit(unit), 
 		textureID(GL_ID_NONE), samplerID(GL_ID_NONE) ,
 		current(false)
 	{
 		prevImgSize = 0;	
+	}
+	
+	~Texture() {
+		reset();
 	}
 	
 	bool checkTexture() {
@@ -58,7 +62,7 @@ public:
 		return true;
 	}
 	
-	void setImage(const Photo * photo) {
+	void setImage(Photo * photo) {
 		if(photo->ID != this->photo->ID) {
 			reset();
 			this->photo = photo;

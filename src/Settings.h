@@ -26,6 +26,8 @@ public:
 	/// radar width and height
 	static glm::vec2 radarSize;
 	
+	static bool useKDT;
+	
 	///DEBUG
 	static bool usePrefferedCamera;
 	static uint prefferedCamera;

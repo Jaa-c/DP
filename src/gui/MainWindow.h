@@ -30,6 +30,7 @@ private slots:
 	void radarPassCB();
 	void displaySettingsCB();
 	void displayObjectSettingsCB();
+	void useKDTCB();
 	
 	void reloadShadersCB();
 
@@ -59,6 +60,7 @@ private:
 	QAction *reloadShaders;
 	QAction *programSettings;
 	QAction *objectSettings;
+	QAction *useKDT;
 	
 	QActionGroup * texGroup;
 

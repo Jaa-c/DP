@@ -59,7 +59,7 @@ void main() {
 	vec3 bestCoords = vec3(0.0, -1.0f, -1.0f);
 	float bestWeight = 0.0f;
 	for(int i = 0; i < u_textureCount; ++i) {
-		weight = 1.f / float(i); //TODO
+		weight = 1.f / (float(i + 1)); //TODO
 
 		projectCoords(u_textureIndices[i], In.v_position, coords);
 		weight *= float(inRange(u_textureIndices[i], coords));
@@ -78,8 +78,10 @@ void main() {
 	vec3 col = texture2DRect(u_texture0[u_textureIndices[int(bestCoords.x)]], bestCoords.yz).rgb;
 	vec3 color = min((.2f + col) * diffuse + specular * .2f, 1.0f);
 
-	if(ub_texData[u_textureIndices[int(bestCoords.x)]].u_TextureSize.x == 512) color.b = 0.5;
+	if(ub_texData[u_textureIndices[int(bestCoords.x)]].u_TextureSize.x == 512) color.b = 0.4;
 	if(bestWeight == 0) color.r = 1;
+
+	//if(int(bestCoords.x) == 2) color.g = 1;
 
 	a_FragColor = vec4(color, 1.0f);
 }

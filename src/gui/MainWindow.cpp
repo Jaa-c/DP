@@ -80,6 +80,10 @@ void MainWindow::createActions() {
 	objectSettings = new QAction(tr("&Object settings"), this);
 	connect(objectSettings, SIGNAL(triggered()), this, SLOT(displayObjectSettingsCB()));
 	
+	useKDT = new QAction(tr("&Use KDTree"), this);
+	useKDT->setCheckable(true);
+	connect(useKDT, SIGNAL(changed()), this, SLOT(useKDTCB()));
+	
 	reloadShaders = new QAction(tr("&Recompile shaders"), this);
 	reloadShaders->setShortcut(Qt::Key_R | Qt::CTRL);
 	connect(reloadShaders, SIGNAL(triggered()), this, SLOT(reloadShadersCB()));
@@ -103,6 +107,7 @@ void MainWindow::createMenus() {
 	settings = menuBar()->addMenu(tr("&Settings"));
 	settings->addAction(programSettings);
 	settings->addAction(objectSettings);
+	settings->addAction(useKDT);
 	
 	debug = menuBar()->addMenu(tr("&Debug"));
 	debug->addAction(reloadShaders);
@@ -131,6 +136,10 @@ void MainWindow::displayObjectSettingsCB() {
 
  void MainWindow::quitCB() {
 	 QApplication::quit();
+ }
+ 
+ void MainWindow::useKDTCB() {
+	 Settings::useKDT = useKDT->isChecked();
  }
  
 void MainWindow::texturingPassCB() {

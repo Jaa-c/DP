@@ -20,17 +20,17 @@
 
 #include "glm/glm.hpp"
 #include "glm/core/type_mat3x3.hpp"
-#include "globals.h"
-#include "Settings.h"
 #include "kdtree/KDTree.h"
 
+#include "globals.h"
+#include "Settings.h"
 #include "Photo.h"
+#include "Texture.h"
 #include "io/ImageLoader.h"
 #include "io/BundlerParser.h"
-#include "Texture.h" //TODO
 
 
-class ImgLoader : public QObject, public QRunnable {
+class ImgThread : public QObject, public QRunnable {
 	Q_OBJECT
 
 	Photo &p;
@@ -46,7 +46,7 @@ signals:
 	void result(Photo *);
 
 public:
-	ImgLoader(Photo &p) 
+	ImgThread(Photo &p) 
 		: QRunnable(), p(p) 
 	{
 
@@ -99,9 +99,15 @@ public:
 	
 	void loadFullImage(Photo &p) {
 		p.loading = true;
-		ImgLoader *loader = new ImgLoader(p);
+		ImgThread *loader = new ImgThread(p);
 		connect(loader, SIGNAL(result(Photo *)), SLOT(getResult(Photo *)), Qt::QueuedConnection); //Qt::DirectConnection
 		QThreadPool::globalInstance()->start(loader);
+	}
+	
+	void releaseImage(Photo &p) {
+		p.loading = false;
+		p.image.data.clear();
+		p.image.data.shrink_to_fit();
 	}
 	
 	//TODO needs some optimizations...
@@ -111,38 +117,37 @@ public:
 		const glm::mat4 &mvm, 
 		const uint count
 	) {
-		
-		std::vector<Photo *> toLoad, toDelete;
-		std::vector<Photo *> currNearPhotos = kdtree.kNearestNeighbors<glm::vec3>(&cameraPos, 30);
-		
-		std::unordered_map<int, Photo *> result; //TODO: test if better than vector lookup
-		for(Photo *p : currNearPhotos) {
-			result.insert(std::pair<int, Photo *>(p->ID, p));
-			if(p->image.data.size() == 0 && !p->loading) {
-				toLoad.push_back(p);
+		if(Settings::useKDT) {
+			std::vector<Photo *> toLoad, toDelete;
+			std::vector<Photo *> currNearPhotos = kdtree.kNearestNeighbors<glm::vec3>(&cameraPos, 50);
+
+			std::unordered_map<int, Photo *> result; //TODO: test if better than vector lookup
+			for(Photo *p : currNearPhotos) {
+				result.insert(std::pair<int, Photo *>(p->ID, p));
+				if(p->image.data.size() == 0 && !p->loading) {
+					toLoad.push_back(p);
+				}
 			}
-		}
-		
-		for(std::pair<int, Photo *> p : nearPhotos) {
-			if(result.find(p.first) == result.end()) { 
-				toDelete.push_back(p.second);
+
+			for(std::pair<int, Photo *> p : nearPhotos) {
+				if(result.find(p.first) == result.end()) { 
+					toDelete.push_back(p.second);
+				}
 			}
-		}
-		
-		for(Photo *p : toLoad) {
-			//add it right now, since we have thubnails
-			nearPhotos.insert(std::pair<int, Photo *>(p->ID, p));
-		}
-				
-		if(nearPhotos.size() == 0) {
-			return;
-		}
-		
-		for(Photo *p : toDelete) {
-			p->loading = false;
-			nearPhotos.erase(p->ID);
-			p->image.data.clear();
-			p->image.data.shrink_to_fit();
+
+			for(Photo *p : toLoad) {
+				//add it right now, since we have thubnails
+				nearPhotos.insert(std::pair<int, Photo *>(p->ID, p));
+			}
+
+			if(nearPhotos.size() == 0) {
+				return;
+			}
+
+			for(Photo *p : toDelete) {
+				nearPhotos.erase(p->ID);
+				releaseImage(*p);
+			}
 		}
 		
 		std::vector<Photo*> currentPhotos = getClosestCameras(viewDir, mvm, count);
@@ -192,6 +197,7 @@ public:
 			Texture &tex = *it;
 			//remove textures that are no longer used
 			if(!tex.current) {
+				releaseImage(*tex.photo);
 				if(!currentPhotos.empty()) {
 					Photo *p = *currentPhotos.begin();
 					tex.setImage(p);
@@ -214,6 +220,7 @@ public:
 			while(bestTexIdx[i] != -1) i++;
 			bestTexIdx[i] = textures.at(textures.size()-1).unit;
 		}
+		bestTexIdx.resize(textures.size());
 	}
 			
 	const std::vector<Photo> & getPhotos() const {
@@ -243,10 +250,15 @@ private:
 		
 		std::set<Photo*, decltype(comp)> result(comp);
 		
-		for(std::pair<int, Photo *> p : nearPhotos) {
-			//if(p.second->image.size() != 0) {
+		if(Settings::useKDT) {
+			for(std::pair<int, Photo *> p : nearPhotos) {
 				result.insert(p.second);
-			//}
+			}
+		}
+		else {
+			for(Photo &p : photos) {
+				result.insert(&p);
+			}
 		}
 		auto beg = result.begin();
 		std::advance(beg, count);
