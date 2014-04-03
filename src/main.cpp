@@ -80,6 +80,9 @@ int main(int argc, char** argv) {
 	GLint texture_units = 0;
 	glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &texture_units);
 	Log::i("Avaiable texture units for FS: %d", texture_units);
+	if(texture_units > 0) {
+		Settings::maxTextures = texture_units;
+	}
 	
 	
     return app.exec();

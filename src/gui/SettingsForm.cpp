@@ -16,7 +16,7 @@ SettingsForm::SettingsForm(GLWidget * glw) : glWidget(glw)  {
 	
 	
 	widget.photosSlider->setMinimum(1);
-	widget.photosSlider->setMaximum(32);
+	widget.photosSlider->setMaximum(Settings::maxTextures);
 	widget.photosSlider->setValue(Settings::usingTextures);
 	widget.photoSliderValue->setText(QString::number(widget.photosSlider->value()));
 	

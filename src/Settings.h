@@ -18,6 +18,8 @@ class Settings {
 	Settings() {}
 	
 public:
+	/// limit for textures bound to fragment shader
+	static uint maxTextures;
 	/// number of textures currently being used for texturing
 	static quint32 usingTextures;
 	/// object default rotation
