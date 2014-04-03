@@ -19,6 +19,7 @@
 #endif
 
 #include "DataLoader.h"
+#include "../Photo.h"
 #include "../TextureHandler.h"
 
 struct ImageData {

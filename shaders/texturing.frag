@@ -56,7 +56,7 @@ void main() {
 	vec2 coords;
 	float weight;
 	
-	vec3 bestCoords = vec3(0.0, -1.0f, -1.0f);
+	vec3 bestCoords = vec3(.0, -1.0f, -1.0f);
 	float bestWeight = 0.0f;
 	for(int i = 0; i < u_textureCount; ++i) {
 		weight = 1.f / (float(i + 1)); //TODO
@@ -80,8 +80,6 @@ void main() {
 
 	if(ub_texData[u_textureIndices[int(bestCoords.x)]].u_TextureSize.x == 512) color.b = 0.4;
 	if(bestWeight == 0) color.r = 1;
-
-	//if(int(bestCoords.x) == 2) color.g = 1;
 
 	a_FragColor = vec4(color, 1.0f);
 }

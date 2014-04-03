@@ -8,6 +8,9 @@
 #ifndef PHOTO_H
 #define	PHOTO_H
 
+#include "glm/glm.hpp"
+#include "globals.h"
+
 /**
  * Contains projection matrix of a camera
  * + camera position, viewing direction, focal length

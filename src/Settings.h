@@ -8,6 +8,7 @@
 #ifndef SETTINGS_H
 #define	SETTINGS_H
 
+#include <Qt/qglobal.h>
 #include <glm/glm.hpp>
 #include <string>
 
