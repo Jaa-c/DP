@@ -10,7 +10,6 @@
 
 #include <vector>
 #include <unordered_map>
-
 #include <QObject>
 #include <QRunnable>
 
@@ -53,9 +52,7 @@ class TextureHandler : public QObject {
 	
 	std::vector<Photo> photos;
 	std::vector<Texture> textures;
-	
 	std::unordered_map<int, Photo *> nearPhotos;
-	
 	/// indices of the best textures in the texture array bound to the shader
 	std::vector<int> bestTexIdx;
 	

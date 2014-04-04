@@ -31,12 +31,10 @@ class Renderer {
 			return; //no texture avaiable!
 		}
 		if(texture.textureID == GL_ID_NONE) {
-			
 			glGenTextures(1, &texture.textureID);
 			glBindTexture(texture.target, texture.textureID);
-						
-			glTexImage2D(texture.target, 0, GL_RGB8, texture.getSizeWithPadding().x, 
-					texture.getSizeWithPadding().y, 0, GL_RGB, GL_UNSIGNED_BYTE, texture.getImageStart());
+			glTexImage2D(texture.target, 0, GL_RGB8, texture.getFullSizeWithPadding().x, 
+					texture.getFullSizeWithPadding().y, 0, GL_RGB, GL_UNSIGNED_BYTE, (GLvoid *) NULL);
 		}
 		if(texture.samplerID == GL_ID_NONE) {
 			glGenSamplers(1, &texture.samplerID);
@@ -48,11 +46,23 @@ class Renderer {
 		
 		assert(texture.samplerID);
 		assert(texture.textureID);
-				
+		
+		glCheckError();
 		glActiveTexture(GL_TEXTURE0 + texture.unit);
-		glBindTexture(texture.target, texture.textureID);
-		glBindSampler(texture.unit, texture.samplerID);
+		
+		if(texture.updateImage) {
+			glBindTexture(texture.target, texture.textureID);
 				
+			glTexSubImage2D(texture.target, 0, 0, 0, texture.getSizeWithPadding().x,
+					texture.getSizeWithPadding().y, GL_RGB, GL_UNSIGNED_BYTE, texture.getImageStart());
+			glCheckError();
+			
+			glBindTexture(texture.target, 0);
+			texture.updateImage = false;
+		}
+		
+		glBindSampler(texture.unit, texture.samplerID);
+		glBindTexture(texture.target, texture.textureID);
 	}
 
 public:

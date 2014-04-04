@@ -99,6 +99,9 @@ public:
 			return thumbScale;
 	}
 	
+	const Image& getFullSizeImage() const {
+		return image;
+	}	
 };
 
 

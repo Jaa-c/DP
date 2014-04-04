@@ -60,25 +60,26 @@ void main() {
 	float bestWeight = 0.0f;
 	for(int i = 0; i < u_textureCount; ++i) {
 		weight = 1.f / (float(i + 1)); //TODO
+		int idx = u_textureIndices[i];
 
-		projectCoords(u_textureIndices[i], In.v_position, coords);
-		weight *= float(inRange(u_textureIndices[i], coords));
+		projectCoords(idx, In.v_position, coords);
+		weight *= float(inRange(idx, coords));
 
-		mat4 Rt = ub_texData[u_textureIndices[i]].u_TextureRt;
+		mat4 Rt = ub_texData[idx].u_TextureRt;
 		float dirDiff = dot(N, normalize(u_NormalMatrix *  vec3(Rt[0][2], Rt[1][2], Rt[2][2])));
 		weight *= -(dirDiff + 1.f) / (1.f - dirLimit) + 1;
 
 		if(weight > bestWeight) { //TODO
 			bestWeight = weight;
-			bestCoords.x = i;
+			bestCoords.x = idx;
 			bestCoords.yz = coords;
 		}
 	}
 
-	vec3 col = texture2DRect(u_texture0[u_textureIndices[int(bestCoords.x)]], bestCoords.yz).rgb;
+	vec3 col = texture2DRect(u_texture0[int(bestCoords.x)], bestCoords.yz).rgb;
 	vec3 color = min((.2f + col) * diffuse + specular * .2f, 1.0f);
 
-	if(ub_texData[u_textureIndices[int(bestCoords.x)]].u_TextureSize.x == 512) color.b = 0.4;
+	if(ub_texData[int(bestCoords.x)].u_TextureSize.x == 512) color.b = 0.4;
 	if(bestWeight == 0) color.r = 1;
 
 	a_FragColor = vec4(color, 1.0f);

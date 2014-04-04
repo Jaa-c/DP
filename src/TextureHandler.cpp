@@ -64,9 +64,9 @@ void TextureHandler::updateTextures(
 	}
 
 	std::vector<Photo*> currentPhotos = getClosestCameras(viewDir, mvm, count);
-
+	
 	///mostly DEBUG
-	if(Settings::usePrefferedCamera) {
+	if(false  && Settings::usePrefferedCamera) {
 		Photo *p = &photos[Settings::prefferedCamera];
 		if(p->image.data.size() == 0) {
 			loadFullImage(*p);
@@ -85,7 +85,7 @@ void TextureHandler::updateTextures(
 	bestTexIdx.clear();
 	bestTexIdx.resize(std::max(count, (uint) textures.size()));
 
-	for(auto it = currentPhotos.begin(); it != currentPhotos.end(); ) {
+	for(auto it = currentPhotos.begin(); it != currentPhotos.end(); ++i) {
 		Photo *p = *it;
 		bool erased = false;
 		bestTexIdx[i] = -1;
@@ -96,8 +96,7 @@ void TextureHandler::updateTextures(
 				tex.current = true;
 				erased = true;
 				currentPhotos.erase(it);
-				bestTexIdx[i] = tex.unit;//TODO: check!!
-				i++;
+				bestTexIdx[i] = tex.unit;
 				break;
 			}
 		}
@@ -105,7 +104,8 @@ void TextureHandler::updateTextures(
 			++it;
 		}
 	}
-
+	
+	i = 0;
 	for(auto it = textures.begin(); it < textures.end(); ) {
 		Texture &tex = *it;
 		//remove textures that are no longer used
@@ -116,6 +116,8 @@ void TextureHandler::updateTextures(
 				tex.setImage(p);
 				loadFullImage(*p);
 				currentPhotos.erase(currentPhotos.begin());
+				while(bestTexIdx[i] != -1) i++;
+				bestTexIdx[i] = tex.unit;
 			}
 			else { //lowered the number of textures
 				textures.erase(it++);
@@ -153,8 +155,7 @@ void TextureHandler::releaseImage(Photo &p) {
 
 void TextureHandler::getResult(Photo *p) {
 	if(!p->loading) { //already deleted
-		p->image.data.clear();
-		p->image.data.shrink_to_fit();
+		releaseImage(*p);
 	}
 	else {
 		p->loading = false;

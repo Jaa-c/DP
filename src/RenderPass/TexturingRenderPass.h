@@ -32,7 +32,7 @@ public:
 	
 	void draw(ObjectData *object) {
 				
-		const uint sizeOfTextureData = sizeof(glm::mat4) + sizeof(glm::ivec2) + sizeof(float);
+		const uint sizeOfTextureData = sizeof(glm::mat4) + sizeof(glm::ivec2) + 2 * sizeof(float);
 		if(programID == GL_ID_NONE) {
 			programID = shaderHandler->getProgramId(shader);
 			getDefaultUniformLocations();
@@ -93,11 +93,11 @@ public:
 		glUniform3fv(loc_viewDir, 1, &viewDir[0]);
 		
 		renderer->setUniformLocations(&uLocs);
-		
 		renderer->bindCameraMatrices();
 		renderer->drawTextures(textures);
 		renderer->drawObject(*object);
 		
+		glCheckError();
 		glUseProgram(0);
 	}
 
