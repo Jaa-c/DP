@@ -8,6 +8,7 @@
 #include "globals.h"
 #include "Settings.h"
 #include "TextureHandler.h"
+#include "src/Photo.h"
 	
 TextureHandler::TextureHandler() {
 	//I want low nober of threads I don't want to waint long a get 
@@ -66,7 +67,7 @@ void TextureHandler::updateTextures(
 	std::vector<Photo*> currentPhotos = getClosestCameras(viewDir, mvm, count);
 	
 	///mostly DEBUG
-	if(false  && Settings::usePrefferedCamera) {
+	if(Settings::usePrefferedCamera) {
 		Photo *p = &photos[Settings::prefferedCamera];
 		if(p->image.data.size() == 0) {
 			loadFullImage(*p);

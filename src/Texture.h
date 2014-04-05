@@ -29,21 +29,13 @@ public:
 	
 	bool current; // flag for loading
 	bool updateImage;
-	
-	Texture(const GLenum target, const GLuint unit) : 
-		photo(NULL), target(target), unit(unit), 
-		textureID(GL_ID_NONE), samplerID(GL_ID_NONE),
-		current(false), updateImage(false)
-	{
-		prevImgSize = 0;
-	}
-	
+
 	Texture(const GLenum target, const GLuint unit, Photo * photo) : 
 		photo(photo), target(target), unit(unit), 
 		textureID(GL_ID_NONE), samplerID(GL_ID_NONE),
 		current(false), updateImage(false)
 	{
-		prevImgSize = 0;	
+		prevImgSize = 0;
 	}
 	
 	~Texture() {

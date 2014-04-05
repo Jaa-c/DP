@@ -81,6 +81,7 @@ public:
 				glBufferSubData(GL_UNIFORM_BUFFER, offset, sizeof(float), &focalL);
 				offset += 2 * sizeof(float); //note that this is std140 alignment!
 			}
+			glBindBuffer(GL_UNIFORM_BUFFER, 0);
 		}
 		
 		GLint texCount = textures->size();

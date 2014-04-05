@@ -30,11 +30,16 @@ class Renderer {
 		if(!texture.checkTexture()) {
 			return; //no texture avaiable!
 		}
+		glActiveTexture(GL_TEXTURE0 + texture.unit);
+		
 		if(texture.textureID == GL_ID_NONE) {
 			glGenTextures(1, &texture.textureID);
 			glBindTexture(texture.target, texture.textureID);
 			glTexImage2D(texture.target, 0, GL_RGB8, texture.getFullSizeWithPadding().x, 
 					texture.getFullSizeWithPadding().y, 0, GL_RGB, GL_UNSIGNED_BYTE, (GLvoid *) NULL);
+			
+			glBindTexture(texture.target, 0);
+//			std::cout << "creating texture w/ unit: " << texture.unit << "\n";
 		}
 		if(texture.samplerID == GL_ID_NONE) {
 			glGenSamplers(1, &texture.samplerID);
@@ -48,15 +53,15 @@ class Renderer {
 		assert(texture.textureID);
 		
 		glCheckError();
-		glActiveTexture(GL_TEXTURE0 + texture.unit);
-		
 		if(texture.updateImage) {
 			glBindTexture(texture.target, texture.textureID);
-				
+//			int w;
+//			glGetTexLevelParameteriv(texture.target, 0, GL_TEXTURE_WIDTH, &w);
+//			std::cout << "w: " << w << " - " << texture;
 			glTexSubImage2D(texture.target, 0, 0, 0, texture.getSizeWithPadding().x,
 					texture.getSizeWithPadding().y, GL_RGB, GL_UNSIGNED_BYTE, texture.getImageStart());
 			glCheckError();
-			
+//			std::cout << "\n";
 			glBindTexture(texture.target, 0);
 			texture.updateImage = false;
 		}
