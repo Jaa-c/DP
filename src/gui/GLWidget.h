@@ -34,10 +34,10 @@ class GLWidget : public QGLWidget
 	Camera camera;
 	ShaderHandler shaderHandler;
 	Renderer renderer;
+	Controlls &controlls;
 	
-	TextureHandler *textureHandler;
-	ObjectData *object;
-	Controlls * controlls;
+	std::shared_ptr<TextureHandler> textureHandler;
+	std::shared_ptr<ObjectData> object;
 	
 	struct timeval start, end;
 	int fps;

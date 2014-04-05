@@ -14,8 +14,12 @@ class BundlerPointsRenderPass : public RenderPass {
 		
 public:
 	
-	BundlerPointsRenderPass(Renderer *r, ShaderHandler *sh, TextureHandler *th) : 
-		RenderPass(BASIC_TEXTURING_PASS, r, sh, th)
+	BundlerPointsRenderPass(
+		Renderer& r, 
+		ShaderHandler& s, 
+		std::shared_ptr<TextureHandler> th
+	) : 
+		RenderPass(BASIC_TEXTURING_PASS, r, s, th)
 	{	
 		shader = ShaderHandler::SHADER_POINTS;
 	}
@@ -24,19 +28,19 @@ public:
 		
 	}
 	
-	void draw(ObjectData *object) {
+	void draw(std::shared_ptr<ObjectData> object) {
 		if(programID == GL_ID_NONE) {
-			programID = shaderHandler->getProgramId(shader);
+			programID = shaderHandler.getProgramId(shader);
 			getDefaultUniformLocations();
 		}
 		
 		glEnable(GL_PROGRAM_POINT_SIZE );
 		glUseProgram(programID);
 		
-		renderer->setUniformLocations(&uLocs);
+		renderer.setUniformLocations(&uLocs);
 		
-		renderer->bindCameraMatrices();
-		renderer->drawPointData(*object);
+		renderer.bindCameraMatrices();
+		renderer.drawPointData(*object);
 		
 		glUseProgram(0);
 		glDisable(GL_PROGRAM_POINT_SIZE );

@@ -24,7 +24,7 @@ public:
 		RZ3
 	};
 	
-	CalibrationLoader(TextureHandler *th, std::function<void(int)> progress = nullptr)
+	CalibrationLoader(std::shared_ptr<TextureHandler> th, std::function<void(int)> progress = nullptr)
 		: outPhotos(th->photos), pointData(nullptr), progress(progress) {}
 		
 	~CalibrationLoader() {

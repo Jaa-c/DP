@@ -36,7 +36,7 @@ public:
 		UNIFORM_LOC_SIZE
 	};
 	
-	virtual void draw(ObjectData *object) = 0;
+	virtual void draw(std::shared_ptr<ObjectData> object) = 0;
 	
 	virtual ~RenderPass() {}
 	
@@ -47,26 +47,25 @@ public:
 	
 protected:
 	const RenderPassType type;
+	GLuint programID;
 	
-	ShaderHandler *shaderHandler;
-	TextureHandler *textureHandler;
-	Renderer *renderer;
+	Renderer& renderer;
+	ShaderHandler& shaderHandler;
+	std::shared_ptr<TextureHandler> textureHandler;
 	
 	ShaderHandler::ShaderType shader;
 	
 	std::vector<GLuint> uLocs;
 	
-	GLuint programID;
 	
 	RenderPass(
 		RenderPassType type, 
-		Renderer *r, 
-		ShaderHandler *s, 
-		TextureHandler *t
-	) : type(type), programID(GL_ID_NONE) {
-		shaderHandler = s;
-		textureHandler = t;
-		renderer = r;
+		Renderer& r, 
+		ShaderHandler& s, 
+		std::shared_ptr<TextureHandler> t
+	) : type(type), programID(GL_ID_NONE),
+		renderer(r), shaderHandler(s), textureHandler(t) 
+	{ 
 	}
 	
 	void getDefaultUniformLocations() {

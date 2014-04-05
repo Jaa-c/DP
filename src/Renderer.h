@@ -21,7 +21,7 @@
 
 class Renderer {
 	GLuint planeVao;
-	Camera *camera;
+	Camera& camera;
 	
 	std::vector<GLuint> *ulocs;
 	
@@ -72,7 +72,7 @@ class Renderer {
 
 public:
 	
-	Renderer(Camera *camera) : planeVao(GL_ID_NONE), camera(camera) {
+	Renderer(Camera& camera) : planeVao(GL_ID_NONE), camera(camera) {
 	}
 	
 	void setUniformLocations(std::vector<GLuint> * locs) {
@@ -80,8 +80,8 @@ public:
 	}
 	
 	void bindCameraMatrices() {
-		const glm::mat4 * modelView = camera->getModelViewMatrix();
-		const glm::mat4 * projection = camera->getProjectionMatrix();
+		const glm::mat4 * modelView = camera.getModelViewMatrix();
+		const glm::mat4 * projection = camera.getProjectionMatrix();
 
 		glUniformMatrix4fv(ulocs->at(RenderPass::MODELVIEW_MATRIX), 1, GL_FALSE, &(*modelView)[0][0]);
 		glUniformMatrix4fv(ulocs->at(RenderPass::PROJECTION_MATRIX), 1, GL_FALSE, &(*projection)[0][0]);	
@@ -102,8 +102,8 @@ public:
 			return; 
 		}
 		
-		if(!camera->isCameraStatic()) { //if we are moving
-			glm::mat4 modelView =  *camera->getModelViewMatrix() * data.getMvm();
+		if(!camera.isCameraStatic()) { //if we are moving
+			glm::mat4 modelView =  *camera.getModelViewMatrix() * data.getMvm();
 			glUniformMatrix4fv(ulocs->at(RenderPass::MODELVIEW_MATRIX), 1, GL_FALSE, &modelView[0][0]);		
 		}
 		
@@ -143,8 +143,8 @@ public:
 			return;
 		}
 		
-		if(!camera->isCameraStatic()) { //if we are moving
-			glm::mat4 modelView =  *camera->getModelViewMatrix() * data.getMvm();
+		if(!camera.isCameraStatic()) { //if we are moving
+			glm::mat4 modelView =  *camera.getModelViewMatrix() * data.getMvm();
 			glUniformMatrix4fv(ulocs->at(RenderPass::MODELVIEW_MATRIX), 1, GL_FALSE, &modelView[0][0]);
 			
 			glm::mat3 normalMatrix = glm::inverseTranspose(glm::mat3(data.getMvm()));
@@ -241,7 +241,7 @@ public:
 	}
 	
 	
-	const Camera * getCamera() const {
+	const Camera& getCamera() const {
 		return camera;
 	}
 };

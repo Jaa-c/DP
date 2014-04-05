@@ -24,8 +24,13 @@ class RadarRenderPass : public RenderPass {
 	
 public:
 	
-	RadarRenderPass(Renderer *r, ShaderHandler *sh, TextureHandler *th, Camera &camera) : 
-		RenderPass(RADAR_PASS, r, sh, th), camera(camera) {}
+	RadarRenderPass(
+		Renderer& r, 
+		ShaderHandler& s, 
+		std::shared_ptr<TextureHandler> th,
+		Camera &camera
+	) : 
+		RenderPass(RADAR_PASS, r, s, th), camera(camera) {}
 	
 	
 	~RadarRenderPass() {
@@ -36,7 +41,7 @@ public:
 	 * TODO: refactor if there is time
 	 * Please don't look any further.
      */
-	void draw(ObjectData *object) {
+	void draw(std::shared_ptr<ObjectData> object) {
 		if(!object->pointData) {
 			return;
 		}

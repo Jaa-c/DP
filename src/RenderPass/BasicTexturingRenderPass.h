@@ -17,8 +17,12 @@ class BasicTexturingRenderPass : public RenderPass {
 	
 public:
 	
-	BasicTexturingRenderPass(Renderer *r, ShaderHandler *sh, TextureHandler *th) : 
-		RenderPass(BASIC_TEXTURING_PASS, r, sh, th)
+	BasicTexturingRenderPass(
+		Renderer& r, 
+		ShaderHandler& s, 
+		std::shared_ptr<TextureHandler> th
+	) : 
+		RenderPass(BASIC_TEXTURING_PASS, r, s, th)
 	{	
 		shader = ShaderHandler::SHADER_BASIC;
 		textureDataUB = GL_ID_NONE;
@@ -28,11 +32,11 @@ public:
 
 	}
 	
-	void draw(ObjectData *object) {
+	void draw(std::shared_ptr<ObjectData> object) {
 				
 		const uint sizeOfTextureData = sizeof(glm::mat4) + sizeof(glm::ivec2) + sizeof(float);
 		if(programID == GL_ID_NONE) {
-			programID = shaderHandler->getProgramId(shader);
+			programID = shaderHandler.getProgramId(shader);
 			getDefaultUniformLocations();
 			
 			textureCount = glGetUniformLocation(programID, "u_textureCount");
@@ -82,11 +86,11 @@ public:
 		GLint texCount = textures->size();
 		glUniform1i(textureCount, texCount);
 		
-		renderer->setUniformLocations(&uLocs);
+		renderer.setUniformLocations(&uLocs);
 		
-		renderer->bindCameraMatrices();
-		renderer->drawTextures(textures);
-		renderer->drawObject(*object);
+		renderer.bindCameraMatrices();
+		renderer.drawTextures(textures);
+		renderer.drawObject(*object);
 		
 		glUseProgram(0);
 	}

@@ -53,8 +53,6 @@ void GLWidget::deleteScene() {
 		std::string file = object->fileName + settingsExt;
 		Settings::serialize(file);
 	}
-	DELETE(textureHandler);
-	DELETE(object);
 	
 	camera.resetView();
 	renderPassHandler.removeAll();
@@ -83,17 +81,17 @@ void GLWidget::createScene(
 	
 	try {
 		Settings::deserialize(geom + settingsExt);
-		textureHandler = new TextureHandler();
+		textureHandler = std::make_shared<TextureHandler>();
 		CalibrationLoader cl(textureHandler, prgcb);
 		cl.loadData(type, photos, file1, file2);
 		
 		textureHandler->buildTree();
 		
-		object = new ObjectData(geom);
+		object = std::make_shared<ObjectData>(geom);
 		object->pointData = cl.getPointData();
 		object->rotate(Settings::objectRotate);
 		
-		controlls->setPhotos(&textureHandler->getPhotos());
+		controlls.setPhotos(&textureHandler->getPhotos());
 
 		glClearColor(0.4f, 0.4f, 0.7f, 0);
 	}
@@ -121,20 +119,20 @@ bool GLWidget::eventFilter(QObject *, QEvent *event) {
 		case QEvent::MouseMove:
 		{
 			QMouseEvent *e = (QMouseEvent *) event;
-			controlls->mousePositionChanged(e->x(), e->y());
+			controlls.mousePositionChanged(e->x(), e->y());
 			break;
 		}
 		case QEvent::MouseButtonPress:
 		case QEvent::MouseButtonRelease:
 		{
 			QMouseEvent *e = (QMouseEvent *) event;
-			controlls->mouseButtonChanged(e->buttons());
+			controlls.mouseButtonChanged(e->buttons());
 			break;
 		}
 		case QEvent::KeyPress:
 		{
 			QKeyEvent *e = (QKeyEvent *) event;
-			controlls->keyboardAction(e->key());
+			controlls.keyboardAction(e->key());
 		}
 		default:
 			return false;
@@ -148,25 +146,25 @@ void GLWidget::addRenderPass(RenderPass::RenderPassType pass) {
 		case RenderPass::BASIC_TEXTURING_PASS:
 			renderPassHandler.add(
 				RenderPass::BASIC_TEXTURING_PASS, 
-				new BasicTexturingRenderPass(&renderer, &shaderHandler, textureHandler)
+				new BasicTexturingRenderPass(renderer, shaderHandler, textureHandler)
 			);
 			break;
 		case RenderPass::TEXTURING_PASS:
 			renderPassHandler.add(
 				RenderPass::TEXTURING_PASS, 
-				new TexturingRenderPass(&renderer, &shaderHandler, textureHandler)
+				new TexturingRenderPass(renderer, shaderHandler, textureHandler)
 			);
 			break;
 		case RenderPass::BUNDLER_POINTS_PASS:
 			renderPassHandler.add(
 				RenderPass::BUNDLER_POINTS_PASS,
-				new BundlerPointsRenderPass(&renderer, &shaderHandler, textureHandler)
+				new BundlerPointsRenderPass(renderer, shaderHandler, textureHandler)
 			);
 			break;
 		case RenderPass::RADAR_PASS:
 			renderPassHandler.add(
 				RenderPass::RADAR_PASS,
-				new RadarRenderPass(&renderer, &shaderHandler, textureHandler, camera)
+				new RadarRenderPass(renderer, shaderHandler, textureHandler, camera)
 			);
 			break;
 			
@@ -182,7 +180,7 @@ void GLWidget::removeRenderPass(RenderPass::RenderPassType pass) {
 
 
 void GLWidget::resizeGL(int w, int h) {
-	controlls->windowSizeChangedImpl(w, h);
+	controlls.windowSizeChangedImpl(w, h);
 }
 
 void GLWidget::setDisplayRadar(bool value) {
@@ -193,13 +191,13 @@ void GLWidget::setDisplayRadar(bool value) {
 GLWidget::GLWidget(const QGLFormat& format, int w, int h, QWidget* parent) :
 	QGLWidget(format, parent),
 	camera(w, h), 
-	renderer(&camera),
-	textureHandler(NULL), 
-	object(NULL),
+	renderer(camera),
+	controlls(Controlls::getInstance()),
+	textureHandler(nullptr), 
+	object(nullptr),
 	displayRadar(false)
-{		
-	controlls = &Controlls::getInstance();
-	controlls->setPointers(&camera, &shaderHandler);
+{
+	controlls.setPointers(&camera, &shaderHandler);
 
 	fps = 0;
     srand((unsigned)std::time(0)); 
@@ -211,6 +209,4 @@ GLWidget::~GLWidget() {
 		Settings::serialize(object->fileName + settingsExt);
 	}
 	
-	DELETE(textureHandler);
-	DELETE(object);
 }

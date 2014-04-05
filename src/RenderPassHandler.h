@@ -27,7 +27,7 @@ public:
 		}
 	}
 	
-	void draw(ObjectData *object) {
+	void draw(std::shared_ptr<ObjectData> object) {
 		for(auto &it : passes) {
 			it.second->draw(object);		
 		}

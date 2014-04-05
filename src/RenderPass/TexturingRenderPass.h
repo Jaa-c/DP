@@ -19,8 +19,12 @@ class TexturingRenderPass : public RenderPass {
 	
 public:
 	
-	TexturingRenderPass(Renderer *r, ShaderHandler *sh, TextureHandler *th) : 
-		RenderPass(TEXTURING_PASS, r, sh, th)
+	TexturingRenderPass(
+		Renderer& r, 
+		ShaderHandler& s, 
+		std::shared_ptr<TextureHandler> th
+	) : 
+		RenderPass(TEXTURING_PASS, r, s, th)
 	{	
 		shader = ShaderHandler::SHADER_TEXTURING;
 		textureDataUB = GL_ID_NONE;
@@ -30,11 +34,11 @@ public:
 
 	}
 	
-	void draw(ObjectData *object) {
+	void draw(std::shared_ptr<ObjectData> object) {
 				
 		const uint sizeOfTextureData = sizeof(glm::mat4) + sizeof(glm::ivec2) + 2 * sizeof(float);
 		if(programID == GL_ID_NONE) {
-			programID = shaderHandler->getProgramId(shader);
+			programID = shaderHandler.getProgramId(shader);
 			getDefaultUniformLocations();
 			
 			loc_textureCount = glGetUniformLocation(programID, "u_textureCount");
@@ -90,13 +94,13 @@ public:
 		std::vector<int> &indices = textureHandler->getBestTexIdx();
 		glUniform1iv(loc_textureIndices, indices.size(), &indices[0]);
 		
-		glm::vec3 viewDir = object->getCentroidPosition() - renderer->getCamera()->getCameraPosition();
+		glm::vec3 viewDir = object->getCentroidPosition() - renderer.getCamera().getCameraPosition();
 		glUniform3fv(loc_viewDir, 1, &viewDir[0]);
 		
-		renderer->setUniformLocations(&uLocs);
-		renderer->bindCameraMatrices();
-		renderer->drawTextures(textures);
-		renderer->drawObject(*object);
+		renderer.setUniformLocations(&uLocs);
+		renderer.bindCameraMatrices();
+		renderer.drawTextures(textures);
+		renderer.drawObject(*object);
 		
 		glCheckError();
 		glUseProgram(0);
