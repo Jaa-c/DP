@@ -63,6 +63,7 @@
         <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/gui/SettingsForm.cpp</itemPath>
       </logicalFolder>
       <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/Settings.cpp</itemPath>
+      <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/Texture.cpp</itemPath>
       <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/TextureHandler.cpp</itemPath>
       <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/globals.cpp</itemPath>
       <itemPath>src/main.cpp</itemPath>
@@ -181,6 +182,11 @@
       <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/ShaderHandler.h"
             ex="false"
             tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/Texture.cpp"
+            ex="false"
+            tool="1"
             flavor2="0">
       </item>
       <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/Texture.h"
@@ -413,6 +419,11 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/Texture.cpp"
+            ex="false"
+            tool="1"
+            flavor2="0">
+      </item>
       <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/Texture.h"
             ex="false"
             tool="3"
@@ -630,6 +641,11 @@
       <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/ShaderHandler.h"
             ex="false"
             tool="3"
+            flavor2="0">
+      </item>
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/Texture.cpp"
+            ex="false"
+            tool="1"
             flavor2="0">
       </item>
       <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/Texture.h"

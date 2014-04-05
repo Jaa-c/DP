@@ -92,6 +92,9 @@ public:
 		for(auto &tex : *textures)  {
 			drawTexture(tex);
 			units.push_back(tex.unit);
+			int w;
+			glGetTexLevelParameteriv(tex.target, 0, GL_TEXTURE_WIDTH, &w);
+			std::cout << "1 w: " << w << " - " << tex;
 		}
 		glUniform1iv(ulocs->at(RenderPass::TEXTURE0), textures->size(), &units[0]);
 	}

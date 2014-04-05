@@ -1,13 +1,16 @@
 
+#include "src/Settings.h"
+
+
 #include <set>
 #include <thread>
 #include <QThreadPool>
 #include "glm/glm.hpp"
 #include "glm/core/type_mat3x3.hpp"
 
+#include "TextureHandler.h"
 #include "globals.h"
 #include "Settings.h"
-#include "TextureHandler.h"
 #include "src/Photo.h"
 	
 TextureHandler::TextureHandler() {
@@ -17,6 +20,8 @@ TextureHandler::TextureHandler() {
 	thr = std::max((uint) 2, thr - 2);
 	QThreadPool::globalInstance()->setMaxThreadCount(thr);
 	Log::i("Using %d threads for image load.", thr);
+	
+	textures.reserve(Settings::maxTextures);
 }
 
 //TODO needs some optimizations...
@@ -131,7 +136,18 @@ void TextureHandler::updateTextures(
 
 	i = 0;
 	for(auto p : currentPhotos) {
-		textures.push_back(Texture(GL_TEXTURE_RECTANGLE, textures.size(), p));
+		Texture t(GL_TEXTURE_RECTANGLE, textures.size(), p);
+		for(Texture &tex : textures) {
+			int w;
+			glGetTexLevelParameteriv(tex.target, 0, GL_TEXTURE_WIDTH, &w);
+			std::cout << "0 w: " << w << " - " << tex;
+		}
+		textures.push_back(t);	
+		for(Texture &tex : textures) {
+			int w;
+			glGetTexLevelParameteriv(tex.target, 0, GL_TEXTURE_WIDTH, &w);
+			std::cout << "1 w: " << w << " - " << tex;
+		}
 		loadFullImage(*p);
 		while(bestTexIdx[i] != -1) i++;
 		bestTexIdx[i] = textures.at(textures.size()-1).unit;
