@@ -9,13 +9,14 @@
 #define	_SETTINGSFORM_H
 
 #include "ui_SettingsForm.h"
+#include <memory>
 
 class GLWidget;
 
 class SettingsForm : public QDialog {
 	Q_OBJECT
 public:
-	SettingsForm(GLWidget * glw);
+	SettingsForm(std::shared_ptr<GLWidget> glw);
 	virtual ~SettingsForm();
 	
 private slots:
@@ -25,7 +26,7 @@ private slots:
 	
 private:
 	Ui::SettingsForm widget;
-	GLWidget *glWidget;
+	std::shared_ptr<GLWidget> glWidget;
 	
 	int photoSliderPrevVal;
 };

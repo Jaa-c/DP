@@ -6,23 +6,20 @@
  */
 
 #include "globals.h"
-#include "gui/GLWidget.h"
+#include "Log.h"
 #include "gui/MainWindow.h"
-#include "io/Rz3Parser.h"
 
 #include <QApplication>
 #include <QtGui/qerrormessage.h>
+#include <memory>
 
 class MyApplication : public QApplication {
 
 public:
-	QErrorMessage *err;
+	std::shared_ptr<QErrorMessage> err;
 	MyApplication(int & argc, char ** argv) : QApplication(argc, argv) {
-		err = new QErrorMessage();
+		err = std::make_shared<QErrorMessage>();
 		err->setModal(true);
-	}
-	~MyApplication() {
-		DELETE(err);
 	}
 	
 	void handleError(std::exception_ptr eptr) {
@@ -57,14 +54,6 @@ public:
 };
 
 int main(int argc, char** argv) {
-	
-//	Rz3Parser p("/home/jaa/Documents/FEL/DP/data/dum/09_done.rz3", 
-//			"/home/jaa/Documents/FEL/DP/data/dum/09_pictures0_OK.txt");
-//	
-//	p.parseFile();
-//	return 0;
-	
-	
 	const char *window_title = "View dependent texturing";
 	const int width = 1000;
 	const int height = 800;
@@ -76,14 +65,6 @@ int main(int argc, char** argv) {
 	window.resize(width, height);
 	window.move(200, 0);
     window.show();
-		
-	GLint texture_units = 0;
-	glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &texture_units);
-	Log::i("Avaiable texture units for FS: %d", texture_units);
-	if(texture_units > 0) {
-		Settings::maxTextures = texture_units;
-	}
-	
-	
+
     return app.exec();
 }

@@ -13,19 +13,13 @@
 
 class RenderPassHandler {
 	//typedef std::unordered_map<uint, RenderPass *> PassList;
-	typedef std::map<uint, RenderPass *> PassList;
-	typedef std::pair<uint, RenderPass *> dataType;
+	typedef std::map<uint, std::shared_ptr<RenderPass>> PassList;
+	typedef std::pair<uint, std::shared_ptr<RenderPass>> dataType;
 	
 	PassList passes;
 
 public:
 	RenderPassHandler() {}
-	
-	~RenderPassHandler() {
-		for(auto &it : passes) {
-			if(it.second) delete it.second;	
-		}
-	}
 	
 	void draw(std::shared_ptr<ObjectData> object) {
 		for(auto &it : passes) {
@@ -33,20 +27,15 @@ public:
 		}
 	}
 	
-	void add(RenderPass::RenderPassType type, RenderPass * pass) {
+	void add(RenderPass::RenderPassType type, std::shared_ptr<RenderPass> pass) {
 		passes.insert(dataType((uint) type, pass));
 	}
 	
 	void remove(RenderPass::RenderPassType type) {
-		RenderPass * p = passes.at((uint) type);
 		passes.erase(type);
-		DELETE(p);
 	}
 	
 	void removeAll() {
-		for(dataType p :passes) {
-			DELETE(p.second);
-		}
 		passes.clear();
 	}
 	

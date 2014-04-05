@@ -10,7 +10,7 @@
 #include <QFileDialog>
 #include <QtGui/qsplashscreen.h>
 
-OpenForm::OpenForm(GLWidget * glw) : glWidget(glw) {
+OpenForm::OpenForm(std::shared_ptr<GLWidget> glw) : glWidget(glw) {
 	openForm.setupUi(this);
 	openForm.tabWidget->setCurrentIndex(0);
 	//DEBUG TEMP

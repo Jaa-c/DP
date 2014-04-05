@@ -19,11 +19,11 @@ MainWindow::MainWindow(QApplication *app, int w, int h) : view(nullptr) {
     glFormat.setProfile(QGLFormat::CompatibilityProfile);
 
 	//OpenGL widget:
-    glWidget = new GLWidget(glFormat, w, h - menuBar()->height(), this);
+    glWidget = std::make_shared<GLWidget>(glFormat, w, h - menuBar()->height(), this);
 	glWidget->setAttribute(Qt::WA_NoMousePropagation);
-	this->setCentralWidget(glWidget);
+	this->setCentralWidget(glWidget.get());
 	
-	app->installEventFilter(glWidget);	//opengl controlls
+	app->installEventFilter(glWidget.get());	//opengl controlls
 		
 	initAppState();
 }
@@ -44,73 +44,73 @@ void MainWindow::initScene() {
 }
 
 void MainWindow::createActions() {
-	openAct = new QAction(tr("&Open"), this);
+	openAct = std::make_shared<QAction>(tr("&Open"), this);
 	openAct->setStatusTip(tr("Open model"));
 	openAct->setShortcut(Qt::Key_O | Qt::CTRL);
-	connect(openAct, SIGNAL(triggered()), this, SLOT(openCB()));
+	connect(openAct.get(), SIGNAL(triggered()), this, SLOT(openCB()));
 	
-	quitAct = new QAction(tr("&Quit"), this);
+	quitAct = std::make_shared<QAction>(tr("&Quit"), this);
 	quitAct->setStatusTip(tr("Exit application"));
 	quitAct->setShortcut(Qt::Key_Escape);
-	connect(quitAct, SIGNAL(triggered()), this, SLOT(quitCB()));
+	connect(quitAct.get(), SIGNAL(triggered()), this, SLOT(quitCB()));
 	
-	texGroup = new QActionGroup(this);
+	texGroup = std::make_shared<QActionGroup>(this);
 	
-	texturingRP = new QAction(tr("&Texturing Pass"), this);
+	texturingRP = std::make_shared<QAction>(tr("&Texturing Pass"), this);
 	texturingRP->setCheckable(true);
-	texturingRP->setActionGroup(texGroup);
-	connect(texturingRP, SIGNAL(changed()), this, SLOT(texturingPassCB()));
+	texturingRP->setActionGroup(texGroup.get());
+	connect(texturingRP.get(), SIGNAL(changed()), this, SLOT(texturingPassCB()));
 	
-	basicTexturingRP = new QAction(tr("B&asic Texturing Pass"), this);
+	basicTexturingRP = std::make_shared<QAction>(tr("B&asic Texturing Pass"), this);
 	basicTexturingRP->setCheckable(true);
-	basicTexturingRP->setActionGroup(texGroup);
-	connect(basicTexturingRP, SIGNAL(changed()), this, SLOT(basicTexturingPassCB()));
+	basicTexturingRP->setActionGroup(texGroup.get());
+	connect(basicTexturingRP.get(), SIGNAL(changed()), this, SLOT(basicTexturingPassCB()));
 	
-	bundlerPointsRP = new QAction(tr("&Bundler Points Pass"), this);
+	bundlerPointsRP = std::make_shared<QAction>(tr("&Bundler Points Pass"), this);
 	bundlerPointsRP->setCheckable(true);
-	connect(bundlerPointsRP, SIGNAL(changed()), this, SLOT(bundlerPointsPassCB()));
+	connect(bundlerPointsRP.get(), SIGNAL(changed()), this, SLOT(bundlerPointsPassCB()));
 	
-	radarRP = new QAction(tr("Display &radar"), this);
+	radarRP = std::make_shared<QAction>(tr("Display &radar"), this);
 	radarRP->setCheckable(true);
-	connect(radarRP, SIGNAL(changed()), this, SLOT(radarPassCB()));
+	connect(radarRP.get(), SIGNAL(changed()), this, SLOT(radarPassCB()));
 	
-	programSettings = new QAction(tr("Program &settings"), this);
-	connect(programSettings, SIGNAL(triggered()), this, SLOT(displaySettingsCB()));
+	programSettings = std::make_shared<QAction>(tr("Program &settings"), this);
+	connect(programSettings.get(), SIGNAL(triggered()), this, SLOT(displaySettingsCB()));
 	
-	objectSettings = new QAction(tr("&Object settings"), this);
-	connect(objectSettings, SIGNAL(triggered()), this, SLOT(displayObjectSettingsCB()));
+	objectSettings = std::make_shared<QAction>(tr("&Object settings"), this);
+	connect(objectSettings.get(), SIGNAL(triggered()), this, SLOT(displayObjectSettingsCB()));
 	
-	useKDT = new QAction(tr("&Use KDTree"), this);
+	useKDT = std::make_shared<QAction>(tr("&Use KDTree"), this);
 	useKDT->setCheckable(true);
-	connect(useKDT, SIGNAL(changed()), this, SLOT(useKDTCB()));
+	connect(useKDT.get(), SIGNAL(changed()), this, SLOT(useKDTCB()));
 	
-	reloadShaders = new QAction(tr("&Recompile shaders"), this);
+	reloadShaders = std::make_shared<QAction>(tr("&Recompile shaders"), this);
 	reloadShaders->setShortcut(Qt::Key_R | Qt::CTRL);
-	connect(reloadShaders, SIGNAL(triggered()), this, SLOT(reloadShadersCB()));
+	connect(reloadShaders.get(), SIGNAL(triggered()), this, SLOT(reloadShadersCB()));
 }
 
 void MainWindow::createMenus() {
 	file = menuBar()->addMenu(tr("&File"));
-	file->addAction(openAct);
+	file->addAction(openAct.get());
 	file->addSeparator();
-	file->addAction(quitAct);
+	file->addAction(quitAct.get());
 	
 	renderPass = menuBar()->addMenu(tr("&Render Passes"));
-	renderPass->addAction(texturingRP);
-	renderPass->addAction(basicTexturingRP);
-	renderPass->addAction(bundlerPointsRP);
-	renderPass->addAction(radarRP);
+	renderPass->addAction(texturingRP.get());
+	renderPass->addAction(basicTexturingRP.get());
+	renderPass->addAction(bundlerPointsRP.get());
+	renderPass->addAction(radarRP.get());
 	
 //	view = menuBar()->addMenu(tr("&View"));
 //	view->addAction(displayRadar);
 	
 	settings = menuBar()->addMenu(tr("&Settings"));
-	settings->addAction(programSettings);
-	settings->addAction(objectSettings);
-	settings->addAction(useKDT);
+	settings->addAction(programSettings.get());
+	settings->addAction(objectSettings.get());
+	settings->addAction(useKDT.get());
 	
 	debug = menuBar()->addMenu(tr("&Debug"));
-	debug->addAction(reloadShaders);
+	debug->addAction(reloadShaders.get());
 }
 
 void MainWindow::reloadShadersCB() {
@@ -176,23 +176,4 @@ void MainWindow::radarPassCB() {
 	else {
 		glWidget->removeRenderPass(RenderPass::RADAR_PASS);
 	}
-}
-
-MainWindow::~MainWindow() {
-	DELETE(glWidget);
-	
-	DELETE(file);
-	DELETE(renderPass);
-	DELETE(view);
-
-	DELETE(openAct);
-	DELETE(quitAct);
-	DELETE(texturingRP);
-	DELETE(basicTexturingRP);
-	DELETE(bundlerPointsRP);
-	DELETE(radarRP);
-	
-	DELETE(texGroup);
-	
-	//TODO
 }

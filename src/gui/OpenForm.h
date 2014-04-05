@@ -10,13 +10,14 @@
 
 #include "../globals.h"
 #include "ui_OpenForm.h"
+#include <memory>
 
 class GLWidget;
 
 class OpenForm : public QDialog {
 	Q_OBJECT
 public:
-	OpenForm(GLWidget * glw);
+	OpenForm(std::shared_ptr<GLWidget> glw);
 	virtual ~OpenForm();
 	
 private slots:
@@ -30,7 +31,7 @@ private slots:
 	
 private:
 	Ui::OpenForm openForm;
-	GLWidget *glWidget;
+	std::shared_ptr<GLWidget> glWidget;
 };
 
 #endif	/* _OPENFORM_H */

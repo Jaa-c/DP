@@ -9,7 +9,7 @@
 #include "GLWidget.h"
 #include "../Settings.h"
 
-SettingsForm::SettingsForm(GLWidget * glw) : glWidget(glw)  {
+SettingsForm::SettingsForm(std::shared_ptr<GLWidget> glw) : glWidget(glw)  {
 	setAttribute(Qt::WA_NoMousePropagation); //not working TODO
 	glWidget->setFocusPolicy(Qt::NoFocus);	
 	widget.setupUi(this);

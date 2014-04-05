@@ -108,6 +108,13 @@ void GLWidget::initializeGL() {
 		Log::e("Unable to init glew: %s", glewGetErrorString(err));
 		return;
 	}
+	
+	GLint texture_units = 0;
+	glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &texture_units);
+	Log::i("Avaiable texture units for FS: %d", texture_units);
+	if(texture_units > 0) {
+		Settings::maxTextures = texture_units;
+	}
 
 	// Set OpenGL state variables
 	glClearColor(0.7f, 0.7f, 0.7f, 0);
@@ -146,25 +153,25 @@ void GLWidget::addRenderPass(RenderPass::RenderPassType pass) {
 		case RenderPass::BASIC_TEXTURING_PASS:
 			renderPassHandler.add(
 				RenderPass::BASIC_TEXTURING_PASS, 
-				new BasicTexturingRenderPass(renderer, shaderHandler, textureHandler)
+				std::make_shared<BasicTexturingRenderPass>(renderer, shaderHandler, textureHandler)
 			);
 			break;
 		case RenderPass::TEXTURING_PASS:
 			renderPassHandler.add(
 				RenderPass::TEXTURING_PASS, 
-				new TexturingRenderPass(renderer, shaderHandler, textureHandler)
+				std::make_shared<TexturingRenderPass>(renderer, shaderHandler, textureHandler)
 			);
 			break;
 		case RenderPass::BUNDLER_POINTS_PASS:
 			renderPassHandler.add(
 				RenderPass::BUNDLER_POINTS_PASS,
-				new BundlerPointsRenderPass(renderer, shaderHandler, textureHandler)
+				std::make_shared<BundlerPointsRenderPass>(renderer, shaderHandler, textureHandler)
 			);
 			break;
 		case RenderPass::RADAR_PASS:
 			renderPassHandler.add(
 				RenderPass::RADAR_PASS,
-				new RadarRenderPass(renderer, shaderHandler, textureHandler, camera)
+				std::make_shared<RadarRenderPass>(renderer, shaderHandler, textureHandler, camera)
 			);
 			break;
 			

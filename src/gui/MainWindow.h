@@ -11,6 +11,8 @@
 #include <QMainWindow>
 #include <QActionGroup>
 
+#include <memory>
+
 class GLWidget;
 
 class MainWindow : public QMainWindow
@@ -19,7 +21,6 @@ class MainWindow : public QMainWindow
 
 public:
 	MainWindow(QApplication *app, int w, int h);
-	~MainWindow();
 	
 private slots:
 	void openCB();
@@ -43,26 +44,26 @@ private:
 	void createActions();
 	void createMenus();
 	
-	GLWidget *glWidget;
+	std::shared_ptr<GLWidget> glWidget;
 
-	QMenu *file;
-	QMenu *renderPass;
-	QMenu *view;
-	QMenu *settings;
-	QMenu *debug;
+	QMenu* file;
+	QMenu* renderPass;
+	QMenu* view;
+	QMenu* settings;
+	QMenu* debug;
 	
-	QAction *openAct;
-	QAction *quitAct;
-	QAction *texturingRP;
-	QAction *basicTexturingRP;
-	QAction *bundlerPointsRP;
-	QAction *radarRP;
-	QAction *reloadShaders;
-	QAction *programSettings;
-	QAction *objectSettings;
-	QAction *useKDT;
+	std::shared_ptr<QAction> openAct;
+	std::shared_ptr<QAction> quitAct;
+	std::shared_ptr<QAction> texturingRP;
+	std::shared_ptr<QAction> basicTexturingRP;
+	std::shared_ptr<QAction> bundlerPointsRP;
+	std::shared_ptr<QAction> radarRP;
+	std::shared_ptr<QAction> reloadShaders;
+	std::shared_ptr<QAction> programSettings;
+	std::shared_ptr<QAction> objectSettings;
+	std::shared_ptr<QAction> useKDT;
 	
-	QActionGroup * texGroup;
+	std::shared_ptr<QActionGroup> texGroup;
 
 };
 
