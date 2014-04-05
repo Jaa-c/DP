@@ -13,8 +13,8 @@ const unsigned GL_ID_NONE = (unsigned)~(unsigned(0));
 #include "glm/glm.hpp"
 #include <vector>
 
-typedef unsigned char rgb;
-typedef std::vector<rgb> RGBData;
+typedef unsigned char uchar;
+typedef std::vector<uchar> RGBData;
 typedef glm::vec3 Point;
 typedef glm::vec3 Vector;
 typedef std::vector<Point> Points;

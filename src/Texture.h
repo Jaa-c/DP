@@ -63,7 +63,7 @@ public:
 		}
 	};
 	
-	const rgb *getImageStart() const {
+	const uchar *getImageStart() const {
 		const Image &im = photo->getImage();
 		assert(im.data.size() == (uint) (im.size.x + im.rowPadding) * im.size.y * 3);
 		return &im.data[0];

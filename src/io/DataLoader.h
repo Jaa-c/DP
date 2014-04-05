@@ -135,7 +135,7 @@ public:
      */
 	static bool loadJPEG(
 		const std::string filename,
-		std::vector<rgb> &raw,
+		RGBData &raw,
 		int &width,
 		int &height,
 		uint &rowPadding,
@@ -218,7 +218,7 @@ public:
      */
 	static void loadRAWData (
 		const std::string &filename, 
-		std::vector<rgb> &raw, 
+		RGBData &raw, 
 		const int &width, 
 		const int &height,
 		const uint &rowPadding
@@ -237,7 +237,7 @@ public:
 			
 			const size_t size = (width + rowPadding) * height * 3;
 			raw.resize(size);
-			input.read((char*) &raw[0], raw.size() * sizeof(rgb));
+			input.read((char*) &raw[0], raw.size() * sizeof(uchar));
 			//Log::i("[DataLoader] Loaded image: " + filename + " %d x %d", width, height);
 		}
 		else {

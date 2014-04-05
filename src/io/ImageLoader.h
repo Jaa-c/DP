@@ -113,7 +113,7 @@ public:
 			std::fstream binaryFile(rawFile, std::ios::out | std::ios::binary);
 			binaryFile.write((char *) &id.size.x, sizeof(id.size));
 			binaryFile.write((char *) &id.rowPadding, sizeof(id.rowPadding));
-			binaryFile.write((char *) &id.image[0], 3 * sizeof(rgb) * id.image.size());
+			binaryFile.write((char *) &id.image[0], 3 * sizeof(uchar) * id.image.size());
 			binaryFile.close();
 			Log::i("Created file: " + rawFile);
 			
@@ -130,7 +130,7 @@ public:
 			std::fstream thumbFile(rawThumb, std::ios::out | std::ios::binary);
 			thumbFile.write((char *) &id.thumbSize.x, sizeof(id.size));
 			thumbFile.write((char *) &id.thumbRowPadding, sizeof(id.thumbRowPadding));
-			thumbFile.write((char *) &id.thumbImage[0], 3 * sizeof(rgb) * id.thumbImage.size());
+			thumbFile.write((char *) &id.thumbImage[0], 3 * sizeof(uchar) * id.thumbImage.size());
 			thumbFile.close();
 			
 		}
