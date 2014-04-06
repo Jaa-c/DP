@@ -39,7 +39,6 @@ class Renderer {
 					texture.getFullSizeWithPadding().y, 0, GL_RGB, GL_UNSIGNED_BYTE, (GLvoid *) NULL);
 			
 			glBindTexture(texture.target, 0);
-//			std::cout << "creating texture w/ unit: " << texture.unit << "\n";
 		}
 		if(texture.samplerID == GL_ID_NONE) {
 			glGenSamplers(1, &texture.samplerID);
@@ -55,13 +54,9 @@ class Renderer {
 		glCheckError();
 		if(texture.updateImage) {
 			glBindTexture(texture.target, texture.textureID);
-//			int w;
-//			glGetTexLevelParameteriv(texture.target, 0, GL_TEXTURE_WIDTH, &w);
-//			std::cout << "w: " << w << " - " << texture;
 			glTexSubImage2D(texture.target, 0, 0, 0, texture.getSizeWithPadding().x,
 					texture.getSizeWithPadding().y, GL_RGB, GL_UNSIGNED_BYTE, texture.getImageStart());
 			glCheckError();
-//			std::cout << "\n";
 			glBindTexture(texture.target, 0);
 			texture.updateImage = false;
 		}
@@ -94,7 +89,6 @@ public:
 			units.push_back(tex.unit);
 			int w;
 			glGetTexLevelParameteriv(tex.target, 0, GL_TEXTURE_WIDTH, &w);
-			std::cout << "1 w: " << w << " - " << tex;
 		}
 		glUniform1iv(ulocs->at(RenderPass::TEXTURE0), textures->size(), &units[0]);
 	}

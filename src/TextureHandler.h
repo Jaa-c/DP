@@ -63,6 +63,8 @@ public slots:
 	
 public:	
 	TextureHandler();
+	~TextureHandler();
+	
 	void buildTree();
 	void loadFullImage(Photo &p);
 	void releaseImage(Photo &p);

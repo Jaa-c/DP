@@ -1,19 +1,21 @@
 #include "Texture.h"
+#include "src/globals.h"
 
 GLuint Texture::samplerID = GL_ID_NONE;
 
 Texture::Texture(const GLenum target, const GLuint unit, Photo * photo) : 
 	photo(photo), target(target), unit(unit), 
 	textureID(GL_ID_NONE),
-	current(false)
+	current(false), updateImage(false)
 {
 	prevImgSize = 0;
 }
 
-Texture::~Texture() {
+void Texture::release() {
 	if(glIsTexture(textureID)) { //TODO
 		glDeleteTextures(1, &textureID);
 	}
+	textureID = GL_ID_NONE;
 }
 
 bool Texture::checkTexture() {

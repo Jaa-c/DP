@@ -1,4 +1,7 @@
 
+#include <GL/glew.h>
+
+
 #include "src/Settings.h"
 
 
@@ -22,6 +25,12 @@ TextureHandler::TextureHandler() {
 	Log::i("Using %d threads for image load.", thr);
 	
 	textures.reserve(Settings::maxTextures);
+}
+
+TextureHandler::~TextureHandler() {
+	for(Texture &tex: textures) {
+		tex.release();
+	}
 }
 
 //TODO needs some optimizations...
@@ -126,6 +135,7 @@ void TextureHandler::updateTextures(
 				bestTexIdx[i] = tex.unit;
 			}
 			else { //lowered the number of textures
+				tex.release();
 				textures.erase(it++);
 				continue; //important, otherwise iterator is incremented 2x
 			}
@@ -136,18 +146,7 @@ void TextureHandler::updateTextures(
 
 	i = 0;
 	for(auto p : currentPhotos) {
-		Texture t(GL_TEXTURE_RECTANGLE, textures.size(), p);
-		for(Texture &tex : textures) {
-			int w;
-			glGetTexLevelParameteriv(tex.target, 0, GL_TEXTURE_WIDTH, &w);
-			std::cout << "0 w: " << w << " - " << tex;
-		}
-		textures.push_back(t);	
-		for(Texture &tex : textures) {
-			int w;
-			glGetTexLevelParameteriv(tex.target, 0, GL_TEXTURE_WIDTH, &w);
-			std::cout << "1 w: " << w << " - " << tex;
-		}
+		textures.push_back(Texture(GL_TEXTURE_RECTANGLE, textures.size(), p));	
 		loadFullImage(*p);
 		while(bestTexIdx[i] != -1) i++;
 		bestTexIdx[i] = textures.at(textures.size()-1).unit;

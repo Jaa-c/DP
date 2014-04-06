@@ -29,13 +29,14 @@ public:
 	GLuint unit; //todo: should be const
 	
 	GLuint textureID;
-	static GLuint samplerID;//TODO: make this static, I only need one sampler
+	static GLuint samplerID;
 	
 	bool current; // flag for loading
 	bool updateImage;
 
 	Texture(const GLenum target, const GLuint unit, Photo * photo);
-	~Texture();
+	
+	void release();
 	bool checkTexture();
 	void setImage(Photo * photo);
 	const uchar *getImageStart() const;
