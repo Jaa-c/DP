@@ -25,8 +25,8 @@ class Texture {
 public:	
 	Photo * photo;
 	
-	GLenum target; //todo: should be const
-	GLuint unit; //todo: should be const
+	GLenum target;
+	GLuint unit;
 	
 	GLuint textureID;
 	static GLuint samplerID;
@@ -52,6 +52,4 @@ public:
 
 };
 
-
 #endif	/* TEXTURE_H */
-

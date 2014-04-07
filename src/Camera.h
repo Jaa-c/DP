@@ -22,6 +22,8 @@ class Camera {
 	glm::vec3 cameraPosLag;
 	glm::vec3 cameraRotLag;
 	
+	glm::ivec2 winDim;
+	
 	bool freeWalk;
 	
 	const float inertia = 0.08f; //mouse inertia
@@ -50,6 +52,7 @@ public:
 	}
 	
 	void resizeWindow(int winWidth, int winHeight) {
+		winDim = glm::vec2(winWidth, winHeight);
 		g_CameraProjectionMatrix = glm::perspective(75.0f, GLfloat(winWidth) / GLfloat(winHeight), 0.10f, 1000.0f);
 	}
 	
@@ -116,12 +119,12 @@ public:
 		return !freeWalk;
 	}
 	
-	const glm::mat4 * getModelViewMatrix() const {
-		return &g_CameraViewMatrix;
+	const glm::mat4 &getModelViewMatrix() const {
+		return g_CameraViewMatrix;
 	}
 
-	const glm::mat4 * getProjectionMatrix() const {
-		return &g_CameraProjectionMatrix;
+	const glm::mat4 &getProjectionMatrix() const {
+		return g_CameraProjectionMatrix;
 	}
 	
 	const Vector &getCameraPosition() const {
@@ -130,6 +133,10 @@ public:
 	
 	const Vector getCameraViewDirection() const {
 		return glm::vec3(g_CameraViewMatrix[0][2], g_CameraViewMatrix[1][2], g_CameraViewMatrix[2][2]);
+	}
+	
+	const glm::ivec2 &getWindowSize() const {
+		return winDim;
 	}
 
 

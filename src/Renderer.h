@@ -75,11 +75,11 @@ public:
 	}
 	
 	void bindCameraMatrices() {
-		const glm::mat4 * modelView = camera.getModelViewMatrix();
-		const glm::mat4 * projection = camera.getProjectionMatrix();
+		const glm::mat4 &modelView = camera.getModelViewMatrix();
+		const glm::mat4 &projection = camera.getProjectionMatrix();
 
-		glUniformMatrix4fv(ulocs->at(RenderPass::MODELVIEW_MATRIX), 1, GL_FALSE, &(*modelView)[0][0]);
-		glUniformMatrix4fv(ulocs->at(RenderPass::PROJECTION_MATRIX), 1, GL_FALSE, &(*projection)[0][0]);	
+		glUniformMatrix4fv(ulocs->at(RenderPass::MODELVIEW_MATRIX), 1, GL_FALSE, &modelView[0][0]);
+		glUniformMatrix4fv(ulocs->at(RenderPass::PROJECTION_MATRIX), 1, GL_FALSE, &projection[0][0]);	
 	}
 	
 	void drawTextures(std::vector<Texture> * textures) {
@@ -100,7 +100,7 @@ public:
 		}
 		
 		if(!camera.isCameraStatic()) { //if we are moving
-			glm::mat4 modelView =  *camera.getModelViewMatrix() * data.getMvm();
+			glm::mat4 modelView =  camera.getModelViewMatrix() * data.getMvm();
 			glUniformMatrix4fv(ulocs->at(RenderPass::MODELVIEW_MATRIX), 1, GL_FALSE, &modelView[0][0]);		
 		}
 		
@@ -141,7 +141,7 @@ public:
 		}
 		
 		if(!camera.isCameraStatic()) { //if we are moving
-			glm::mat4 modelView =  *camera.getModelViewMatrix() * data.getMvm();
+			glm::mat4 modelView =  camera.getModelViewMatrix() * data.getMvm();
 			glUniformMatrix4fv(ulocs->at(RenderPass::MODELVIEW_MATRIX), 1, GL_FALSE, &modelView[0][0]);
 			
 			glm::mat3 normalMatrix = glm::inverseTranspose(glm::mat3(data.getMvm()));

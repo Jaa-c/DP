@@ -8,6 +8,7 @@
 #include "../io/CalibrationLoader.h"
 #include "../io/ImageLoader.h"
 #include "../Settings.h"
+#include "../RayCaster.h"
 
 #include <QtGui/QMouseEvent>
 #include <QtGui/QMessageBox>
@@ -27,6 +28,8 @@ void GLWidget::paintGL() {
 		camera.updateCameraViewMatrix();
 		object->rotate(Settings::objectRotate);
 		glm::vec3 viewDir = object->getCentroidPosition() - camera.getCameraPosition();
+		
+		rayCaster->cast(viewDir);
 		
 		glm::vec3 c(glm::inverse(object->getMvm()) * glm::vec4(camera.getCameraPosition(), 1.0));
 		textureHandler->updateTextures(c, viewDir, object->getMvm(), Settings::usingTextures);
@@ -92,6 +95,8 @@ void GLWidget::createScene(
 		object->rotate(Settings::objectRotate);
 		
 		controlls.setPhotos(&textureHandler->getPhotos());
+		
+		rayCaster = std::make_shared<RayCaster>(*object, camera);
 
 		glClearColor(0.4f, 0.4f, 0.7f, 0);
 	}
