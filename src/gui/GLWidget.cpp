@@ -70,6 +70,9 @@ void GLWidget::createScene(
 		std::string file1,
 		std::string file2)
 {
+	object.reset();
+	textureHandler.reset();
+	rayCaster.reset();
 	if(object) {
 		throw std::string("Error while creating scene!");
 	}
@@ -97,6 +100,7 @@ void GLWidget::createScene(
 		controlls.setPhotos(&textureHandler->getPhotos());
 		
 		rayCaster = std::make_shared<RayCaster>(*object, camera);
+		textureHandler->setRayCaster(rayCaster);
 
 		glClearColor(0.4f, 0.4f, 0.7f, 0);
 	}

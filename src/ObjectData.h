@@ -8,6 +8,7 @@
 #ifndef OBJECTDATA_H
 #define	OBJECTDATA_H
 
+#include "glm/glm.hpp"
 #include "io/DataLoader.h"
 #include "Texture.h"
 #include "TextureHandler.h"

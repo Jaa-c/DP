@@ -18,6 +18,8 @@
 #include "Texture.h"
 #include "io/ImageLoader.h"
 
+class RayCaster;
+
 class ImgThread : public QObject, public QRunnable {
 	Q_OBJECT
 
@@ -50,6 +52,8 @@ class TextureHandler : public QObject {
 	/// displays kdtree data, so let's give it access, mostly debug
 	friend class RadarRenderPass;
 	
+	std::shared_ptr<RayCaster> rayCaster;
+	
 	std::vector<Photo> photos;
 	std::vector<Texture> textures;
 	std::unordered_map<int, Photo *> nearPhotos;
@@ -75,6 +79,8 @@ public:
 		const glm::mat4 &mvm, 
 		const uint count
 	);
+	
+	void setRayCaster(std::shared_ptr<RayCaster> r);
 			
 	const std::vector<Photo> & getPhotos() const;
 	std::vector<Texture> & getTextures();
@@ -83,7 +89,11 @@ public:
 private:
 	//TODO SLOW, this is just a stupid version
 	//but not major problem for now
+	//only based on current direction
 	std::vector<Photo*> getClosestCameras(const glm::vec3 & dir, const glm::mat4 &mvm, const uint count);
+	
+	///based on directions from RayCaster
+	std::vector<Photo*> getBestCameras(const glm::vec3 & dir, const glm::mat4 &mvm, const uint count);
 
 };
 

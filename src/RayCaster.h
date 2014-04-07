@@ -8,11 +8,13 @@
 #ifndef RAYCASTER_H
 #define	RAYCASTER_H
 
+#include "Camera.h"
 #include "ObjectData.h"
 
 struct Cluster {
 	glm::vec3 centroid;
-	std::vector<const glm::vec3 *> vectors;	
+	std::vector<const glm::vec3 *> vectors;
+	float weight;
 };
 
 
@@ -136,6 +138,9 @@ public:
 					return a.vectors.size() > b.vectors.size();
 				}
 		);
+		for(Cluster &c : clusters) {
+			c.weight = c.vectors.size() / (float) intersections;
+		}
 //		std::cout << "Clusters found in " << iterations << " iterations\n";
 	}
 	

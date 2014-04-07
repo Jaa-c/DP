@@ -6,6 +6,7 @@
 
 
 #include <set>
+#include <map>
 #include <thread>
 #include <QThreadPool>
 #include "glm/glm.hpp"
@@ -15,6 +16,7 @@
 #include "globals.h"
 #include "Settings.h"
 #include "src/Photo.h"
+#include "RayCaster.h"
 	
 TextureHandler::TextureHandler() {
 	//I want low nober of threads I don't want to waint long a get 
@@ -154,6 +156,112 @@ void TextureHandler::updateTextures(
 	bestTexIdx.resize(textures.size());
 }
 
+std::vector<Photo*> TextureHandler::getBestCameras(const glm::vec3 & dir, const glm::mat4 &mvm, const uint count) {
+	auto directions = rayCaster->getClusters();
+	
+	const glm::mat4 vecMat = glm::inverse(glm::transpose(mvm));
+	int viewPhotos = 2; //temp todo
+	
+	typedef std::pair<float, Photo *> Entry;
+	struct Data {
+		uint size;
+		std::map<float, Photo *> photos;
+		glm::vec3 centroid;
+		
+		Data() : size(0) {}
+	};
+	std::vector<Data> data(directions.size() + 1);
+	int remaining = count;
+	data[0].size = count;
+	data[0].centroid = -dir;
+	remaining -= viewPhotos;
+	int i = 1;
+	///initialize data, compute number of photos for each direction
+	for(auto &d : directions) {
+		if(remaining > 0) {
+			int c = std::round((count - viewPhotos) * d.weight);
+			if(c == 0) c = remaining;
+			remaining -= c;
+			
+			data[i].size = c;
+			data[i].centroid = d.centroid;
+			i++;
+		}
+		else {
+			break;
+		}
+	}
+	
+	/// go thru all photos and choose best photos for each direction
+	for(Photo &p : photos) {
+		const glm::vec3 dir(vecMat * glm::vec4(p.camera.direction, 1.0f));
+		
+		for(Data &d : data) {
+			const float dotP = glm::dot(d.centroid, dir);
+			if(dotP > 0) {
+				if(d.photos.size() < d.size) { //initialization
+					d.photos.insert(Entry(dotP, &p));
+					continue;
+				}
+				if(d.photos.rbegin()->first < dotP) {
+					d.photos.erase(std::prev(d.photos.begin()));
+					d.photos.insert(Entry(dotP, &p));
+				}
+			}
+		}	
+	}
+	
+	std::vector<Photo *> result;
+	result.reserve(count);
+	
+	for(uint i = 1; i < data.size(); ++i) {
+		for(auto &e : data[i].photos) {
+			//slow, but there will be only a few elements
+			if(std::find(result.begin(), result.end(), e.second) == result.end()) {
+				result.push_back(e.second);
+			}
+		}
+	}
+	for(auto &e : data[0].photos) {
+		if(result.size() <= count) {
+			result.insert(result.begin(), e.second); //insert to the beginning
+		}
+		else {
+			break;
+		}
+	}
+	
+	return result;
+
+}
+
+std::vector<Photo*> TextureHandler::getClosestCameras(const glm::vec3 & dir, const glm::mat4 &mvm, const uint count) {
+
+	const glm::mat4 vecMat = glm::inverse(glm::transpose(mvm));
+
+	auto comp = [vecMat, dir](const Photo* a, const Photo* b) {
+		const glm::vec3 ta = glm::vec3(vecMat * glm::vec4(a->camera.direction, 1.0f));
+		const glm::vec3 tb = glm::vec3(vecMat * glm::vec4(b->camera.direction, 1.0f));
+		return glm::dot(ta, dir) > glm::dot(tb, dir);
+	};
+
+	std::set<Photo*, decltype(comp)> result(comp);
+
+	if(Settings::useKDT) {
+		for(std::pair<int, Photo *> p : nearPhotos) {
+			result.insert(p.second);
+		}
+	}
+	else {
+		for(Photo &p : photos) {
+			result.insert(&p);
+		}
+	}
+	auto beg = result.begin();
+	std::advance(beg, count);
+	return std::vector<Photo*>(result.begin(), beg);
+}
+
 void TextureHandler::loadFullImage(Photo &p) {
 	if(!p.loading) {
 		p.loading = true;
@@ -182,6 +290,11 @@ void TextureHandler::buildTree() {
 	kdtree.construct(&photos);	
 }
 
+
+void TextureHandler::setRayCaster(std::shared_ptr<RayCaster> r) {
+	rayCaster = r;
+}
+
 const std::vector<Photo> & TextureHandler::getPhotos() const {
 	return photos;
 }
@@ -192,31 +305,4 @@ std::vector<Texture> & TextureHandler::getTextures() {
 
 std::vector<int> & TextureHandler::getBestTexIdx() {
 	return bestTexIdx;
-}
-
-std::vector<Photo*> TextureHandler::getClosestCameras(const glm::vec3 & dir, const glm::mat4 &mvm, const uint count) {
-
-	const glm::mat4 vecMat = glm::inverse(glm::transpose(mvm));
-
-	auto comp = [vecMat, dir](const Photo* a, const Photo* b) {
-		const glm::vec3 ta = glm::vec3(vecMat * glm::vec4(a->camera.direction, 1.0f));
-		const glm::vec3 tb = glm::vec3(vecMat * glm::vec4(b->camera.direction, 1.0f));
-		return glm::dot(ta, dir) > glm::dot(tb, dir);
-	};
-
-	std::set<Photo*, decltype(comp)> result(comp);
-
-	if(Settings::useKDT) {
-		for(std::pair<int, Photo *> p : nearPhotos) {
-			result.insert(p.second);
-		}
-	}
-	else {
-		for(Photo &p : photos) {
-			result.insert(&p);
-		}
-	}
-	auto beg = result.begin();
-	std::advance(beg, count);
-	return std::vector<Photo*>(result.begin(), beg);
 }
