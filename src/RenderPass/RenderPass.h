@@ -21,6 +21,7 @@ public:
 	 */
 	enum RenderPassType {
 		BASIC_TEXTURING_PASS = 0,
+		TEXTURING_PRE_PASS,
 		TEXTURING_PASS,
 		BUNDLER_POINTS_PASS,
 		RADAR_PASS, //should be last

@@ -3,6 +3,7 @@
 
 #include "../RenderPass/BasicTexturingRenderPass.h"
 #include "../RenderPass/TexturingRenderPass.h"
+#include "../RenderPass/TexturingPrePass.h"
 #include "../RenderPass/BundlerPointsRenderPass.h"
 #include "../RenderPass/RadarRenderPass.h"
 #include "../io/CalibrationLoader.h"
@@ -29,7 +30,7 @@ void GLWidget::paintGL() {
 		object->rotate(Settings::objectRotate);
 		glm::vec3 viewDir = object->getCentroidPosition() - camera.getCameraPosition();
 		
-		rayCaster->cast(viewDir);
+//		rayCaster->cast(viewDir);
 		
 		glm::vec3 c(glm::inverse(object->getMvm()) * glm::vec4(camera.getCameraPosition(), 1.0));
 		textureHandler->updateTextures(c, viewDir, object->getMvm(), Settings::usingTextures);
@@ -167,6 +168,11 @@ void GLWidget::addRenderPass(RenderPass::RenderPassType pass) {
 			break;
 		case RenderPass::TEXTURING_PASS:
 			renderPassHandler.add(
+				RenderPass::TEXTURING_PRE_PASS, 
+				std::make_shared<TexturingPrePass>(renderer, shaderHandler, textureHandler)
+			);
+			
+			renderPassHandler.add(
 				RenderPass::TEXTURING_PASS, 
 				std::make_shared<TexturingRenderPass>(renderer, shaderHandler, textureHandler)
 			);
@@ -192,6 +198,13 @@ void GLWidget::addRenderPass(RenderPass::RenderPassType pass) {
 
 void GLWidget::removeRenderPass(RenderPass::RenderPassType pass) {
 	renderPassHandler.remove(pass);
+	switch(pass) {
+		case RenderPass::TEXTURING_PASS:
+			renderPassHandler.remove(RenderPass::TEXTURING_PRE_PASS);
+			break;
+		default:
+			break;
+	}
 }
 
 

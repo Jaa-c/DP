@@ -28,6 +28,7 @@
         <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/RenderPass/BundlerPointsRenderPass.h</itemPath>
         <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/RenderPass/RadarRenderPass.h</itemPath>
         <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/RenderPass/RenderPass.h</itemPath>
+        <itemPath>src/RenderPass/TexturingPrePass.h</itemPath>
         <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/RenderPass/TexturingRenderPass.h</itemPath>
       </logicalFolder>
       <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/Camera.h</itemPath>
@@ -81,8 +82,10 @@
       <itemPath>Makefile</itemPath>
       <itemPath>shaders/basic.frag</itemPath>
       <itemPath>shaders/basic.vert</itemPath>
-      <itemPath>shaders/texturing.frag</itemPath>
-      <itemPath>shaders/texturing.vert</itemPath>
+      <itemPath>shaders/texturing_1.frag</itemPath>
+      <itemPath>shaders/texturing_1.vert</itemPath>
+      <itemPath>shaders/texturing_2.frag</itemPath>
+      <itemPath>shaders/texturing_2.vert</itemPath>
     </logicalFolder>
   </logicalFolder>
   <sourceRootList>
@@ -309,6 +312,8 @@
             ex="false"
             tool="3"
             flavor2="0">
+      </item>
+      <item path="src/RenderPass/TexturingPrePass.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/gui/GLWidget.h" ex="false" tool="3" flavor2="0">
       </item>
@@ -550,6 +555,8 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="src/RenderPass/TexturingPrePass.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="src/gui/GLWidget.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/gui/MainWindow.h" ex="false" tool="3" flavor2="0">
@@ -778,6 +785,8 @@
             ex="false"
             tool="3"
             flavor2="0">
+      </item>
+      <item path="src/RenderPass/TexturingPrePass.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/gui/GLWidget.h" ex="false" tool="3" flavor2="0">
       </item>

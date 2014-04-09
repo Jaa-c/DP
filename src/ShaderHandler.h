@@ -17,7 +17,8 @@ public:
 	/// list of avaiable shaders
 	enum ShaderType {
 		SHADER_BASIC = 0,
-		SHADER_TEXTURING,
+		SHADER_TEXTURING_1,
+		SHADER_TEXTURING_2,
 		SHADER_POINTS,
 		SIZE,
 	};
@@ -28,7 +29,8 @@ private:
 	/// shader file names
 	const std::string SHADER_SRC[SIZE] = {
 		"basic",
-		"texturing",
+		"texturing_1",
+		"texturing_2",
 		"points"
 	};
 	

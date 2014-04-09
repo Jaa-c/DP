@@ -1,41 +1,47 @@
 /* 
- * File:   TexturingRenderPass.h
+ * File:   TexturingPrePass.h
  * Author: jaa
  *
- * Created on 14. březen 2014, 22:39
+ * Created on 10. duben 2014, 0:34
  */
 
-#ifndef TEXTURINGRENDERPASS_H
-#define	TEXTURINGRENDERPASS_H
+#ifndef TEXTURINGPREPASS_H
+#define	TEXTURINGPREPASS_H
 
 #include "RenderPass.h"
 
-class TexturingRenderPass : public RenderPass {
+class TexturingPrePass : public RenderPass {
 		
-	GLuint loc_viewDir;
 	GLuint loc_textureCount;
 	GLuint loc_textureIndices;
+	GLuint loc_viewDir;
 	GLuint textureDataUB;
+	
+	GLuint frameBuffer;
+	GLuint normalsTexture;
 	
 public:
 	
-	TexturingRenderPass(
+	TexturingPrePass(
 		Renderer& r, 
 		ShaderHandler& s, 
 		std::shared_ptr<TextureHandler> th
 	) : 
-		RenderPass(TEXTURING_PASS, r, s, th)
+		RenderPass(TEXTURING_PRE_PASS, r, s, th)
 	{	
-		shader = ShaderHandler::SHADER_TEXTURING_2;
+		shader = ShaderHandler::SHADER_TEXTURING_1;
 		textureDataUB = GL_ID_NONE;
+		frameBuffer = GL_ID_NONE;
+		normalsTexture = GL_ID_NONE;
+		
+		loc_viewDir = GL_ID_NONE;
 	}
 		
-	~TexturingRenderPass() {
+	~TexturingPrePass() {
 
 	}
 	
 	void draw(std::shared_ptr<ObjectData> object) {
-				
 		const uint sizeOfTextureData = sizeof(glm::mat4) + sizeof(glm::ivec2) + 2 * sizeof(float);
 		if(programID == GL_ID_NONE) {
 			programID = shaderHandler.getProgramId(shader);
@@ -61,11 +67,11 @@ public:
 			}
 		}
 		
+		
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_CULL_FACE);
 		
 		assert(programID != GL_ID_NONE);
-		//assert(textureDataUB != GL_ID_NONE); //no need to crash on shader error :)
 		glUseProgram(programID);
 		
 		assert(textureHandler);
@@ -88,6 +94,34 @@ public:
 			glBindBuffer(GL_UNIFORM_BUFFER, 0);
 		}
 		
+		
+		//1st pass:
+		if(frameBuffer == GL_ID_NONE) {
+			glGenFramebuffers(1, &frameBuffer);
+		}
+		glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
+		
+		if(normalsTexture == GL_ID_NONE) {
+			glGenTextures(1, &normalsTexture);
+			glBindTexture(GL_TEXTURE_2D, normalsTexture);
+			const glm::ivec2 winSize = renderer.getCamera().getWindowSize();
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, winSize.x, winSize.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+		}
+		glBindTexture(GL_TEXTURE_2D, normalsTexture);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		
+		// Set "normalsTexture" as our colour attachement #0
+		glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, normalsTexture, 0);
+
+		GLenum DrawBuffers[1] = {GL_COLOR_ATTACHMENT0};
+		glDrawBuffers(1, DrawBuffers); 
+		
+		if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+			Log::e("[Texturing render pass] framebuffer NOT OK");
+			throw "framebuffer error, can't render textures!";
+		}
+		
 		GLint texCount = textures->size();
 		glUniform1i(loc_textureCount, texCount);
 		
@@ -104,10 +138,10 @@ public:
 		
 		glCheckError();
 		glUseProgram(0);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 
 };
 
-#endif	/* TEXTURINGRENDERPASS_H */
+#endif	/* TEXTURINGPREPASS_H */
 
- 
