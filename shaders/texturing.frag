@@ -77,7 +77,7 @@ void main() {
 	}
 
 	vec3 col = texture2DRect(u_texture0[int(bestCoords.x)], bestCoords.yz).rgb;
-	vec3 color = min((.2f + col) * diffuse + specular * .2f, 1.0f);
+	vec3 color = min((.2f + col) * diffuse + specular * .0f, 1.0f);
 
 	if(ub_texData[int(bestCoords.x)].u_TextureSize.x == 512) color.b = 0.4;
 	if(bestWeight == 0) color.r = 1;

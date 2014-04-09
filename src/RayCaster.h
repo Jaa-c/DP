@@ -24,7 +24,7 @@ class RayCaster {
 	
 	static const int n = 100;
 	static const int clusterCount = 5;
-	std::array<Cluster, clusterCount> clusters;
+	std::vector<Cluster> clusters;
 
 public:
 	RayCaster(const ObjectData& o, const Camera &c) :
@@ -37,19 +37,26 @@ public:
 		const glm::vec3 view = glm::normalize(viewDir);
 		
 		glm::ivec2 winSize = camera.getWindowSize();
-		float p = std::sqrt(n * winSize.y / (float) winSize.x);
-		int dx = std::ceil(winSize.x / (p * winSize.x / (float) winSize.y));
-		int dy = std::ceil(winSize.y / p);
+		
+		const glm::ivec2 border(winSize.x / 10.f, winSize.y / 10.f);//in px
+		const glm::vec2 ws(winSize - border);
+		
+		float p = std::sqrt(n * ws.y / (float) ws.x);
+		int dx = std::ceil(ws.x / (p * ws.x / (float) ws.y));
+		int dy = std::ceil(ws.y / p);
 				
 		glm::mat4 mvp = camera.getProjectionMatrix() * camera.getModelViewMatrix() * object.getMvm();
 		glm::mat4 invPM(glm::inverse(mvp));
 		
 		std::default_random_engine gen;
 		std::uniform_int_distribution<int> distr(0, clusterCount-1);
+		
+		clusters.clear();
+		clusters.resize(clusterCount);
 		int intersections = 0;
-		for(int i = 0; i < winSize.x; i+=dx) {
-			for(int j = 0; j < winSize.y; j+=dy) {
-				glm::vec4 o(2.f / winSize.x * i - 1, 2.f / winSize.y * j - 1, -1, 1);
+		for(int i = border.x; i < ws.x; i+=dx) {
+			for(int j = border.y; j < ws.y; j+=dy) {
+				glm::vec4 o(2.f / ws.x * i - 1, 2.f / ws.y * j - 1, -0.1, 1);
 				glm::vec4 d(o.x, o.y, -o.z, o.w);
 				
 				o = invPM * o;
@@ -63,7 +70,7 @@ public:
 				float t = 0;
 				int triangleIdx = -1;
 				for(uint n = 0; n < object.getIndices().size(); n += 3) {
-					if(glm::dot(object.getNormals()[object.getIndices()[n]], view) > 0) {
+					if(glm::dot(object.getNormals()[object.getIndices()[n]], view) < 0) {
 						if(getIntersection(n, t, orig, dir) && t < tmin) {
 							tmin = t;
 							triangleIdx = n;
@@ -71,9 +78,8 @@ public:
 					}
 				}
 				if(triangleIdx != -1) {
-					const glm::vec3 &norm = object.getNormals()[triangleIdx];
-					int d = (int) ((glm::dot(view, norm) + 1) / 2.f * 4 + 0.5);
-					d = distr(gen);
+					const glm::vec3 &norm = object.getNormals()[triangleIdx+1];
+					int d = distr(gen); //random is OK, it's k-menas works fast...
 					clusters[d].vectors.push_back(&norm);
 					intersections++;
 				}
@@ -81,22 +87,20 @@ public:
 		}
 		
 //		std::cout << "found " << intersections << " intersections\n";
-		
+
 		bool moving = true;
 		int iterations = 0;
 		while(moving && iterations < 20) {
 			moving = false;
 			
 			for(Cluster &c : clusters) {
+				c.centroid *= 0;
 				if(!c.vectors.empty()) {
 					for(auto *v : c.vectors) {
 						c.centroid += *v;
 					}
 					c.centroid /= (float) c.vectors.size();
 					c.centroid = glm::normalize(c.centroid);
-				}
-				else {
-					c.centroid *= 0;
 				}
 			}
 		
@@ -110,7 +114,7 @@ public:
 					Cluster *moveTo = nullptr;
 					for(Cluster &cl: clusters) {
 						float diff = glm::dot(**v, cl.centroid);
-						if(diff > dist + 0.01) {
+						if(diff > dist + 0.001) {
 							moveTo = &cl;
 						}
 					}
@@ -125,9 +129,16 @@ public:
 				}
 			}
 			++iterations;
+			for(Cluster &cl: clusters) {
+				cl.weight = 0;
+				for(auto v : cl.vectors) {
+					cl.weight += glm::dot(*v, cl.centroid);
+				}
+				cl.weight /= (float) cl.vectors.size();
+			}
 //			std::cout << "iter: " << iterations << "\n";
 //			for(Cluster &cl: clusters) {
-//				std::cout << "\t" << cl.vectors.size() << " : " <<
+//				std::cout << "\t" << cl.vectors.size() << " : avg diff " << cl.weight << " -> " <<
 //						cl.centroid[0] << ", " << cl.centroid[1] << ", " << cl.centroid[2] << "\n";
 //			
 //			}
@@ -140,11 +151,12 @@ public:
 		);
 		for(Cluster &c : clusters) {
 			c.weight = c.vectors.size() / (float) intersections;
+			c.centroid = glm::normalize(c.centroid);
 		}
 //		std::cout << "Clusters found in " << iterations << " iterations\n";
 	}
 	
-	const std::array<Cluster, clusterCount> &getClusters() const {
+	const std::vector<Cluster> &getClusters() const {
 		return clusters;
 	}
 	
