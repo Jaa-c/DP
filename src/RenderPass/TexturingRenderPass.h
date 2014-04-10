@@ -35,7 +35,12 @@ public:
 	}
 	
 	void draw(std::shared_ptr<ObjectData> object) {
-				
+		glEnable(GL_DEPTH_TEST);
+		glEnable(GL_CULL_FACE);
+		glDisable(GL_BLEND);
+		glClearColor(0.4f, 0.4f, 0.7f, 0);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		
 		const uint sizeOfTextureData = sizeof(glm::mat4) + sizeof(glm::ivec2) + 2 * sizeof(float);
 		if(programID == GL_ID_NONE) {
 			programID = shaderHandler.getProgramId(shader);
@@ -60,9 +65,6 @@ public:
 				glBindBufferBase(GL_UNIFORM_BUFFER, bindingPoint, textureDataUB);
 			}
 		}
-		
-		glEnable(GL_DEPTH_TEST);
-		glEnable(GL_CULL_FACE);
 		
 		assert(programID != GL_ID_NONE);
 		//assert(textureDataUB != GL_ID_NONE); //no need to crash on shader error :)

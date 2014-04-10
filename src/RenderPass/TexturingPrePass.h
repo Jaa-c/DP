@@ -19,6 +19,7 @@ class TexturingPrePass : public RenderPass {
 	
 	GLuint frameBuffer;
 	GLuint normalsTexture;
+	GLuint normalsSampler;
 	
 public:
 	
@@ -33,6 +34,7 @@ public:
 		textureDataUB = GL_ID_NONE;
 		frameBuffer = GL_ID_NONE;
 		normalsTexture = GL_ID_NONE;
+		normalsSampler = GL_ID_NONE;
 		
 		loc_viewDir = GL_ID_NONE;
 	}
@@ -42,6 +44,11 @@ public:
 	}
 	
 	void draw(std::shared_ptr<ObjectData> object) {
+		glEnable(GL_DEPTH_TEST);
+		glEnable(GL_CULL_FACE);
+		glEnable(GL_TEXTURE_2D);
+		glDisable(GL_BLEND);
+		
 		const uint sizeOfTextureData = sizeof(glm::mat4) + sizeof(glm::ivec2) + 2 * sizeof(float);
 		if(programID == GL_ID_NONE) {
 			programID = shaderHandler.getProgramId(shader);
@@ -66,11 +73,7 @@ public:
 				glBindBufferBase(GL_UNIFORM_BUFFER, bindingPoint, textureDataUB);
 			}
 		}
-		
-		
-		glEnable(GL_DEPTH_TEST);
-		glEnable(GL_CULL_FACE);
-		
+				
 		assert(programID != GL_ID_NONE);
 		glUseProgram(programID);
 		
@@ -96,24 +99,31 @@ public:
 		
 		
 		//1st pass:
+			
+		const glm::ivec2 winSize = renderer.getCamera().getWindowSize();
+		if(normalsTexture == GL_ID_NONE) {
+			glGenTextures(1, &normalsTexture);
+			glBindTexture(GL_TEXTURE_2D, normalsTexture);
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, winSize.x, winSize.y, 0, GL_RGB, GL_FLOAT, NULL);
+		}
+		if(normalsSampler == GL_ID_NONE) {
+			glGenSamplers(1, &normalsSampler);
+			glSamplerParameteri(normalsSampler, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+			glSamplerParameteri(normalsSampler, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+			glSamplerParameteri(normalsSampler, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+			glSamplerParameteri(normalsSampler, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+		}
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, normalsTexture);
+		glBindSampler(0, normalsSampler);
+		
 		if(frameBuffer == GL_ID_NONE) {
 			glGenFramebuffers(1, &frameBuffer);
 		}
 		glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
-		
-		if(normalsTexture == GL_ID_NONE) {
-			glGenTextures(1, &normalsTexture);
-			glBindTexture(GL_TEXTURE_2D, normalsTexture);
-			const glm::ivec2 winSize = renderer.getCamera().getWindowSize();
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, winSize.x, winSize.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
-		}
-		glBindTexture(GL_TEXTURE_2D, normalsTexture);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		
-		// Set "normalsTexture" as our colour attachement #0
 		glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, normalsTexture, 0);
-
+		glClearColor(0.f, 0.f, 0.f, 0.f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		GLenum DrawBuffers[1] = {GL_COLOR_ATTACHMENT0};
 		glDrawBuffers(1, DrawBuffers); 
 		
@@ -136,9 +146,98 @@ public:
 		renderer.drawTextures(textures);
 		renderer.drawObject(*object);
 		
+		glBindTexture(GL_TEXTURE_2D, normalsTexture);
+		std::vector<float> data(3* winSize.x * winSize.y);
+		glReadPixels(0, 0, winSize.x, winSize.y, GL_RGB,  GL_FLOAT, &data[0]);
+		
+		const int clusterCount = 5;
+		std::vector<glm::vec3> normals;
+		struct Cluster {
+			glm::vec3 centroid;
+			std::vector<const glm::vec3 *> vectors;
+			float weight;
+		};
+		std::vector<Cluster> clusters;
+		clusters.resize(clusterCount);
+		
+		
+		std::default_random_engine gen;
+		std::uniform_int_distribution<int> distr(0, clusterCount-1);
+		
+		
+		for(uint i = 0; i < data.size(); i += 3) {
+			if(data[i] != 0.f) {
+				int d = distr(gen); //random is OK, it's k-menas works fast...
+				normals.push_back(glm::vec3(data[i], data[i+1], data[i+2]));
+				clusters[d].vectors.push_back(&normals.at(normals.size()-1));
+			}
+		}
+		bool moving = true;
+		int iterations = 0;
+		while(moving && iterations < 20) {
+			moving = false;
+			
+			for(Cluster &c : clusters) {
+				c.centroid *= 0;
+				if(!c.vectors.empty()) {
+					for(auto *v : c.vectors) {
+						c.centroid += *v;
+					}
+					c.centroid /= (float) c.vectors.size();
+					c.centroid = glm::normalize(c.centroid);
+				}
+			}
+		
+			float dist = -1;
+			for(Cluster &c : clusters) {
+				for(auto v = c.vectors.begin(); v != c.vectors.end();) {
+					dist = glm::dot(**v, c.centroid);
+//					if(c.vectors.size() == 1) {
+//						dist = 0;
+//					}
+					Cluster *moveTo = nullptr;
+					for(Cluster &cl: clusters) {
+						float diff = glm::dot(**v, cl.centroid);
+						if(diff > dist + 0.001) {
+							moveTo = &cl;
+						}
+					}
+					if(moveTo) {
+						moveTo->vectors.push_back(*v);
+						v = c.vectors.erase(v);
+						moving = true;
+					}
+					else {
+						++v;
+					}
+				}
+			}
+			++iterations;
+			for(Cluster &cl: clusters) {
+				cl.weight = 0;
+				for(auto v : cl.vectors) {
+					cl.weight += glm::dot(*v, cl.centroid);
+				}
+				cl.weight /= (float) cl.vectors.size();
+			}
+		}
+		
+		std::sort(clusters.begin(), clusters.end(), 
+				[] (const Cluster &a, const Cluster &b) {
+					return a.vectors.size() > b.vectors.size();
+				}
+		);
+		for(Cluster &c : clusters) {
+			c.weight = c.vectors.size() / (float) normals.size();
+			c.centroid = glm::normalize(c.centroid);
+		}
+//		std::cout << "Clusters found in " << iterations << " iterations\n";
+		
 		glCheckError();
 		glUseProgram(0);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glBindTexture(GL_TEXTURE_2D, 0);
+		glDisable(GL_TEXTURE_2D);
 	}
 
 };

@@ -87,12 +87,11 @@ public:
 		glMatrixMode(GL_MODELVIEW);
 		glPushMatrix();
 		glLoadIdentity();
-		
 		glDisable(GL_DEPTH_TEST);
 		glDisable(GL_LIGHTING);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		glEnable( GL_BLEND );
-
+		glEnable(GL_BLEND);
+//
 		glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
 		glBegin(GL_QUADS);
 			glVertex2i(x, y);
@@ -122,7 +121,7 @@ public:
 			glm::vec3 viewDir = -camera.getCameraViewDirection();
 			drawLine(k, viewDir);
 
-			glColor4f(0.0f, 0.0f, 0.0f, 0.5f);
+			glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
 			drawPoint(k);
 			drawPoint(c);
 		glEnd();

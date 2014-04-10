@@ -21,7 +21,7 @@ in block {
 	smooth vec3 v_normal;
 } In;
 
-layout(location = 0) out vec4 a_data;
+layout(location = 0) out vec3 a_data;
 
 // -----------
 
@@ -61,11 +61,10 @@ void main() {
 		}
 	}
 
+	a_data = vec3(0.0f, 0.0f, 0.0f);
+
 	if(bestWeight == 0) {
-		a_data = vec4(N, 1.0f);
-	}
-	else {
-		a_data = vec4(0.0f, 0.0f, 0.0f, 0.0f);
+		a_data = N;
 	}
 	
 }

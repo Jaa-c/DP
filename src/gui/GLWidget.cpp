@@ -102,7 +102,7 @@ void GLWidget::createScene(
 		
 		rayCaster = std::make_shared<RayCaster>(*object, camera);
 		textureHandler->setRayCaster(rayCaster);
-
+		
 		glClearColor(0.4f, 0.4f, 0.7f, 0);
 	}
 	catch(std::string msg) {
