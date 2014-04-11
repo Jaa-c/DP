@@ -120,6 +120,7 @@ public:
 		if(frameBuffer == GL_ID_NONE) {
 			glGenFramebuffers(1, &frameBuffer);
 		}
+		
 		glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
 		glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, normalsTexture, 0);
 		glClearColor(0.f, 0.f, 0.f, 0.f);
@@ -143,7 +144,6 @@ public:
 		
 		renderer.setUniformLocations(&uLocs);
 		renderer.bindCameraMatrices();
-		renderer.drawTextures(textures);
 		renderer.drawObject(*object);
 		
 		glBindTexture(GL_TEXTURE_2D, normalsTexture);
