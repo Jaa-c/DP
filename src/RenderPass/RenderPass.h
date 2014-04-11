@@ -58,7 +58,7 @@ protected:
 	
 	std::vector<GLuint> uLocs;
 	
-	
+		
 	RenderPass(
 		RenderPassType type, 
 		Renderer& r, 

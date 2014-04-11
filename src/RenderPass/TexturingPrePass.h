@@ -10,8 +10,11 @@
 
 #include "RenderPass.h"
 
+class TexturingRenderPass;
+
 class TexturingPrePass : public RenderPass {
-		
+	friend TexturingRenderPass;
+	
 	GLuint loc_textureCount;
 	GLuint loc_textureIndices;
 	GLuint loc_viewDir;
@@ -151,14 +154,21 @@ public:
 		glReadPixels(0, 0, winSize.x, winSize.y, GL_RGB,  GL_FLOAT, &data[0]);
 		
 		const int clusterCount = 5;
-		std::vector<glm::vec3> normals;
+		typedef std::pair<int, glm::vec3> Norm;
+		std::vector<Norm> normals;
 		struct Cluster {
+			int id;
 			glm::vec3 centroid;
-			std::vector<const glm::vec3 *> vectors;
 			float weight;
+			int size;
 		};
 		std::vector<Cluster> clusters;
 		clusters.resize(clusterCount);
+		for(int i = 0; i < clusterCount; ++i) {
+			clusters[i].id = i;
+			clusters[i].size = 0;
+			clusters[i].weight = 0;
+		}
 		
 		
 		std::default_random_engine gen;
@@ -168,69 +178,65 @@ public:
 		for(uint i = 0; i < data.size(); i += 3) {
 			if(data[i] != 0.f) {
 				int d = distr(gen); //random is OK, it's k-menas works fast...
-				normals.push_back(glm::vec3(data[i], data[i+1], data[i+2]));
-				clusters[d].vectors.push_back(&normals.at(normals.size()-1));
+				normals.push_back(Norm(d, glm::vec3(data[i], data[i+1], data[i+2])));
 			}
 		}
 		bool moving = true;
 		int iterations = 0;
 		while(moving && iterations < 20) {
 			moving = false;
-			
 			for(Cluster &c : clusters) {
 				c.centroid *= 0;
-				if(!c.vectors.empty()) {
-					for(auto *v : c.vectors) {
-						c.centroid += *v;
-					}
-					c.centroid /= (float) c.vectors.size();
-					c.centroid = glm::normalize(c.centroid);
-				}
+				c.size = 0;
+			}
+			
+			for(Norm &n : normals) {
+				clusters[n.first].centroid += n.second;
+				clusters[n.first].size++;
+			}
+			for(Cluster &c : clusters) {
+				c.centroid /= (float) c.size;
+				c.centroid = glm::normalize(c.centroid);
 			}
 		
 			float dist = -1;
-			for(Cluster &c : clusters) {
-				for(auto v = c.vectors.begin(); v != c.vectors.end();) {
-					dist = glm::dot(**v, c.centroid);
-//					if(c.vectors.size() == 1) {
-//						dist = 0;
-//					}
-					Cluster *moveTo = nullptr;
-					for(Cluster &cl: clusters) {
-						float diff = glm::dot(**v, cl.centroid);
-						if(diff > dist + 0.001) {
-							moveTo = &cl;
-						}
+			for(Norm &n : normals) {
+				dist = glm::dot(n.second, clusters[n.first].centroid);
+				int moveTo = -1;
+				for(Cluster &c : clusters) {
+					const float diff = glm::dot(n.second, c.centroid);
+					if(diff > dist + 0.001) {
+						moveTo = c.id;
+						dist = diff; // !?
 					}
-					if(moveTo) {
-						moveTo->vectors.push_back(*v);
-						v = c.vectors.erase(v);
-						moving = true;
-					}
-					else {
-						++v;
-					}
+				}
+				if(moveTo != -1) {
+					n.first = moveTo;
+					moving = true;
 				}
 			}
 			++iterations;
-			for(Cluster &cl: clusters) {
-				cl.weight = 0;
-				for(auto v : cl.vectors) {
-					cl.weight += glm::dot(*v, cl.centroid);
-				}
-				cl.weight /= (float) cl.vectors.size();
-			}
 		}
-		
+		for(Cluster &c : clusters) {
+			c.centroid *= 0;
+			c.size = 0;
+		}
+		for(Norm &n : normals) {
+			clusters[n.first].weight += glm::dot(n.second, clusters[n.first].centroid);
+			clusters[n.first].centroid += n.second;
+			clusters[n.first].size++; // zbytecny?
+		}
+		for(Cluster &cl: clusters) {
+			cl.weight /= (float) cl.size;
+			cl.centroid /= (float) cl.size;
+			cl.centroid = glm::normalize(cl.centroid);
+		}
+
 		std::sort(clusters.begin(), clusters.end(), 
 				[] (const Cluster &a, const Cluster &b) {
-					return a.vectors.size() > b.vectors.size();
+					return a.size > b.size;
 				}
 		);
-		for(Cluster &c : clusters) {
-			c.weight = c.vectors.size() / (float) normals.size();
-			c.centroid = glm::normalize(c.centroid);
-		}
 //		std::cout << "Clusters found in " << iterations << " iterations\n";
 		
 		glCheckError();

@@ -167,16 +167,16 @@ void GLWidget::addRenderPass(RenderPass::RenderPassType pass) {
 			);
 			break;
 		case RenderPass::TEXTURING_PASS:
-			renderPassHandler.add(
-				RenderPass::TEXTURING_PRE_PASS, 
-				std::make_shared<TexturingPrePass>(renderer, shaderHandler, textureHandler)
-			);
+		{
+			std::shared_ptr<TexturingPrePass> pp = std::make_shared<TexturingPrePass>(renderer, shaderHandler, textureHandler);
+			renderPassHandler.add(RenderPass::TEXTURING_PRE_PASS, pp);
 			
 			renderPassHandler.add(
 				RenderPass::TEXTURING_PASS, 
-				std::make_shared<TexturingRenderPass>(renderer, shaderHandler, textureHandler)
+				std::make_shared<TexturingRenderPass>(renderer, shaderHandler, textureHandler, pp)
 			);
 			break;
+		}
 		case RenderPass::BUNDLER_POINTS_PASS:
 			renderPassHandler.add(
 				RenderPass::BUNDLER_POINTS_PASS,
