@@ -70,6 +70,22 @@ public:
 		
 		assert(textureHandler);
 		std::vector<Texture> * textures = &textureHandler->getTextures();
+		
+		if(textureDataUB != GL_ID_NONE) {
+			glBindBuffer(GL_UNIFORM_BUFFER, textureDataUB);
+			int offset = 0;
+			for(uint i = 0; i < textures->size(); ++i) { //slooooooooow
+				const Photo *p = textures->at(i).photo;
+				glBufferSubData(GL_UNIFORM_BUFFER, offset, sizeof(glm::mat4), &p->camera.Rt[0][0]);
+				offset += 16 * sizeof(float);
+				glBufferSubData(GL_UNIFORM_BUFFER, offset, sizeof(glm::ivec2) , &p->getImage().size);
+				offset += 2 * sizeof(int);
+				float focalL = p->camera.focalL / p->getImageScale(); //changing focal length for thumbnails
+				glBufferSubData(GL_UNIFORM_BUFFER, offset, sizeof(float), &focalL);
+				offset += 2 * sizeof(float); //note that this is std140 alignment!
+			}
+			glBindBuffer(GL_UNIFORM_BUFFER, 0);
+		}
 
 		GLint texCount = textures->size();
 		glUniform1i(loc_textureCount, texCount);

@@ -24,6 +24,8 @@ class TexturingPrePass : public RenderPass {
 	GLuint normalsTexture;
 	GLuint normalsSampler;
 	
+	std::vector<float> data;
+	
 public:
 	
 	TexturingPrePass(
@@ -51,6 +53,10 @@ public:
 		glEnable(GL_CULL_FACE);
 		glEnable(GL_TEXTURE_2D);
 		glDisable(GL_BLEND);
+		
+		
+		assert(textureHandler);
+		//std::vector<Texture> * textures = &textureHandler->getTextures();
 		
 		const uint sizeOfTextureData = sizeof(glm::mat4) + sizeof(glm::ivec2) + 2 * sizeof(float);
 		if(programID == GL_ID_NONE) {
@@ -80,15 +86,17 @@ public:
 		assert(programID != GL_ID_NONE);
 		glUseProgram(programID);
 		
-		assert(textureHandler);
-		std::vector<Texture> * textures = &textureHandler->getTextures();
 		
-		//this needs optimization later!!
+		glm::vec3 viewDir = object->getCentroidPosition() - renderer.getCamera().getCameraPosition();
+		glm::vec3 c(glm::inverse(object->getMvm()) * glm::vec4(renderer.getCamera().getCameraPosition(), 1.0));
+		
+		std::vector<Photo *> photos = textureHandler->getClosestCameras(viewDir, object->getMvm(), Settings::usingTextures); 
+		
 		if(textureDataUB != GL_ID_NONE) {
 			glBindBuffer(GL_UNIFORM_BUFFER, textureDataUB);
 			int offset = 0;
-			for(uint i = 0; i < textures->size(); ++i) { //slooooooooow
-				const Photo *p = textures->at(i).photo;
+			for(uint i = 0; i < photos.size(); ++i) { //slooooooooow
+				const Photo *p = photos.at(i);
 				glBufferSubData(GL_UNIFORM_BUFFER, offset, sizeof(glm::mat4), &p->camera.Rt[0][0]);
 				offset += 16 * sizeof(float);
 				glBufferSubData(GL_UNIFORM_BUFFER, offset, sizeof(glm::ivec2) , &p->getImage().size);
@@ -136,13 +144,13 @@ public:
 			throw "framebuffer error, can't render textures!";
 		}
 		
-		GLint texCount = textures->size();
+		GLint texCount = photos.size();
 		glUniform1i(loc_textureCount, texCount);
 		
 		std::vector<int> &indices = textureHandler->getBestTexIdx();
 		glUniform1iv(loc_textureIndices, indices.size(), &indices[0]);
 		
-		glm::vec3 viewDir = object->getCentroidPosition() - renderer.getCamera().getCameraPosition();
+		
 		glUniform3fv(loc_viewDir, 1, &viewDir[0]);
 		
 		renderer.setUniformLocations(&uLocs);
@@ -150,18 +158,16 @@ public:
 		renderer.drawObject(*object);
 		
 		glBindTexture(GL_TEXTURE_2D, normalsTexture);
-		std::vector<float> data(3* winSize.x * winSize.y);
+		if(data.size() < (uint) 3* winSize.x * winSize.y) {
+			data.resize(3* winSize.x * winSize.y);
+		}
 		glReadPixels(0, 0, winSize.x, winSize.y, GL_RGB,  GL_FLOAT, &data[0]);
 		
 		const int clusterCount = 5;
 		typedef std::pair<int, glm::vec3> Norm;
 		std::vector<Norm> normals;
-		struct Cluster {
-			int id;
-			glm::vec3 centroid;
-			float weight;
-			int size;
-		};
+//		normals.reserve(data.size() / 3);
+		
 		std::vector<Cluster> clusters;
 		clusters.resize(clusterCount);
 		for(int i = 0; i < clusterCount; ++i) {
@@ -176,11 +182,13 @@ public:
 		
 		
 		for(uint i = 0; i < data.size(); i += 3) {
-			if(data[i] != 0.f) {
+			if(data[i] != 0.f || data[i+1] != 0.f || data[i+2] != 0.f) {
 				int d = distr(gen); //random is OK, it's k-menas works fast...
 				normals.push_back(Norm(d, glm::vec3(data[i], data[i+1], data[i+2])));
 			}
 		}
+		
+//		std::cout << "normals size: " << normals.size() << "\n";
 		bool moving = true;
 		int iterations = 0;
 		while(moving && iterations < 20) {
@@ -227,17 +235,21 @@ public:
 			clusters[n.first].size++; // zbytecny?
 		}
 		for(Cluster &cl: clusters) {
-			cl.weight /= (float) cl.size;
+			cl.weight /= (float) normals.size();
 			cl.centroid /= (float) cl.size;
+			cl.centroid *= -1;
 			cl.centroid = glm::normalize(cl.centroid);
 		}
 
 		std::sort(clusters.begin(), clusters.end(), 
 				[] (const Cluster &a, const Cluster &b) {
-					return a.size > b.size;
+					return a.weight > b.weight;
 				}
 		);
 //		std::cout << "Clusters found in " << iterations << " iterations\n";
+		
+//		textureHandler->setClusters(clusters);
+		textureHandler->updateTextures(c, viewDir, object->getMvm(), Settings::usingTextures);
 		
 		glCheckError();
 		glUseProgram(0);

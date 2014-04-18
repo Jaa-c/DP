@@ -11,7 +11,7 @@
 #include "Camera.h"
 #include "ObjectData.h"
 
-struct Cluster {
+struct ClusterRC {
 	glm::vec3 centroid;
 	std::vector<const glm::vec3 *> vectors;
 	float weight;
@@ -24,7 +24,7 @@ class RayCaster {
 	
 	static const int n = 100;
 	static const int clusterCount = 5;
-	std::vector<Cluster> clusters;
+	std::vector<ClusterRC> clusters;
 
 public:
 	RayCaster(const ObjectData& o, const Camera &c) :
@@ -93,7 +93,7 @@ public:
 		while(moving && iterations < 20) {
 			moving = false;
 			
-			for(Cluster &c : clusters) {
+			for(auto &c : clusters) {
 				c.centroid *= 0;
 				if(!c.vectors.empty()) {
 					for(auto *v : c.vectors) {
@@ -105,14 +105,14 @@ public:
 			}
 		
 			float dist = -1;
-			for(Cluster &c : clusters) {
+			for(auto &c : clusters) {
 				for(auto v = c.vectors.begin(); v != c.vectors.end();) {
 					dist = glm::dot(**v, c.centroid);
 //					if(c.vectors.size() == 1) {
 //						dist = 0;
 //					}
-					Cluster *moveTo = nullptr;
-					for(Cluster &cl: clusters) {
+					ClusterRC *moveTo = nullptr;
+					for(auto &cl: clusters) {
 						float diff = glm::dot(**v, cl.centroid);
 						if(diff > dist + 0.001) {
 							moveTo = &cl;
@@ -129,7 +129,7 @@ public:
 				}
 			}
 			++iterations;
-			for(Cluster &cl: clusters) {
+			for(auto &cl: clusters) {
 				cl.weight = 0;
 				for(auto v : cl.vectors) {
 					cl.weight += glm::dot(*v, cl.centroid);
@@ -145,18 +145,18 @@ public:
 		}
 		
 		std::sort(clusters.begin(), clusters.end(), 
-				[] (const Cluster &a, const Cluster &b) {
+				[] (const ClusterRC &a, const ClusterRC &b) {
 					return a.vectors.size() > b.vectors.size();
 				}
 		);
-		for(Cluster &c : clusters) {
+		for(auto &c : clusters) {
 			c.weight = c.vectors.size() / (float) intersections;
 			c.centroid = glm::normalize(c.centroid);
 		}
 //		std::cout << "Clusters found in " << iterations << " iterations\n";
 	}
 	
-	const std::vector<Cluster> &getClusters() const {
+	const std::vector<ClusterRC> &getClusters() const {
 		return clusters;
 	}
 	

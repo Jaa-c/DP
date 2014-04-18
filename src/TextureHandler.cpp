@@ -80,8 +80,8 @@ void TextureHandler::updateTextures(
 		}
 	}
 
-	std::vector<Photo*> currentPhotos = getClosestCameras(viewDir, mvm, count);
-//	std::vector<Photo*> currentPhotos = getBestCameras(viewDir, mvm, count);
+//	std::vector<Photo*> currentPhotos = getClosestCameras(viewDir, mvm, count);
+	std::vector<Photo*> currentPhotos = getBestCameras(viewDir, mvm, count);
 	
 	///mostly DEBUG
 	if(Settings::usePrefferedCamera) {
@@ -101,7 +101,7 @@ void TextureHandler::updateTextures(
 
 	uint i = 0;
 	bestTexIdx.clear();
-	bestTexIdx.resize(std::max(count, (uint) textures.size()));
+	bestTexIdx.resize(32);//std::max(count, (uint) textures.size()));
 
 	for(auto it = currentPhotos.begin(); it != currentPhotos.end(); ++i) {
 		Photo *p = *it;
@@ -154,92 +154,23 @@ void TextureHandler::updateTextures(
 		while(bestTexIdx[i] != -1) i++;
 		bestTexIdx[i] = textures.at(textures.size()-1).unit;
 	}
-	bestTexIdx.resize(textures.size());
+//	bestTexIdx.resize(textures.size()); //TODO
 }
 
 std::vector<Photo*> TextureHandler::getBestCameras(const glm::vec3 & dir, const glm::mat4 &mvm, const uint count) {
-	auto directions = rayCaster->getClusters();
-	
-	const glm::mat4 vecMat = glm::inverse(glm::transpose(mvm));
-	int viewPhotos = 2; //temp todo
-	
-	typedef std::pair<float, Photo *> Entry;
-	struct Data {
-		uint size;
-		std::map<float, Photo *> photos;
-			glm::vec3 centroid;
-		
-		Data() : size(1) {}
-	};
-	std::vector<Data> data(1);
-	int remaining = count;
-	data[0].size = 2;
-	data[0].centroid = glm::normalize(-dir);
-	remaining -= viewPhotos;
-	
-	///initialize data, compute number of photos for each direction
-	for(auto &d : directions) {
-		if(d.vectors.size() > 0) {
-			if(remaining > 0) {
-				int c = std::min((int)((count - viewPhotos) * d.weight + .5f), remaining);
-				assert(c >= 0);
-				if(c == 0) c = remaining;
-				remaining -= c;
-				Data dta;
-				dta.size = c;
-				dta.centroid = d.centroid;
-				data.push_back(dta);
-			}
-			else {
-				break;
+	//todo, only basic stupid version
+	std::set<Photo *> result;
+	std::vector<Photo *> r = getClosestCameras(dir, mvm, count);
+	result.insert(r.begin(), r.end());
+	if(clusters.size() > 0) {
+		for(Cluster &c : clusters) {
+			if(c.weight > .1f) {
+				std::vector<Photo *> tmp = getClosestCameras(c.centroid, mvm, 2);
+				result.insert(tmp.begin(), tmp.end());
 			}
 		}
 	}
-	assert(remaining >= 0); //TODO, should == 0
-	
-	/// go thru all photos and choose best photos for each direction
-	for(Photo &p : photos) {
-		glm::vec3 cameraDir(vecMat * glm::vec4(p.camera.direction, 1.0f));
-		cameraDir = glm::normalize(cameraDir);
-		
-		for(Data &d : data) {
-			const float dotP = -1 * glm::dot(d.centroid, cameraDir);
-			assert(dotP <= 1);
-			if(dotP > 0) {
-				if(d.photos.size() < d.size) { //initialization
-					d.photos.insert(Entry(dotP, &p));
-					continue;
-				}
-				if(d.photos.begin()->first < dotP) {
-					d.photos.erase(d.photos.begin());
-					d.photos.insert(Entry(dotP, &p));
-				}
-			}
-		}	
-	}
-	
-	std::vector<Photo *> result;
-	result.reserve(count);
-	
-	for(uint i = 1; i < data.size(); ++i) {
-		for(auto it = data[i].photos.rbegin(); it != data[i].photos.rend(); ++it) {
-			auto &e = *it;
-			//slow, but there will be only a few elements
-			if(std::find(result.begin(), result.end(), e.second) == result.end()) {
-				result.push_back(e.second);
-			}
-		}
-	}
-	for(auto &e : data[0].photos) {
-		if(result.size() < count) {
-			result.insert(result.begin(), e.second); //insert to the beginning
-		}
-		else {
-			break;
-		}
-	}
-	assert(result.size() <= count);
-	return result;
+	return std::vector<Photo*>(result.begin(), result.end());
 }
 
 std::vector<Photo*> TextureHandler::getClosestCameras(const glm::vec3 & dir, const glm::mat4 &mvm, const uint count) {
@@ -267,6 +198,14 @@ std::vector<Photo*> TextureHandler::getClosestCameras(const glm::vec3 & dir, con
 	auto beg = result.begin();
 	std::advance(beg, count);
 	return std::vector<Photo*>(result.begin(), beg);
+}
+
+void TextureHandler::setClusters(std::vector<Cluster> c) {
+	clusters = c;
+}
+
+void TextureHandler::emptyClusters() {
+	clusters.clear();
 }
 
 void TextureHandler::loadFullImage(Photo &p) {

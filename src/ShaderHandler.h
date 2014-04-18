@@ -71,23 +71,26 @@ private:
 
 		// Create shader program object
 		g_ProgramId[shader] = glCreateProgram();
-
+		std::string n;
 		if (vert) {
-			std::string n = name + ".vert";
+			n = name + ".vert";
+			Log::d("Compiling " + n + ": ");
 			GLuint id = createShaderFromFile(GL_VERTEX_SHADER, n.c_str());
 			glAttachShader(g_ProgramId[shader], id);
 			glDeleteShader(id);
 		}
 
 		if (geom) {
-			std::string n = name + ".geom";
+			n = name + ".geom";
+			Log::d("Compiling " + n + ": ");
 			GLuint id = createShaderFromFile(GL_GEOMETRY_SHADER, n.c_str());
 			glAttachShader(g_ProgramId[shader], id);
 			glDeleteShader(id);
 		}
 
 		if (frag) {
-			std::string n = name + ".frag";
+			n = name + ".frag";
+			Log::d("Compiling " + n + ": ");
 			GLuint id = createShaderFromFile(GL_FRAGMENT_SHADER, n.c_str());
 			glAttachShader(g_ProgramId[shader], id);
 			glDeleteShader(id);

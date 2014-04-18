@@ -32,8 +32,9 @@ void GLWidget::paintGL() {
 		
 //		rayCaster->cast(viewDir);
 		
-		glm::vec3 c(glm::inverse(object->getMvm()) * glm::vec4(camera.getCameraPosition(), 1.0));
-		textureHandler->updateTextures(c, viewDir, object->getMvm(), Settings::usingTextures);
+		textureHandler->emptyClusters();
+//		glm::vec3 c(glm::inverse(object->getMvm()) * glm::vec4(camera.getCameraPosition(), 1.0));
+//		textureHandler->updateTextures(c, viewDir, object->getMvm(), Settings::usingTextures);
 		
 		renderPassHandler.draw(object);
 		

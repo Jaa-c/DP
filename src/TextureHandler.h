@@ -20,6 +20,14 @@
 
 class RayCaster;
 
+
+struct Cluster {
+	int id;
+	glm::vec3 centroid;
+	float weight;
+	int size;
+};
+
 class ImgThread : public QObject, public QRunnable {
 	Q_OBJECT
 
@@ -62,6 +70,8 @@ class TextureHandler : public QObject {
 	
 	KDTree<Photo> kdtree;
 	
+	std::vector<Cluster> clusters;
+	
 public slots:
 	void getResult(Photo *p);
 	
@@ -86,7 +96,9 @@ public:
 	std::vector<Texture> & getTextures();
 	std::vector<int> & getBestTexIdx();
 	
-private:
+	void setClusters(std::vector<Cluster> c);
+	void emptyClusters();
+//private:
 	//TODO SLOW, this is just a stupid version
 	//but not major problem for now
 	//only based on current direction
