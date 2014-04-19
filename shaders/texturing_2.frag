@@ -11,7 +11,6 @@ layout(std140) uniform u_textureDataBlock {
 };
 uniform int u_textureCount;
 
-uniform int u_textureIndices[32];
 uniform sampler2DRect u_texture0[32];
 
 uniform vec3 u_viewDir; //debug
@@ -59,19 +58,18 @@ void main() {
 	vec3 bestCoords = vec3(.0, -1.0f, -1.0f);
 	float bestWeight = 0.0f;
 	for(int i = 0; i < u_textureCount; ++i) {
-		weight = 1.f / (float(i + 1)); //TODOb
-		int idx = u_textureIndices[i];
+		weight = 1.f;
 
-		projectCoords(idx, In.v_position, coords);
-		weight *= float(inRange(idx, coords));
+		projectCoords(i, In.v_position, coords);
+		weight *= float(inRange(i, coords));
 
-		mat4 Rt = ub_texData[idx].u_TextureRt;
+		mat4 Rt = ub_texData[i].u_TextureRt;
 		float dirDiff = dot(N, normalize(u_NormalMatrix *  vec3(Rt[0][2], Rt[1][2], Rt[2][2])));
 		weight *= -(dirDiff + 1.f) / (1.f - dirLimit) + 1;
-
+		
 		if(weight > bestWeight) { //TODO
 			bestWeight = weight;
-			bestCoords.x = idx;
+			bestCoords.x = i;
 			bestCoords.yz = coords;
 		}
 	}

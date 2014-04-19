@@ -16,7 +16,6 @@ class TexturingPrePass : public RenderPass {
 	friend TexturingRenderPass;
 	
 	GLuint loc_textureCount;
-	GLuint loc_textureIndices;
 	GLuint loc_viewDir;
 	GLuint textureDataUB;
 	
@@ -64,7 +63,6 @@ public:
 			getDefaultUniformLocations();
 			
 			loc_textureCount = glGetUniformLocation(programID, "u_textureCount");
-			loc_textureIndices = glGetUniformLocation(programID, "u_textureIndices");
 			loc_viewDir = glGetUniformLocation(programID, "u_viewDir");
 			textureDataUB = GL_ID_NONE;
 			
@@ -146,10 +144,7 @@ public:
 		
 		GLint texCount = photos.size();
 		glUniform1i(loc_textureCount, texCount);
-		
-		std::vector<int> &indices = textureHandler->getBestTexIdx();
-		glUniform1iv(loc_textureIndices, indices.size(), &indices[0]);
-		
+				
 		
 		glUniform3fv(loc_viewDir, 1, &viewDir[0]);
 		
@@ -248,7 +243,7 @@ public:
 		);
 //		std::cout << "Clusters found in " << iterations << " iterations\n";
 		
-//		textureHandler->setClusters(clusters);
+		textureHandler->setClusters(clusters);
 		textureHandler->updateTextures(c, viewDir, object->getMvm(), Settings::usingTextures);
 		
 		glCheckError();

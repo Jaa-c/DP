@@ -63,10 +63,9 @@ class TextureHandler : public QObject {
 	std::shared_ptr<RayCaster> rayCaster;
 	
 	std::vector<Photo> photos;
+	std::stack<GLuint> units;
 	std::vector<Texture> textures;
 	std::unordered_map<int, Photo *> nearPhotos;
-	/// indices of the best textures in the texture array bound to the shader
-	std::vector<int> bestTexIdx;
 	
 	KDTree<Photo> kdtree;
 	
@@ -94,7 +93,6 @@ public:
 			
 	const std::vector<Photo> & getPhotos() const;
 	std::vector<Texture> & getTextures();
-	std::vector<int> & getBestTexIdx();
 	
 	void setClusters(std::vector<Cluster> c);
 	void emptyClusters();

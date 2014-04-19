@@ -27,6 +27,10 @@ TextureHandler::TextureHandler() {
 	Log::i("Using %d threads for image load.", thr);
 	
 	textures.reserve(Settings::maxTextures);
+	
+	for(int i = Settings::maxTextures-1; i >=0; --i) {
+		units.push(i);
+	}
 }
 
 TextureHandler::~TextureHandler() {
@@ -100,13 +104,9 @@ void TextureHandler::updateTextures(
 	}
 
 	uint i = 0;
-	bestTexIdx.clear();
-	bestTexIdx.resize(32);//std::max(count, (uint) textures.size()));
-
 	for(auto it = currentPhotos.begin(); it != currentPhotos.end(); ++i) {
 		Photo *p = *it;
 		bool erased = false;
-		bestTexIdx[i] = -1;
 		//compare textures and current photos
 		//if there is a match - OK, remove photo, no need to change texture
 		for(Texture &tex : textures) {
@@ -114,7 +114,6 @@ void TextureHandler::updateTextures(
 				tex.current = true;
 				erased = true;
 				currentPhotos.erase(it);
-				bestTexIdx[i] = tex.unit;
 				break;
 			}
 		}
@@ -134,10 +133,9 @@ void TextureHandler::updateTextures(
 				tex.setImage(p);
 				loadFullImage(*p);
 				currentPhotos.erase(currentPhotos.begin());
-				while(bestTexIdx[i] != -1) i++;
-				bestTexIdx[i] = tex.unit;
 			}
 			else { //lowered the number of textures
+				units.push(tex.unit);
 				tex.release();
 				textures.erase(it++);
 				continue; //important, otherwise iterator is incremented 2x
@@ -149,12 +147,12 @@ void TextureHandler::updateTextures(
 
 	i = 0;
 	for(auto p : currentPhotos) {
-		textures.push_back(Texture(GL_TEXTURE_RECTANGLE, textures.size(), p));	
-		loadFullImage(*p);
-		while(bestTexIdx[i] != -1) i++;
-		bestTexIdx[i] = textures.at(textures.size()-1).unit;
+		if(!units.empty()) {
+			textures.push_back(Texture(GL_TEXTURE_RECTANGLE, units.top(), p));	
+			units.pop();
+			loadFullImage(*p);
+		}
 	}
-//	bestTexIdx.resize(textures.size()); //TODO
 }
 
 std::vector<Photo*> TextureHandler::getBestCameras(const glm::vec3 & dir, const glm::mat4 &mvm, const uint count) {
@@ -167,6 +165,7 @@ std::vector<Photo*> TextureHandler::getBestCameras(const glm::vec3 & dir, const 
 			if(c.weight > .1f) {
 				std::vector<Photo *> tmp = getClosestCameras(c.centroid, mvm, 2);
 				result.insert(tmp.begin(), tmp.end());
+				break; // TEMP!!
 			}
 		}
 	}
@@ -247,8 +246,4 @@ const std::vector<Photo> & TextureHandler::getPhotos() const {
 
 std::vector<Texture> & TextureHandler::getTextures() {
 	return textures;
-}
-
-std::vector<int> & TextureHandler::getBestTexIdx() {
-	return bestTexIdx;
 }

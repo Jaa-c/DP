@@ -46,15 +46,14 @@ void main() {
 	float bestWeight = 0.0f;
 	for(int i = 0; i < u_textureCount; ++i) {
 		weight = 1.f;
-		int idx = u_textureIndices[i];
 
-		projectCoords(idx, In.v_position, coords);
-		weight *= float(inRange(idx, coords));
+		projectCoords(i, In.v_position, coords);
+		weight *= float(inRange(i, coords));
 
-		mat4 Rt = ub_texData[idx].u_TextureRt;
+		mat4 Rt = ub_texData[i].u_TextureRt;
 		float dirDiff = dot(N, normalize(u_NormalMatrix *  vec3(Rt[0][2], Rt[1][2], Rt[2][2])));
 		weight *= -(dirDiff + 1.f) / (1.f - dirLimit) + 1;
-
+		
 		if(weight > 0) {
 			bestWeight = weight;
 			break; // not that it matters...
