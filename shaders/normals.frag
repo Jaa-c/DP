@@ -1,7 +1,9 @@
 #version 400 core
 
+in vec4 v_color;
+
 layout(location = 0) out vec4 a_FragColor;
 
 void main() {
-	a_FragColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	a_FragColor = v_color;
 }
