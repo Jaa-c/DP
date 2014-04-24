@@ -24,6 +24,7 @@ public:
 		TEXTURING_PRE_PASS,
 		TEXTURING_PASS,
 		BUNDLER_POINTS_PASS,
+		NORMALS_PASS,
 		RADAR_PASS, //should be last
 		PASS_SIZE	
 	};

@@ -70,6 +70,10 @@ void MainWindow::createActions() {
 	bundlerPointsRP->setCheckable(true);
 	connect(bundlerPointsRP.get(), SIGNAL(changed()), this, SLOT(bundlerPointsPassCB()));
 	
+	normalsRP = std::make_shared<QAction>(tr("Display &normals"), this);
+	normalsRP->setCheckable(true);
+	connect(normalsRP.get(), SIGNAL(changed()), this, SLOT(normalsPassCB()));
+	
 	radarRP = std::make_shared<QAction>(tr("Display &radar"), this);
 	radarRP->setCheckable(true);
 	connect(radarRP.get(), SIGNAL(changed()), this, SLOT(radarPassCB()));
@@ -99,6 +103,7 @@ void MainWindow::createMenus() {
 	renderPass->addAction(texturingRP.get());
 	renderPass->addAction(basicTexturingRP.get());
 	renderPass->addAction(bundlerPointsRP.get());
+	renderPass->addAction(normalsRP.get());
 	renderPass->addAction(radarRP.get());
 	
 //	view = menuBar()->addMenu(tr("&View"));
@@ -166,6 +171,15 @@ void MainWindow::bundlerPointsPassCB() {
 	}
 	else {
 		glWidget->removeRenderPass(RenderPass::BUNDLER_POINTS_PASS);
+	}
+}
+
+void MainWindow::normalsPassCB() {
+	if(normalsRP->isChecked()) {
+		glWidget->addRenderPass(RenderPass::NORMALS_PASS);
+	}
+	else {
+		glWidget->removeRenderPass(RenderPass::NORMALS_PASS);
 	}
 }
 

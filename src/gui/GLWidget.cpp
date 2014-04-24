@@ -6,6 +6,7 @@
 #include "../RenderPass/TexturingPrePass.h"
 #include "../RenderPass/BundlerPointsRenderPass.h"
 #include "../RenderPass/RadarRenderPass.h"
+#include "../RenderPass/NormalsDebugPass.h"
 #include "../io/CalibrationLoader.h"
 #include "../io/ImageLoader.h"
 #include "../Settings.h"
@@ -28,13 +29,8 @@ void GLWidget::paintGL() {
 	if(object) {
 		camera.updateCameraViewMatrix();
 		object->rotate(Settings::objectRotate);
-		glm::vec3 viewDir = object->getCentroidPosition() - camera.getCameraPosition();
-		
 //		rayCaster->cast(viewDir);
-		
 		textureHandler->emptyClusters();
-//		glm::vec3 c(glm::inverse(object->getMvm()) * glm::vec4(camera.getCameraPosition(), 1.0));
-//		textureHandler->updateTextures(c, viewDir, object->getMvm(), Settings::usingTextures);
 		
 		renderPassHandler.draw(object);
 		
@@ -190,7 +186,12 @@ void GLWidget::addRenderPass(RenderPass::RenderPassType pass) {
 				std::make_shared<RadarRenderPass>(renderer, shaderHandler, textureHandler, camera)
 			);
 			break;
-			
+		case RenderPass::NORMALS_PASS:
+			renderPassHandler.add(
+				RenderPass::NORMALS_PASS,
+				std::make_shared<NormalsDebugPass>(renderer, shaderHandler, textureHandler)
+			);
+			break;
 		default:
 			return;
 	}

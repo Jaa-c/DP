@@ -10,6 +10,7 @@
 
 #include <GL/glew.h>
 #include <iostream>
+#include "io/DataLoader.h"
 
 
 class ShaderHandler {
@@ -20,6 +21,7 @@ public:
 		SHADER_TEXTURING_1,
 		SHADER_TEXTURING_2,
 		SHADER_POINTS,
+		SHADER_NORMALS,
 		SIZE,
 	};
 	
@@ -31,7 +33,8 @@ private:
 		"basic",
 		"texturing_1",
 		"texturing_2",
-		"points"
+		"points",
+		"normals"
 	};
 	
 	/// Shader program ids
@@ -48,7 +51,7 @@ public:
 	
 	GLuint getProgramId(ShaderType shader) {
 		if(g_ProgramId[shader] == 0) {
-			compileShaderProgram(shader, true, false, true); //TODO
+			compileShaderProgram(shader);
 		}
 		return g_ProgramId[shader];
 	}
@@ -61,7 +64,7 @@ public:
 
 private:
 	
-	void compileShaderProgram(ShaderType shader, bool vert, bool geom, bool frag) {
+	void compileShaderProgram(ShaderType shader) {
 		std::string name = SHADER_PATH + SHADER_SRC[shader];
 		
 		// Delete shader program if exists
@@ -72,24 +75,24 @@ private:
 		// Create shader program object
 		g_ProgramId[shader] = glCreateProgram();
 		std::string n;
-		if (vert) {
-			n = name + ".vert";
+		n = name + ".vert";
+		if(DataLoader::fileExists(n)) {
 			Log::d("Compiling " + n + ": ");
 			GLuint id = createShaderFromFile(GL_VERTEX_SHADER, n.c_str());
 			glAttachShader(g_ProgramId[shader], id);
 			glDeleteShader(id);
 		}
-
-		if (geom) {
-			n = name + ".geom";
+	
+		n = name + ".geom";
+		if(DataLoader::fileExists(n)) {
 			Log::d("Compiling " + n + ": ");
 			GLuint id = createShaderFromFile(GL_GEOMETRY_SHADER, n.c_str());
 			glAttachShader(g_ProgramId[shader], id);
 			glDeleteShader(id);
 		}
-
-		if (frag) {
-			n = name + ".frag";
+		
+		n = name + ".frag";
+		if(DataLoader::fileExists(n)) {
 			Log::d("Compiling " + n + ": ");
 			GLuint id = createShaderFromFile(GL_FRAGMENT_SHADER, n.c_str());
 			glAttachShader(g_ProgramId[shader], id);

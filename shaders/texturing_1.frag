@@ -19,6 +19,7 @@ in block {
 	smooth vec4 v_position;
 	smooth vec4 v_viewPos;
 	smooth vec3 v_normal;
+	smooth vec3 v_origNormal;
 } In;
 
 layout(location = 0) out vec3 a_data;
@@ -45,7 +46,7 @@ void main() {
 	vec3 bestCoords = vec3(.0, -1.0f, -1.0f);
 	float bestWeight = 0.0f;
 	for(int i = 0; i < u_textureCount; ++i) {
-		weight = 1.f;
+		weight = 1.f / (i + 1);
 
 		projectCoords(i, In.v_position, coords);
 		weight *= float(inRange(i, coords));
@@ -63,7 +64,6 @@ void main() {
 	a_data = vec3(0.0f, 0.0f, 0.0f);
 
 	if(bestWeight == 0) {
-		a_data = N;
+		a_data = normalize(In.v_origNormal);//N
 	}
-	
 }

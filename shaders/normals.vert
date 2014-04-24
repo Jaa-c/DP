@@ -6,20 +6,15 @@ uniform mat3 u_NormalMatrix;
 
 layout(location = 0) in vec3 a_position;
 layout(location = 1) in vec3 a_normal;
-layout(location = 2) in vec2 a_textureCoords;
 
 out block {
-	smooth vec4 v_position;
 	smooth vec4 v_viewPos;
 	smooth vec3 v_normal;
 	smooth vec3 v_origNormal;
 } Out;
 
 void main () {
-	Out.v_position =  vec4(a_position, 1.0f);
-	Out.v_viewPos = u_ModelViewMatrix * Out.v_position;
+	Out.v_viewPos = u_ModelViewMatrix * vec4(a_position, 1.0f);
 	Out.v_normal = u_NormalMatrix * a_normal;
 	Out.v_origNormal = a_normal;
-
-	gl_Position = u_ProjectionMatrix * Out.v_viewPos;
 }

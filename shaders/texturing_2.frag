@@ -58,7 +58,7 @@ void main() {
 	vec3 bestCoords = vec3(.0, -1.0f, -1.0f);
 	float bestWeight = 0.0f;
 	for(int i = 0; i < u_textureCount; ++i) {
-		weight = 1.f;
+		weight = 1.f / (i + 1);
 
 		projectCoords(i, In.v_position, coords);
 		weight *= float(inRange(i, coords));
@@ -66,7 +66,7 @@ void main() {
 		mat4 Rt = ub_texData[i].u_TextureRt;
 		float dirDiff = dot(N, normalize(u_NormalMatrix *  vec3(Rt[0][2], Rt[1][2], Rt[2][2])));
 		weight *= -(dirDiff + 1.f) / (1.f - dirLimit) + 1;
-		
+
 		if(weight > bestWeight) { //TODO
 			bestWeight = weight;
 			bestCoords.x = i;
