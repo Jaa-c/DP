@@ -128,6 +128,7 @@ public:
 			cam.direction = rotate[2];
 			//-----------
 			string name = fileList.at(i);
+			//if(i % 17 != 0) continue; 
 			
 			ImageData img;
 			if(imgLoader.checkImage(imageFolder, name, img)) {
@@ -137,8 +138,8 @@ public:
 						img.thumbImage, img.thumbSize, img.thumbRowPadding));
 			}
 			
-			//if(i > 80) break;
 		}		
+		
 	
 		return data;
 	}

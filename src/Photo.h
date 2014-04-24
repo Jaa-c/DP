@@ -25,7 +25,7 @@ struct CameraPosition {
 	float d1, d2; //currently not used
 	
 	CameraPosition() {
-		focalL = 0;
+		focalL = d1 = d2 = 0;
 	}
 };
 

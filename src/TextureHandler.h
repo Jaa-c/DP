@@ -84,8 +84,7 @@ public:
 	//TODO needs some optimizations...
 	void updateTextures(
 		const glm::vec3 &cameraPos, 
-		const glm::vec3 &viewDir, 
-		const glm::mat4 &mvm, 
+		const glm::vec3 &viewDir,
 		const uint count
 	);
 	
@@ -100,10 +99,10 @@ public:
 	//TODO SLOW, this is just a stupid version
 	//but not major problem for now
 	//only based on current direction
-	std::vector<Photo*> getClosestCameras(const glm::vec3 & dir, const glm::mat4 &mvm, const uint count);
+	std::vector<Photo*> getClosestCameras(const glm::vec3 & dir, const uint count);
 	
 	///based on directions from RayCaster
-	std::vector<Photo*> getBestCameras(const glm::vec3 & dir, const glm::mat4 &mvm, const uint count);
+	std::vector<Photo*> getBestCameras(const glm::vec3 & dir, const uint count);
 
 };
 

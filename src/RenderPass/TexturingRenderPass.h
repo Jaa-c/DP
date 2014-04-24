@@ -40,6 +40,7 @@ public:
 	void draw(std::shared_ptr<ObjectData> object) {
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_CULL_FACE);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		glClearColor(0.4f, 0.4f, 0.7f, 0);
 		
 		if(programID == GL_ID_NONE) {

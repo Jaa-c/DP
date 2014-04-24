@@ -80,6 +80,7 @@ void main() {
 	if(ub_texData[int(bestCoords.x)].u_TextureSize.x == 512) color.b = 0.4;
 	if(bestWeight == 0) color.r = 1;
 
-
+	
 	a_FragColor = vec4(color, 1.0f);
+	//a_FragColor = vec4(-N, 1.0f);
 }

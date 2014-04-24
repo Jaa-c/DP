@@ -11,6 +11,7 @@
 #include <QThreadPool>
 #include "glm/glm.hpp"
 #include "glm/core/type_mat3x3.hpp"
+#include "glm/gtc/matrix_inverse.hpp"
 
 #include "TextureHandler.h"
 #include "globals.h"
@@ -42,8 +43,7 @@ TextureHandler::~TextureHandler() {
 //TODO needs some optimizations...
 void TextureHandler::updateTextures(
 	const glm::vec3 &cameraPos, 
-	const glm::vec3 &viewDir, 
-	const glm::mat4 &mvm, 
+	const glm::vec3 &viewDir, //in object space!!
 	const uint count
 ) {
 	if(Settings::useKDT) {
@@ -85,7 +85,7 @@ void TextureHandler::updateTextures(
 	}
 
 //	std::vector<Photo*> currentPhotos = getClosestCameras(viewDir, mvm, count);
-	std::vector<Photo*> currentPhotos = getBestCameras(viewDir, mvm, count);
+	std::vector<Photo*> currentPhotos = getBestCameras(viewDir, count);
 	
 	///mostly DEBUG
 	if(Settings::usePrefferedCamera) {
@@ -155,31 +155,28 @@ void TextureHandler::updateTextures(
 	}
 }
 
-std::vector<Photo*> TextureHandler::getBestCameras(const glm::vec3 & dir, const glm::mat4 &mvm, const uint count) {
+std::vector<Photo*> TextureHandler::getBestCameras(const glm::vec3 & dir, const uint count) {
 	//todo, only basic stupid version
 	std::set<Photo *> result;
-	std::vector<Photo *> r = getClosestCameras(dir, mvm, count);
+	std::vector<Photo *> r = getClosestCameras(dir, count);
 	result.insert(r.begin(), r.end());
 	if(clusters.size() > 0) {
 		for(Cluster &c : clusters) {
 			if(c.weight > .1f) {
-				std::vector<Photo *> tmp = getClosestCameras(c.centroid, mvm, 2);
+				std::vector<Photo *> tmp = getClosestCameras(c.centroid, 2);
 				result.insert(tmp.begin(), tmp.end());
-				break; // TEMP!!
 			}
 		}
 	}
 	return std::vector<Photo*>(result.begin(), result.end());
 }
 
-std::vector<Photo*> TextureHandler::getClosestCameras(const glm::vec3 & dir, const glm::mat4 &mvm, const uint count) {
+std::vector<Photo*> TextureHandler::getClosestCameras(const glm::vec3 &d, const uint count) {
 
-	const glm::mat4 vecMat = glm::inverse(glm::transpose(mvm));
+	const glm::vec3 dir = glm::normalize(d);
 
-	auto comp = [vecMat, dir](const Photo* a, const Photo* b) {
-		const glm::vec3 ta = glm::vec3(vecMat * glm::vec4(a->camera.direction, 1.0f));
-		const glm::vec3 tb = glm::vec3(vecMat * glm::vec4(b->camera.direction, 1.0f));
-		return glm::dot(ta, dir) > glm::dot(tb, dir);
+	auto comp = [dir](const Photo* a, const Photo* b) {
+		return glm::dot(a->camera.direction, dir) > glm::dot(b->camera.direction, dir);
 	};
 
 	std::set<Photo*, decltype(comp)> result(comp);
@@ -194,6 +191,7 @@ std::vector<Photo*> TextureHandler::getClosestCameras(const glm::vec3 & dir, con
 			result.insert(&p);
 		}
 	}
+	
 	auto beg = result.begin();
 	std::advance(beg, count);
 	return std::vector<Photo*>(result.begin(), beg);

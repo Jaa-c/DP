@@ -7,8 +7,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group name="DP">
+            <file>file:/home/jaa/Documents/FEL/DP/trunk/qtDP/shaders/texturing_1.frag</file>
             <file>file:/home/jaa/Documents/FEL/DP/trunk/qtDP/src/RenderPass/TexturingPrePass.h</file>
             <file>file:/home/jaa/Dokumenty/FEL/DP/trunk/qtDP/src/TextureHandler.cpp</file>
+            <file>file:/home/jaa/Documents/FEL/DP/trunk/qtDP/shaders/texturing_2.frag</file>
         </group>
     </open-files>
 </project-private>
