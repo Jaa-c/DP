@@ -84,12 +84,13 @@ public:
 		assert(programID != GL_ID_NONE);
 		glUseProgram(programID);
 		
-		
-		glm::vec3 viewDir = object->getCentroidPosition() - renderer.getCamera().getCameraPosition();
-		glm::vec3 c(glm::inverse(object->getMvm()) * glm::vec4(renderer.getCamera().getCameraPosition(), 1.0));
-		
-		std::vector<Photo *> photos = textureHandler->getClosestCameras(viewDir, object->getMvm(), Settings::usingTextures); 
-		
+		const glm::mat4 invMvm = glm::transpose(object->getMvm());
+		glm::vec3 viewDir = glm::normalize(object->getCentroidPosition() - renderer.getCamera().getCameraPosition());
+		glm::vec3 viewDirObjSpace(glm::normalize(invMvm * glm::vec4(viewDir, 1.0f)));
+		const glm::vec3 camPos(glm::inverse(object->getMvm()) * glm::vec4(renderer.getCamera().getCameraPosition(), 1.0f));
+
+		std::vector<Photo *> photos = textureHandler->getClosestCameras(viewDirObjSpace, Settings::usingTextures); 
+				
 		if(textureDataUB != GL_ID_NONE) {
 			glBindBuffer(GL_UNIFORM_BUFFER, textureDataUB);
 			int offset = 0;
@@ -113,19 +114,17 @@ public:
 		if(normalsTexture == GL_ID_NONE) {
 			glGenTextures(1, &normalsTexture);
 			glBindTexture(GL_TEXTURE_2D, normalsTexture);
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, winSize.x, winSize.y, 0, GL_RGB, GL_FLOAT, NULL);
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, winSize.x, winSize.y, 0, GL_RGB, GL_FLOAT, NULL);
 		}
 		if(normalsSampler == GL_ID_NONE) {
 			glGenSamplers(1, &normalsSampler);
 			glSamplerParameteri(normalsSampler, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 			glSamplerParameteri(normalsSampler, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-			glSamplerParameteri(normalsSampler, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-			glSamplerParameteri(normalsSampler, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
 		}
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, normalsTexture);
 		glBindSampler(0, normalsSampler);
-		
+
 		if(frameBuffer == GL_ID_NONE) {
 			glGenFramebuffers(1, &frameBuffer);
 		}
@@ -145,7 +144,6 @@ public:
 		GLint texCount = photos.size();
 		glUniform1i(loc_textureCount, texCount);
 				
-		
 		glUniform3fv(loc_viewDir, 1, &viewDir[0]);
 		
 		renderer.setUniformLocations(&uLocs);
@@ -183,7 +181,6 @@ public:
 			}
 		}
 		
-//		std::cout << "normals size: " << normals.size() << "\n";
 		bool moving = true;
 		int iterations = 0;
 		while(moving && iterations < 20) {
@@ -208,9 +205,15 @@ public:
 				int moveTo = -1;
 				for(Cluster &c : clusters) {
 					const float diff = glm::dot(n.second, c.centroid);
-					if(diff > dist + 0.001) {
+					if(diff > dist) {
 						moveTo = c.id;
 						dist = diff; // !?
+					}
+					else if(diff < dist - 0.05) { //merge similar clusters
+						if(c.id < n.first) {
+							moveTo = c.id;
+							dist = diff; // !?
+						}
 					}
 				}
 				if(moveTo != -1) {
@@ -225,15 +228,15 @@ public:
 			c.size = 0;
 		}
 		for(Norm &n : normals) {
-			clusters[n.first].weight += glm::dot(n.second, clusters[n.first].centroid);
 			clusters[n.first].centroid += n.second;
-			clusters[n.first].size++; // zbytecny?
+			clusters[n.first].size++;
 		}
 		for(Cluster &cl: clusters) {
-			cl.weight /= (float) normals.size();
 			cl.centroid /= (float) cl.size;
 			cl.centroid *= -1;
 			cl.centroid = glm::normalize(cl.centroid);
+			
+			cl.weight = cl.size / (float) normals.size();
 		}
 
 		std::sort(clusters.begin(), clusters.end(), 
@@ -241,10 +244,9 @@ public:
 					return a.weight > b.weight;
 				}
 		);
-//		std::cout << "Clusters found in " << iterations << " iterations\n";
 		
 		textureHandler->setClusters(clusters);
-		textureHandler->updateTextures(c, viewDir, object->getMvm(), Settings::usingTextures);
+		textureHandler->updateTextures(camPos, viewDirObjSpace, Settings::usingTextures);
 		
 		glCheckError();
 		glUseProgram(0);
