@@ -22,6 +22,7 @@ public:
 		SHADER_TEXTURING_2,
 		SHADER_POINTS,
 		SHADER_NORMALS,
+		SHADER_COMPUTE_KMENAS,
 		SIZE,
 	};
 	
@@ -34,7 +35,8 @@ private:
 		"texturing_1",
 		"texturing_2",
 		"points",
-		"normals"
+		"normals",
+		"kmeans"
 	};
 	
 	/// Shader program ids
@@ -98,6 +100,14 @@ private:
 			glAttachShader(g_ProgramId[shader], id);
 			glDeleteShader(id);
 		}
+		
+		n = name + ".comp";
+		if(DataLoader::fileExists(n)) {
+			Log::d("Compiling " + n + ": ");
+			GLuint id = createShaderFromFile(GL_COMPUTE_SHADER, n.c_str());
+			glAttachShader(g_ProgramId[shader], id);
+			glDeleteShader(id);
+		}
 
 		// Link shader program
 		glLinkProgram(g_ProgramId[shader]);
@@ -124,6 +134,8 @@ private:
 			case GL_FRAGMENT_SHADER: log = "fragment shader creation %s";
 				break;
 			case GL_GEOMETRY_SHADER: log = "geometry shader creation %s";
+				break;
+			case GL_COMPUTE_SHADER: log = "compute shader creation %s";
 				break;
 			default: 
 				return 0;

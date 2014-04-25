@@ -83,6 +83,7 @@
       <itemPath>Makefile</itemPath>
       <itemPath>shaders/basic.frag</itemPath>
       <itemPath>shaders/basic.vert</itemPath>
+      <itemPath>shaders/kmeans.comp</itemPath>
       <itemPath>shaders/normals.frag</itemPath>
       <itemPath>shaders/normals.geom</itemPath>
       <itemPath>shaders/normals.vert</itemPath>
