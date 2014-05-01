@@ -43,13 +43,17 @@ public:
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		glClearColor(0.4f, 0.4f, 0.7f, 0);
 		
+		const uint sizeOfTextureData = sizeof(glm::mat4) + sizeof(glm::ivec2) + 2 * sizeof(float);
+		
 		if(programID == GL_ID_NONE) {
 			programID = shaderHandler.getProgramId(shader);
 			getDefaultUniformLocations();
 			
 			loc_textureCount = glGetUniformLocation(programID, "u_textureCount");
 			loc_viewDir = glGetUniformLocation(programID, "u_viewDir");
-			textureDataUB = prePass->textureDataUB;
+			if(prePass) {
+				textureDataUB = prePass->textureDataUB;
+			}
 			
 			// the binding point must be smaller than GL_MAX_UNIFORM_BUFFER_BINDINGS
 			GLuint bindingPoint = 1, blockIndex; 
@@ -59,15 +63,25 @@ public:
 			}
 			else {
 				glUniformBlockBinding(programID, blockIndex, bindingPoint);
+				if(textureDataUB == GL_ID_NONE) {
+					glGenBuffers(1, &textureDataUB);
+					glBindBuffer(GL_UNIFORM_BUFFER, textureDataUB);
+					glBufferData(GL_UNIFORM_BUFFER, 32 * sizeOfTextureData, NULL, GL_STATIC_DRAW);
+				}
 				glBindBuffer(GL_UNIFORM_BUFFER, textureDataUB);
 				glBindBufferBase(GL_UNIFORM_BUFFER, bindingPoint, textureDataUB);
 			}
 		}
 		
 		assert(programID != GL_ID_NONE);
+		assert(textureHandler);
 		glUseProgram(programID);
 		
-		assert(textureHandler);
+		const glm::mat4 invMvm = glm::transpose(object->getMvm());
+		glm::vec3 viewDir = glm::normalize(object->getCentroidPosition() - renderer.getCamera().getCameraPosition());
+		glm::vec3 viewDirObjSpace(glm::normalize(invMvm * glm::vec4(viewDir, 1.0f)));
+		
+		textureHandler->updateTextures(viewDirObjSpace, Settings::usingTextures);
 		std::vector<Texture> * textures = &textureHandler->getTextures();
 		
 		if(textureDataUB != GL_ID_NONE) {
@@ -89,7 +103,6 @@ public:
 		GLint texCount = textures->size();
 		glUniform1i(loc_textureCount, texCount);
 				
-		glm::vec3 viewDir = object->getCentroidPosition() - renderer.getCamera().getCameraPosition();
 		glUniform3fv(loc_viewDir, 1, &viewDir[0]);
 		
 		renderer.setUniformLocations(&uLocs);

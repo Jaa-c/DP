@@ -31,6 +31,7 @@ private slots:
 	void openCB();
 	void quitCB();
 	void texturingPassCB();
+	void texturingPrePassCB();
 	void basicTexturingPassCB();
 	void bundlerPointsPassCB();
 	void normalsPassCB();
@@ -66,6 +67,7 @@ private:
 	std::shared_ptr<QAction> openAct;
 	std::shared_ptr<QAction> quitAct;
 	std::shared_ptr<QAction> texturingRP;
+	std::shared_ptr<QAction> texturingPreRP;
 	std::shared_ptr<QAction> basicTexturingRP;
 	std::shared_ptr<QAction> bundlerPointsRP;
 	std::shared_ptr<QAction> radarRP;

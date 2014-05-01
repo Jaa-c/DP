@@ -49,8 +49,6 @@ void TextureHandler::updateTextures(
 		nearPhotos.clear();
 	}
 	
-
-//	std::vector<Photo*> currentPhotos = getClosestCameras(viewDir, mvm, count);
 	std::vector<Photo*> currentPhotos = getBestCameras(viewDir, count);
 	
 	///mostly DEBUG
@@ -124,20 +122,21 @@ void TextureHandler::updateTextures(
 std::vector<Photo*> TextureHandler::getBestCameras(const glm::vec3 & dir, const uint count) {
 	int remaining = count;
 	std::set<Photo *> result;
-	remaining -= ceil(count/2.f); //how moch more photos to add
-	std::vector<Photo *> r = getClosestCameras(dir, ceil(count/2.f));
+	int use = clusters.empty() ? count : ceil(count/2.f);
+	remaining -= use; //how moch more photos to add
+	std::vector<Photo *> r = getClosestCameras(dir, use);
 	result.insert(r.begin(), r.end());
 	if(clusters.size() > 0) {
 		for(Cluster &c : clusters) {
 			if(remaining > 0) {
-				int use = ceil(floor(count/2.f) * c.weight); //how many pictures to use for this direction
+				use = ceil(floor(count/2.f) * c.weight); //how many pictures to use for this direction
 				std::vector<Photo *> tmp = getClosestCameras(c.centroid, count); //need to get more if duplicite
 				for(Photo * p : tmp) {
 					if(result.find(p) == result.end()) {
 						use--;
 						remaining--;
 						result.insert(p);
-						if(use == 0) {
+						if(use == 0 || remaining == 0) {
 							break;
 						}
 					}

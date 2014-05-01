@@ -74,9 +74,7 @@ public:
 		glEnable(GL_TEXTURE_2D);
 		glDisable(GL_BLEND);
 		
-		
 		assert(textureHandler);
-		//std::vector<Texture> * textures = &textureHandler->getTextures();
 		
 		const uint sizeOfTextureData = sizeof(glm::mat4) + sizeof(glm::ivec2) + 2 * sizeof(float);
 		if(programID == GL_ID_NONE) {
@@ -108,7 +106,6 @@ public:
 		const glm::mat4 invMvm = glm::transpose(object->getMvm());
 		glm::vec3 viewDir = glm::normalize(object->getCentroidPosition() - renderer.getCamera().getCameraPosition());
 		glm::vec3 viewDirObjSpace(glm::normalize(invMvm * glm::vec4(viewDir, 1.0f)));
-		const glm::vec3 camPos(glm::inverse(object->getMvm()) * glm::vec4(renderer.getCamera().getCameraPosition(), 1.0f));
 
 		std::vector<Photo *> photos = textureHandler->getClosestCameras(viewDirObjSpace, Settings::usingTextures); 
 				
@@ -174,9 +171,7 @@ public:
 		renderer.drawObject(*object);
 		
 		glUseProgram(0);
-		
-		if(true) { //TMP DEBUG
-		
+				
 		if(kmeansShaderID == GL_ID_NONE) {
 			kmeansShaderID = shaderHandler.getProgramId(ShaderHandler::SHADER_COMPUTE_KMENAS);
 			loc_km_comp_texSize = glGetUniformLocation(kmeansShaderID, "u_texSize");
@@ -212,7 +207,7 @@ public:
 		
 		int iter = 0;
 		bool moving = true;
-		while(moving && iter < 2) {
+		while(moving && iter < 5) {
 			iter++;
 			glUseProgram(reductionShaderID);
 
@@ -371,9 +366,7 @@ public:
 		);
 		
 		textureHandler->setClusters(clusters);
-		}
-		textureHandler->updateTextures(viewDirObjSpace, Settings::usingTextures);
-		
+				
 		glCheckError();
 		glUseProgram(0);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);

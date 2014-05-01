@@ -54,6 +54,7 @@ void MainWindow::initScene() {
 	if(radarRP->isChecked()) {
 		glWidget->addRenderPass(RenderPass::RADAR_PASS);
 	}
+	texturingPreRP->setChecked(true);
 	texturingRP->setChecked(true);
 	radarRP->setChecked(true);
 }
@@ -70,6 +71,11 @@ void MainWindow::createActions() {
 	connect(quitAct.get(), SIGNAL(triggered()), this, SLOT(quitCB()));
 	
 	texGroup = std::make_shared<QActionGroup>(this);
+	
+	texturingPreRP = std::make_shared<QAction>(tr("Texturing &coverage Pass"), this);
+	texturingPreRP->setCheckable(true);
+	//texturingPreRP->setActionGroup(texGroup.get());
+	connect(texturingPreRP.get(), SIGNAL(changed()), this, SLOT(texturingPrePassCB()));
 	
 	texturingRP = std::make_shared<QAction>(tr("&Texturing Pass"), this);
 	texturingRP->setCheckable(true);
@@ -111,6 +117,7 @@ void MainWindow::createMenus() {
 	file->addAction(quitAct.get());
 	
 	renderPass = menuBar()->addMenu(tr("&Render Passes"));
+	renderPass->addAction(texturingPreRP.get());
 	renderPass->addAction(texturingRP.get());
 	renderPass->addAction(basicTexturingRP.get());
 	renderPass->addAction(bundlerPointsRP.get());
@@ -159,6 +166,15 @@ void MainWindow::texturingPassCB() {
 	}
 	else {
 		glWidget->removeRenderPass(RenderPass::TEXTURING_PASS);
+	}
+}
+
+void MainWindow::texturingPrePassCB() {
+	if(texturingPreRP->isChecked()) {
+		glWidget->addRenderPass(RenderPass::TEXTURING_PRE_PASS);
+	}
+	else {
+		glWidget->removeRenderPass(RenderPass::TEXTURING_PRE_PASS);
 	}
 }
 
