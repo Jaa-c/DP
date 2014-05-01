@@ -122,18 +122,30 @@ void TextureHandler::updateTextures(
 }
 
 std::vector<Photo*> TextureHandler::getBestCameras(const glm::vec3 & dir, const uint count) {
-	//todo, only basic stupid version
+	int remaining = count;
 	std::set<Photo *> result;
-	std::vector<Photo *> r = getClosestCameras(dir, count);
+	remaining -= ceil(count/2.f); //how moch more photos to add
+	std::vector<Photo *> r = getClosestCameras(dir, ceil(count/2.f));
 	result.insert(r.begin(), r.end());
 	if(clusters.size() > 0) {
 		for(Cluster &c : clusters) {
-			if(c.weight > .1f) {
-				std::vector<Photo *> tmp = getClosestCameras(c.centroid, 2);
-				result.insert(tmp.begin(), tmp.end());
+			if(remaining > 0) {
+				int use = ceil(floor(count/2.f) * c.weight); //how many pictures to use for this direction
+				std::vector<Photo *> tmp = getClosestCameras(c.centroid, count); //need to get more if duplicite
+				for(Photo * p : tmp) {
+					if(result.find(p) == result.end()) {
+						use--;
+						remaining--;
+						result.insert(p);
+						if(use == 0) {
+							break;
+						}
+					}
+				}
 			}
 		}
 	}
+	assert(result.size() <= count);
 	return std::vector<Photo*>(result.begin(), result.end());
 }
 
@@ -147,15 +159,8 @@ std::vector<Photo*> TextureHandler::getClosestCameras(const glm::vec3 &d, const 
 
 	std::set<Photo*, decltype(comp)> result(comp);
 
-	if(Settings::useKDT) {
-		for(std::pair<int, Photo *> p : nearPhotos) {
-			result.insert(p.second);
-		}
-	}
-	else {
-		for(Photo &p : photos) {
-			result.insert(&p);
-		}
+	for(Photo &p : photos) {
+		result.insert(&p);
 	}
 	
 	auto beg = result.begin();

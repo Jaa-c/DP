@@ -259,7 +259,7 @@ public:
 		
 		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, resultBuffer);
 		Cl* data = (Cl*) glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_READ_WRITE);
-		int sum;
+		int sum = 0;
 		for(int i = 0; i < 5; ++i) {
 			if(data[i].size != 0) {
 				Cluster c;
@@ -361,6 +361,7 @@ public:
 			cl.centroid = glm::normalize(cl.centroid);
 			
 			cl.weight = cl.size / (float) sum;
+			assert(cl.weight >= 0);
 		}
 
 		std::sort(clusters.begin(), clusters.end(), 
