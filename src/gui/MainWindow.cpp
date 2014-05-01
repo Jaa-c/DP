@@ -98,11 +98,7 @@ void MainWindow::createActions() {
 	
 	objectSettings = std::make_shared<QAction>(tr("&Object settings"), this);
 	connect(objectSettings.get(), SIGNAL(triggered()), this, SLOT(displayObjectSettingsCB()));
-	
-	useKDT = std::make_shared<QAction>(tr("&Use KDTree"), this);
-	useKDT->setCheckable(true);
-	connect(useKDT.get(), SIGNAL(changed()), this, SLOT(useKDTCB()));
-	
+		
 	reloadShaders = std::make_shared<QAction>(tr("&Recompile shaders"), this);
 	reloadShaders->setShortcut(Qt::Key_R | Qt::CTRL);
 	connect(reloadShaders.get(), SIGNAL(triggered()), this, SLOT(reloadShadersCB()));
@@ -127,7 +123,6 @@ void MainWindow::createMenus() {
 	settings = menuBar()->addMenu(tr("&Settings"));
 	settings->addAction(programSettings.get());
 	settings->addAction(objectSettings.get());
-	settings->addAction(useKDT.get());
 	
 	debug = menuBar()->addMenu(tr("&Debug"));
 	debug->addAction(reloadShaders.get());
@@ -157,11 +152,7 @@ void MainWindow::displayObjectSettingsCB() {
  void MainWindow::quitCB() {
 	 QApplication::quit();
  }
- 
- void MainWindow::useKDTCB() {
-	 Settings::useKDT = useKDT->isChecked();
- }
- 
+  
 void MainWindow::texturingPassCB() {
 	if(texturingRP->isChecked()) {
 		glWidget->addRenderPass(RenderPass::TEXTURING_PASS);

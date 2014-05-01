@@ -90,9 +90,7 @@ void GLWidget::createScene(
 		textureHandler = std::make_shared<TextureHandler>();
 		CalibrationLoader cl(textureHandler, prgcb);
 		cl.loadData(type, photos, file1, file2);
-		
-		textureHandler->buildTree();
-		
+				
 		object = std::make_shared<ObjectData>(geom);
 		object->pointData = cl.getPointData();
 		object->rotate(Settings::objectRotate);

@@ -37,8 +37,6 @@ private slots:
 	void radarPassCB();
 	void displaySettingsCB();
 	void displayObjectSettingsCB();
-	void useKDTCB();
-	
 	void reloadShadersCB();
 
 
@@ -75,7 +73,6 @@ private:
 	std::shared_ptr<QAction> reloadShaders;
 	std::shared_ptr<QAction> programSettings;
 	std::shared_ptr<QAction> objectSettings;
-	std::shared_ptr<QAction> useKDT;
 	
 	std::shared_ptr<QActionGroup> texGroup;
 

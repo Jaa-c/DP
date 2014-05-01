@@ -371,7 +371,7 @@ public:
 		
 		textureHandler->setClusters(clusters);
 		}
-		textureHandler->updateTextures(camPos, viewDirObjSpace, Settings::usingTextures);
+		textureHandler->updateTextures(viewDirObjSpace, Settings::usingTextures);
 		
 		glCheckError();
 		glUseProgram(0);

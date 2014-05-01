@@ -9,11 +9,11 @@
 #define	TEXTUREHANDLER_H
 
 #include <vector>
+#include <stack>
 #include <unordered_map>
 #include <QObject>
 #include <QRunnable>
 
-#include "kdtree/KDTree.h"
 #include "Photo.h"
 #include "Texture.h"
 #include "io/ImageLoader.h"
@@ -67,8 +67,6 @@ class TextureHandler : public QObject {
 	std::vector<Texture> textures;
 	std::unordered_map<int, Photo *> nearPhotos;
 	
-	KDTree<Photo> kdtree;
-	
 	std::vector<Cluster> clusters;
 	
 public slots:
@@ -78,12 +76,10 @@ public:
 	TextureHandler();
 	~TextureHandler();
 	
-	void buildTree();
 	void loadFullImage(Photo &p);
 	void releaseImage(Photo &p);
 	//TODO needs some optimizations...
 	void updateTextures(
-		const glm::vec3 &cameraPos, 
 		const glm::vec3 &viewDir,
 		const uint count
 	);

@@ -42,47 +42,13 @@ TextureHandler::~TextureHandler() {
 
 //TODO needs some optimizations...
 void TextureHandler::updateTextures(
-	const glm::vec3 &cameraPos, 
 	const glm::vec3 &viewDir, //in object space!!
 	const uint count
 ) {
-	if(Settings::useKDT) {
-		std::vector<Photo *> toLoad, toDelete;
-		std::vector<Photo *> currNearPhotos = kdtree.kNearestNeighbors<glm::vec3>(&cameraPos, 50);
-
-		std::unordered_map<int, Photo *> result; //TODO: test if better than vector lookup
-		for(Photo *p : currNearPhotos) {
-			result.insert(std::pair<int, Photo *>(p->ID, p));
-			if(p->image.data.size() == 0 && !p->loading) {
-				toLoad.push_back(p);
-			}
-		}
-
-		for(std::pair<int, Photo *> p : nearPhotos) {
-			if(result.find(p.first) == result.end()) { 
-				toDelete.push_back(p.second);
-			}
-		}
-
-		for(Photo *p : toLoad) {
-			//add it right now, since we have thubnails
-			nearPhotos.insert(std::pair<int, Photo *>(p->ID, p));
-		}
-
-		if(nearPhotos.size() == 0) {
-			return;
-		}
-
-		for(Photo *p : toDelete) {
-			nearPhotos.erase(p->ID);
-			releaseImage(*p);
-		}
+	if(!nearPhotos.empty()) {
+		nearPhotos.clear();
 	}
-	else {
-		if(!nearPhotos.empty()) {
-			nearPhotos.clear();
-		}
-	}
+	
 
 //	std::vector<Photo*> currentPhotos = getClosestCameras(viewDir, mvm, count);
 	std::vector<Photo*> currentPhotos = getBestCameras(viewDir, count);
@@ -227,10 +193,6 @@ void TextureHandler::getResult(Photo *p) {
 	else {
 		p->loading = false;
 	}
-}
-
-void TextureHandler::buildTree() {
-	kdtree.construct(&photos);	
 }
 
 
