@@ -35,11 +35,14 @@ void GLWidget::paintGL() {
 		
 		glCheckError(); //DEBUG
 		glUseProgram(0);
+		
+		mainWin.setPhotos(textureHandler->getTextures().size());
 	}
 	
 	gettimeofday(&end, NULL);
-	if(((end.tv_sec - start.tv_sec) * 1000 + (end.tv_usec - start.tv_usec)/1000.0) > 5000) {
-		Log::i("fps ~ %d", (int)(fps/5.0f + .5f));
+	float t = ((end.tv_sec - start.tv_sec) + (end.tv_usec - start.tv_usec)*10e-6);
+	if(t > 1.f) {
+		mainWin.setFps(fps / t);
 		fps = 0;
 		gettimeofday(&start, NULL);
 	}
@@ -213,11 +216,6 @@ void GLWidget::resizeGL(int w, int h) {
 	controlls.windowSizeChangedImpl(w, h);
 }
 
-void GLWidget::setDisplayRadar(bool value) {
-	displayRadar = value;
-}
-
-
 GLWidget::GLWidget(const QGLFormat& format, int w, int h, QWidget* parent) :
 	QGLWidget(format, parent),
 	camera(w, h), 
@@ -225,7 +223,7 @@ GLWidget::GLWidget(const QGLFormat& format, int w, int h, QWidget* parent) :
 	controlls(Controlls::getInstance()),
 	textureHandler(nullptr), 
 	object(nullptr),
-	displayRadar(false)
+	mainWin(*((MainWindow *) parent))
 {
 	controlls.setPointers(&camera, &shaderHandler);
 

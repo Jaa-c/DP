@@ -19,6 +19,7 @@
 #include "../io/CalibrationLoader.h"
 
 #include "../RenderPassHandler.h"
+#include "MainWindow.h"
 
 #include <QtOpenGL/QGLContext>
 #include <QtOpenGL/QGLWidget>
@@ -44,7 +45,7 @@ class GLWidget : public QGLWidget
 	struct timeval start, end;
 	int fps;
 	
-	bool displayRadar;
+	MainWindow& mainWin;
 	
 	friend class MainWindow;
     

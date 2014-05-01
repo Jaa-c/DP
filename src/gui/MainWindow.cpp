@@ -13,9 +13,24 @@ MainWindow::MainWindow(QApplication *app, int w, int h) : view(nullptr) {
 	createActions();
 	createMenus();
 	
+	statusBar = std::make_shared<QStatusBar>(this);
+	setStatusBar(statusBar.get());
+	statusBar->show();
+
+	
+	fpsLabel = std::make_shared<QLabel>("FPS: ", this);
+	statusBar->addWidget(fpsLabel.get());
+	fpsValue = std::make_shared<QLabel>("", this);
+	statusBar->addWidget(fpsValue.get());
+	
+	texLabel = std::make_shared<QLabel>("| Using photos: ", this);
+	statusBar->addWidget(texLabel.get());
+	texValue = std::make_shared<QLabel>("", this);
+	statusBar->addWidget(texValue.get());
+		
 	//OpenGL context format
 	QGLFormat glFormat;
-    glFormat.setVersion(3, 2);
+    glFormat.setVersion(4, 3);
     glFormat.setProfile(QGLFormat::CompatibilityProfile);
 
 	//OpenGL widget:
@@ -190,4 +205,12 @@ void MainWindow::radarPassCB() {
 	else {
 		glWidget->removeRenderPass(RenderPass::RADAR_PASS);
 	}
+}
+
+void MainWindow::setFps(float fps) {
+	fpsValue->setText(QString::number(fps, 'f', 1));
+}
+
+void MainWindow::setPhotos(int p) {
+	texValue->setText(QString::number(p));
 }

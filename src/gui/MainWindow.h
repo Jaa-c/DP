@@ -10,6 +10,8 @@
 
 #include <QMainWindow>
 #include <QActionGroup>
+ #include <QStatusBar>
+ #include <QLabel>
 
 #include <memory>
 
@@ -21,6 +23,9 @@ class MainWindow : public QMainWindow
 
 public:
 	MainWindow(QApplication *app, int w, int h);
+	
+	void setFps(float fps);
+	void setPhotos(int p);
 	
 private slots:
 	void openCB();
@@ -46,6 +51,13 @@ private:
 	void createMenus();
 	
 	std::shared_ptr<GLWidget> glWidget;
+	
+	std::shared_ptr<QStatusBar> statusBar;
+	
+	std::shared_ptr<QLabel> fpsLabel;
+	std::shared_ptr<QLabel> fpsValue;
+	std::shared_ptr<QLabel> texLabel;
+	std::shared_ptr<QLabel> texValue;
 
 	QMenu* file;
 	QMenu* renderPass;
