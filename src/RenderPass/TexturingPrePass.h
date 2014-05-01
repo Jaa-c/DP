@@ -25,9 +25,13 @@ class TexturingPrePass : public RenderPass {
 	
 	std::vector<float> data;
 	
+	GLuint reductionShaderID;
 	GLuint kmeansShaderID;
-	GLuint loc_comp_texSize;
+	GLuint loc_km_comp_texSize;
+	GLuint loc_red_iter;
+	GLuint loc_red_comp_texSize;
 	GLuint resultBuffer;
+	GLuint idxBuffer;
 	
 public:
 	
@@ -47,12 +51,21 @@ public:
 		loc_viewDir = GL_ID_NONE;
 		
 		kmeansShaderID = GL_ID_NONE;
-		loc_comp_texSize = GL_ID_NONE;
+		reductionShaderID = GL_ID_NONE;
+		loc_km_comp_texSize = GL_ID_NONE;
+		loc_red_iter = GL_ID_NONE;
 		resultBuffer = GL_ID_NONE;
+		idxBuffer = GL_ID_NONE;
 	}
 		
 	~TexturingPrePass() {
 		//TODO delete buffers
+	}
+	
+	virtual void reset() {
+		programID = GL_ID_NONE;
+		kmeansShaderID = GL_ID_NONE;
+		reductionShaderID = GL_ID_NONE;
 	}
 	
 	void draw(std::shared_ptr<ObjectData> object) {
@@ -128,6 +141,8 @@ public:
 			glGenSamplers(1, &normalsSampler);
 			glSamplerParameteri(normalsSampler, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 			glSamplerParameteri(normalsSampler, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+			glSamplerParameteri(normalsSampler, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+			glSamplerParameteri(normalsSampler, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
 		}
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, normalsTexture);
@@ -160,58 +175,102 @@ public:
 		
 		glUseProgram(0);
 		
+		if(true) { //TMP DEBUG
+		
 		if(kmeansShaderID == GL_ID_NONE) {
 			kmeansShaderID = shaderHandler.getProgramId(ShaderHandler::SHADER_COMPUTE_KMENAS);
-			loc_comp_texSize = glGetUniformLocation(kmeansShaderID, "u_texSize");
+			loc_km_comp_texSize = glGetUniformLocation(kmeansShaderID, "u_texSize");
+		}
+		if(reductionShaderID == GL_ID_NONE) {
+			reductionShaderID = shaderHandler.getProgramId(ShaderHandler::SHADER_COMPUTE_REDUCTION);
+			loc_red_comp_texSize = glGetUniformLocation(reductionShaderID, "u_texSize");
+			loc_red_iter = glGetUniformLocation(reductionShaderID, "u_iteration");		
 		}
 		
-		const int sizeOfresult = 20 * sizeof(GLfloat); //TODO
+		const int sizeOfresult = 20 * sizeof(GLfloat) + sizeof(GLboolean); //TODO
+		const float blockSize = 16.f;
+		const glm::ivec2 gridSize(ceil(winSize.x/blockSize), ceil(winSize.y/blockSize));
+		const int sizeofInd = gridSize.x * gridSize.y * 256 * sizeof(GLuint);
 		
 		if(resultBuffer == GL_ID_NONE) {
 			glGenBuffers(1, &resultBuffer);
 			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, resultBuffer);
 			glBufferData(GL_SHADER_STORAGE_BUFFER, sizeOfresult, NULL, GL_STATIC_DRAW);
 		}
-		
-		glUseProgram(kmeansShaderID);
-		
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, normalsTexture);
-		glBindSampler(0, normalsSampler);
-		
-		glUniform2iv(loc_comp_texSize, 1, &winSize[0]);
-		
-		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, resultBuffer);
-		//glBindBufferRange(GL_SHADER_STORAGE_BUFFER, 0, resultBuffer, 0, sizeOfresult);
-		
-		glDispatchCompute(ceil(winSize.x / 32.f), ceil(winSize.y / 32.f), 1); //check? do I need powers of 2?
-		glCheckError();
-		
-		glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
-		glMemoryBarrier(GL_ALL_BARRIER_BITS);//just temp
-		glCheckError();
-		
+		if(idxBuffer == GL_ID_NONE) {
+			glGenBuffers(1, &idxBuffer);
+			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, idxBuffer);
+			std::vector<uint> init(gridSize.x * gridSize.y * 256);
+			std::fill(init.begin(), init.end(), 6);
+			glBufferData(GL_SHADER_STORAGE_BUFFER, sizeofInd, &init[0], GL_STATIC_DRAW);
+		}
+				
 		struct Cl {
 			glm::vec3 cntr;
-			int size;
+			uint size;
 		};
 		
-		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, resultBuffer);
-		
-		std::vector<Cl> dt(5);
-		glGetBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeOfresult, &dt[0]);
-		
-		Cl* data = (Cl*) glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_READ_ONLY);
-		glCheckError();
-		
-		for(int i = 0; i < 5; ++i) {
-			std::cout << data[i].size << "->";
-			std::cout << data[i].cntr.x << " "<< data[i].cntr.y << " "<< data[i].cntr.z << " \t ";
+		int iter = 0;
+		bool moving = true;
+		while(moving && iter < 2) {
+			iter++;
+			glUseProgram(reductionShaderID);
+
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, normalsTexture);
+			glBindSampler(0, normalsSampler);
+
+			glUniform2iv(loc_red_comp_texSize, 1, &winSize[0]);
+			glUniform1iv(loc_red_iter, 1, &iter);
+
+			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, resultBuffer);
+			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, idxBuffer);
+
+			glDispatchCompute(gridSize.x, gridSize.y, 1);
+			glCheckError();
+
+			glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT | GL_BUFFER_UPDATE_BARRIER_BIT);
+			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, resultBuffer);
+			Cl* data = (Cl*) glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_READ_WRITE);
+			for(int i = 0; i < 5; ++i) {
+				data[i].cntr /= data[i].size;
+				data[i].cntr = glm::normalize(data[i].cntr);
+			}
+			glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
+			
+			glUseProgram(kmeansShaderID);
+
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, normalsTexture);
+			glBindSampler(0, normalsSampler);
+
+			glUniform2iv(loc_km_comp_texSize, 1, &winSize[0]);	
+			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, resultBuffer);	
+			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, idxBuffer);
+			
+			glDispatchCompute(gridSize.x, gridSize.y, 1);
+			glCheckError();
+			glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT | GL_BUFFER_UPDATE_BARRIER_BIT);
+			
+			glGetBufferSubData(GL_SHADER_STORAGE_BUFFER, sizeOfresult - sizeof(GLboolean), sizeof(GLboolean), &moving);
 		}
-		std::cout << "\n"; 
+//		std::cout << "iter: " << iter << "\n"; 
+		std::vector<Cluster> clusters;
 		
+		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, resultBuffer);
+		Cl* data = (Cl*) glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_READ_WRITE);
+		int sum;
+		for(int i = 0; i < 5; ++i) {
+			if(data[i].size != 0) {
+				Cluster c;
+				c.id = clusters.size();
+				c.centroid = data[i].cntr;
+				c.size = data[i].size;
+				clusters.push_back(c);
+			}
+			sum += data[i].size;
+		}
 		glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
-		glInvalidateBufferData(resultBuffer);
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 		
 //		glBindTexture(GL_TEXTURE_2D, normalsTexture);
@@ -295,21 +354,23 @@ public:
 //			clusters[n.first].centroid += n.second;
 //			clusters[n.first].size++;
 //		}
-//		for(Cluster &cl: clusters) {
-//			cl.centroid /= (float) cl.size;
-//			cl.centroid *= -1;
-//			cl.centroid = glm::normalize(cl.centroid);
-//			
-//			cl.weight = cl.size / (float) normals.size();
-//		}
-//
-//		std::sort(clusters.begin(), clusters.end(), 
-//				[] (const Cluster &a, const Cluster &b) {
-//					return a.weight > b.weight;
-//				}
-//		);
-//		
-//		textureHandler->setClusters(clusters);
+		
+		for(Cluster &cl: clusters) {
+			cl.centroid /= (float) cl.size;
+			cl.centroid *= -1;
+			cl.centroid = glm::normalize(cl.centroid);
+			
+			cl.weight = cl.size / (float) sum;
+		}
+
+		std::sort(clusters.begin(), clusters.end(), 
+				[] (const Cluster &a, const Cluster &b) {
+					return a.weight > b.weight;
+				}
+		);
+		
+		textureHandler->setClusters(clusters);
+		}
 		textureHandler->updateTextures(camPos, viewDirObjSpace, Settings::usingTextures);
 		
 		glCheckError();

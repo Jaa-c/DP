@@ -13,7 +13,7 @@ uniform int u_textureCount;
 
 uniform sampler2DRect u_texture0[32];
 
-uniform vec3 u_viewDir; //debug
+uniform vec3 u_viewDir;
 uniform mat3 u_NormalMatrix;
 
 in block {
@@ -39,17 +39,9 @@ bool inRange(in int index, in vec2 coords) {
 
 void main() {
 
-	vec4 light_pos = vec4(0.0f, .0f, -3.0f, 1.0f);
-	vec3 lp = light_pos.xyz;
-
 	vec3 N = normalize(In.v_normal);
-	vec3 L = normalize(lp - In.v_viewPos.xyz);
-	float diffuse = max(dot(N, L), 0.8f);
-
-	vec3 E = normalize(-In.v_viewPos.xyz);
-	vec3 R = normalize(-reflect(L, N));
-	
-	float specular = pow(max(dot(R, E), 0.0f), 256.0f);
+	vec3 L = normalize(-u_viewDir);
+	float diffuse = min(dot(N, L), 1.0f);
 
 	const float dirLimit = 0.4; //0 = perpendicular, 1 = same direction
 	vec2 coords;
@@ -58,7 +50,7 @@ void main() {
 	vec3 bestCoords = vec3(.0, -1.0f, -1.0f);
 	float bestWeight = 0.0f;
 	for(int i = 0; i < u_textureCount; ++i) {
-		weight = 1.f / (i + 1);
+		weight = 1.f / (i + .1f);
 
 		projectCoords(i, In.v_position, coords);
 		weight *= float(inRange(i, coords));
@@ -73,12 +65,15 @@ void main() {
 			bestCoords.yz = coords;
 		}
 	}
+	
+	vec3 tex = texture2DRect(u_texture0[int(bestCoords.x)], bestCoords.yz).rgb;
+	vec3 color = min(vec3(.2f, .2f, .2f) * diffuse + .2f, 1.0f); //mat
+	if(length(tex) != 0) {
+		color = tex * (color + 0.6f) + .2f;
+	}
 
-	vec3 col = texture2DRect(u_texture0[int(bestCoords.x)], bestCoords.yz).rgb;
-	vec3 color = min((.2f + col) * diffuse + specular * .0f, 1.0f);
-
-	if(ub_texData[int(bestCoords.x)].u_TextureSize.x == 512) color.b = 0.4;
-	if(bestWeight == 0) color.r = 1;
+	//if(ub_texData[int(bestCoords.x)].u_TextureSize.x == 512) color.b = 0.4;
+	//if(bestWeight == 0) color.r = 1;
 
 	
 	a_FragColor = vec4(color, 1.0f);

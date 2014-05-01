@@ -43,7 +43,7 @@ public:
 	virtual ~RenderPass() {}
 	
 	
-	void reset() {
+	virtual void reset() {
 		programID = GL_ID_NONE;
 	}
 	

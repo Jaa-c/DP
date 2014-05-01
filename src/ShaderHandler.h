@@ -22,6 +22,7 @@ public:
 		SHADER_TEXTURING_2,
 		SHADER_POINTS,
 		SHADER_NORMALS,
+		SHADER_COMPUTE_REDUCTION,
 		SHADER_COMPUTE_KMENAS,
 		SIZE,
 	};
@@ -36,6 +37,7 @@ private:
 		"texturing_2",
 		"points",
 		"normals",
+		"reduction",
 		"kmeans"
 	};
 	

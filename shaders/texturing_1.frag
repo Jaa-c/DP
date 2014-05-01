@@ -65,6 +65,5 @@ void main() {
 
 	if(bestWeight == 0) {
 		a_data = normalize(In.v_origNormal);//N
-		a_data = vec3(-1.3, -0.13f, 0.72);
 	}
 }

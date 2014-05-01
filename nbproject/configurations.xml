@@ -87,6 +87,7 @@
       <itemPath>shaders/normals.frag</itemPath>
       <itemPath>shaders/normals.geom</itemPath>
       <itemPath>shaders/normals.vert</itemPath>
+      <itemPath>shaders/reduction.comp</itemPath>
       <itemPath>shaders/texturing_1.frag</itemPath>
       <itemPath>shaders/texturing_1.vert</itemPath>
       <itemPath>shaders/texturing_2.frag</itemPath>
