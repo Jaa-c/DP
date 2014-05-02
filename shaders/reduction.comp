@@ -73,11 +73,15 @@ void main() {
         stepv = (stepv >> 1);
     }
     if (gl_LocalInvocationIndex == 0) {
-		for(int i = 0; i < 5; ++i) {
-			atomicAdd(clusters[i].size, sizeCache[i][0]);
-			atomicAdd(clusters[i].cntr.x, cache[i][0].x);
-			atomicAdd(clusters[i].cntr.y, cache[i][0].y);
-			atomicAdd(clusters[i].cntr.z, cache[i][0].z);
+		for(int i = 0; i < 5; ++i) {	//TODO
+			if(sizeCache[i][0] != 0)
+				atomicAdd(clusters[i].size, sizeCache[i][0]);
+			if(cache[i][0].x != 0)
+				atomicAdd(clusters[i].cntr.x, cache[i][0].x);
+			if(cache[i][0].y != 0)
+				atomicAdd(clusters[i].cntr.y, cache[i][0].y);
+			if(cache[i][0].z != 0)
+				atomicAdd(clusters[i].cntr.z, cache[i][0].z);
 		}
     }
 

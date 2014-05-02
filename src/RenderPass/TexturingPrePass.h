@@ -185,7 +185,7 @@ public:
 		const int sizeOfresult = 20 * sizeof(GLfloat) + sizeof(GLboolean); //TODO
 		const float blockSize = 16.f;
 		const glm::ivec2 gridSize(ceil(winSize.x/blockSize), ceil(winSize.y/blockSize));
-		const int sizeofInd = gridSize.x * gridSize.y * 256 * sizeof(GLuint);
+		const int sizeofInd = gridSize.x * gridSize.y * blockSize*blockSize * sizeof(GLuint);
 		
 		if(resultBuffer == GL_ID_NONE) {
 			glGenBuffers(1, &resultBuffer);
@@ -195,7 +195,7 @@ public:
 		if(idxBuffer == GL_ID_NONE) {
 			glGenBuffers(1, &idxBuffer);
 			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, idxBuffer);
-			std::vector<uint> init(gridSize.x * gridSize.y * 256);
+			std::vector<uint> init(gridSize.x * gridSize.y * blockSize*blockSize);
 			std::fill(init.begin(), init.end(), 6);
 			glBufferData(GL_SHADER_STORAGE_BUFFER, sizeofInd, &init[0], GL_STATIC_DRAW);
 		}
