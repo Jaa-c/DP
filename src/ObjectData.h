@@ -21,6 +21,7 @@ private:
 	
 	/// viewing directions of cameras
 	Points cameraDirections;
+	Points fixedCameraDirections;
 	
 	/// Point data from bundler
 	Points pointData;
@@ -30,10 +31,8 @@ public:
 	PointData(const std::vector<Photo> &photos, const Points *bundlerPoints = nullptr) : pointsVBO(GL_ID_NONE), camPosVBO(GL_ID_NONE) {
 		for(auto &photo : photos) {
 			cameraPos.push_back(photo.camera.position);
-			if(Settings::useRecomputedDirections)
-				cameraDirections.push_back(photo.camera.fixedDirection);
-			else
-				cameraDirections.push_back(photo.camera.direction);
+			fixedCameraDirections.push_back(photo.camera.fixedDirection);
+			cameraDirections.push_back(photo.camera.direction);
 		}
 		if(bundlerPoints) {
 			pointData = *bundlerPoints;
@@ -45,7 +44,7 @@ public:
 	}
 	
 	const Points &getCameraDirections() const {
-		return cameraDirections;
+		return Settings::useRecomputedDirections ? fixedCameraDirections : cameraDirections;
 	}
 	
 	const Points &getCameraPositions() const {
