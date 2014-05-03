@@ -47,18 +47,11 @@ public:
 		std::vector<glm::vec3> &outVertices,
 		std::vector<glm::vec3> &outNormals,
 		glm::vec3 &centroid,
-		glm::vec3 &offset
+		glm::vec3 &offset,
+		glm::vec3 &min,
+		glm::vec3 &max
 	) {
 		Assimp::Importer importer;
-		//importer.SetPropertyFloat(AI_CONFIG_PP_GSN_MAX_SMOOTHING_ANGLE, 80.0f); 
-//		const aiScene* scene = importer.ReadFile(file,
-//				 (aiProcessPreset_TargetRealtime_Quality
-//				 & ~aiProcess_FindDegenerates)
-//				 & ~aiProcess_GenSmoothNormals
-//				 | aiProcess_GenNormals
-//				 | aiProcess_OptimizeMeshes
-//				 | aiProcess_OptimizeGraph);
-		
 		importer.SetPropertyFloat(AI_CONFIG_PP_GSN_MAX_SMOOTHING_ANGLE, 45.f);
 		const aiScene* scene = importer.ReadFile(file,
 				aiProcess_ImproveCacheLocality |
@@ -76,11 +69,11 @@ public:
 		}
 		
 		int faces = 0;
-		glm::vec3 min = glm::vec3(
+		glm::vec3 lmin = glm::vec3(
 				scene->mMeshes[0]->mVertices[0].x, 
 				scene->mMeshes[0]->mVertices[0].y,
 				scene->mMeshes[0]->mVertices[0].z);
-		glm::vec3 max = min;
+		glm::vec3 lmax = lmin;
 		
 		for(uint m = 0; m < scene->mNumMeshes; ++m) {
 			const aiMesh* mesh = scene->mMeshes[m];
@@ -99,7 +92,7 @@ public:
 			outNormals.reserve(outNormals.size() + mesh->mNumVertices);
 			for (uint i = 0; i < mesh->mNumVertices; ++i) {
 				if (mesh->HasPositions()) {
-					updateBB(mesh->mVertices[i], max, min);
+					updateBB(mesh->mVertices[i], lmax, lmin);
 					outVertices.push_back(glm::vec3(
 							mesh->mVertices[i].x, 
 							mesh->mVertices[i].y, 
@@ -120,8 +113,9 @@ public:
 		}
 		
 		centroid /= outVertices.size();
-		
-		offset = -centroid;//(max + min)/2.0f;//glm::vec3(0, 0, -max.z*2); //
+		min = lmin;
+		max = lmax;
+		offset = -centroid;
 		Log::i("[DataLoader] Loaded mesh with %d faces and %d vertices.", faces, outVertices.size());
 	}
 

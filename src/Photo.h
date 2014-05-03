@@ -19,7 +19,10 @@ struct CameraPosition {
 	glm::mat4 Rt;
 	
 	glm::vec3 position;
-	glm::vec3 direction;
+	/// this is the direction of the camera
+	glm::vec3 direction; 
+	/// this is computed direction to the center of visible part of an object.
+	glm::vec3 fixedDirection;
 	
 	float focalL;
 	float d1, d2; //currently not used

@@ -17,15 +17,19 @@ class CalibrationLoader {
 	//only from bundler data
 	std::shared_ptr<PointData> pointData;
 	const std::function<void(int)> progress;
-	
+	const ObjectData& object;
 public:
 	enum FileType {
 		BUNDLER = 0, //this is expected to be in the same order as GUI tabWidget
 		RZ3
 	};
 	
-	CalibrationLoader(std::shared_ptr<TextureHandler> th, std::function<void(int)> progress = nullptr)
-		: outPhotos(th->photos), pointData(nullptr), progress(progress) {}
+	CalibrationLoader(
+			std::shared_ptr<TextureHandler> th, 
+			const ObjectData& object, 
+			std::function<void(int)> progress = nullptr
+	)
+		: outPhotos(th->photos), pointData(nullptr), progress(progress), object(object) {}
 		
 	~CalibrationLoader() {
 		pointData.reset();
@@ -63,7 +67,7 @@ public:
 			case RZ3:
 			{
 				Rz3Parser rz3Parser(imgLoader, calibrationFile, rz3images, photosFolder);
-				outPhotos = rz3Parser.parseFile();
+				outPhotos = rz3Parser.parseFile(object.getVertices());
 				pointData = std::shared_ptr<PointData>(new PointData(outPhotos));
 				break;
 			}

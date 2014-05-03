@@ -88,10 +88,11 @@ void GLWidget::createScene(
 	try {
 		Settings::deserialize(geom + settingsExt);
 		textureHandler = std::make_shared<TextureHandler>();
-		CalibrationLoader cl(textureHandler, prgcb);
+		object = std::make_shared<ObjectData>(geom);
+		
+		CalibrationLoader cl(textureHandler, *object, prgcb);
 		cl.loadData(type, photos, file1, file2);
 				
-		object = std::make_shared<ObjectData>(geom);
 		object->pointData = cl.getPointData();
 		object->rotate(Settings::objectRotate);
 		

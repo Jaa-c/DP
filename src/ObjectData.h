@@ -56,6 +56,10 @@ private:
 	std::vector<glm::vec3> vertices;
 	std::vector<glm::vec3> normals;
 	glm::vec3 centroid;
+	
+	//AABB
+	glm::vec3 min;
+	glm::vec3 max;
 		
 	bool ok;
 	
@@ -90,7 +94,7 @@ public:
 		textures(NULL), pointData(NULL)
 	{
 		try {
-			DataLoader::importModel(file, indices, vertices, normals, centroid, translation);
+			DataLoader::importModel(file, indices, vertices, normals, centroid, translation, min, max);
 		}
 		catch(const char* c) {
 			ok = false;
@@ -141,6 +145,10 @@ public:
 		glm::vec4 c(centroid, 1.0);
 		glm::vec4 v = mvm * c;
 		return glm::vec3(v / v.w);
+	}
+	
+	std::pair<glm::vec3, glm::vec3> getAABB() const {
+		return std::pair<glm::vec3, glm::vec3>(min, max);
 	}
 
 
