@@ -28,8 +28,8 @@ public:
 	static glm::vec2 radarPos;
 	/// radar width and height
 	static glm::vec2 radarSize;
-	
-	static bool useKDT;
+	// use directions recomputed in ImageBB
+	static bool useRecomputedDirections;
 	
 	///DEBUG
 	static bool usePrefferedCamera;

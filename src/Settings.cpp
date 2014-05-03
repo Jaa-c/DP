@@ -11,12 +11,14 @@ glm::vec3 Settings::objectRotate = glm::vec3(0, 0, 0);
 glm::vec2 Settings::radarPos = glm::vec2(10, 10);
 glm::vec2 Settings::radarSize = glm::vec2(250, 250);
 bool Settings::usePrefferedCamera = false;
+bool Settings::useRecomputedDirections = true;
 uint Settings::prefferedCamera = 0;
 	
 void Settings::reset() {
 	Settings::usingTextures = 4;
 	Settings::objectRotate = glm::vec3(0, 0, 0);
 	Settings::usePrefferedCamera = false;
+	Settings::useRecomputedDirections = true;
 	Settings::prefferedCamera = 0;
 }
 
@@ -38,6 +40,7 @@ void Settings::serialize(std::string name) {
 		
 		dataStream << usingTextures;
 		dataStream << objectRotate;
+		dataStream << useRecomputedDirections;
 				
 		file.close();
 		Log::i("[Settings] Saved configuration file for the scene");
@@ -54,6 +57,7 @@ void Settings::deserialize(std::string name) {
 
 		dataStream >> usingTextures;
 		dataStream >> objectRotate;
+		dataStream >> useRecomputedDirections;
 		
 		file.close();
 		Log::i("[Settings] Loaded configuration file for the scene");

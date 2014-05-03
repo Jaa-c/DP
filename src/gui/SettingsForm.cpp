@@ -19,6 +19,7 @@ SettingsForm::SettingsForm(std::shared_ptr<GLWidget> glw) : glWidget(glw)  {
 	widget.photosSlider->setMaximum(Settings::maxTextures);
 	widget.photosSlider->setValue(Settings::usingTextures);
 	widget.photoSliderValue->setText(QString::number(widget.photosSlider->value()));
+	widget.directionsCheckBox->setChecked(Settings::useRecomputedDirections);
 	
 	photoSliderPrevVal = widget.photosSlider->value();
 }
@@ -29,6 +30,7 @@ SettingsForm::~SettingsForm() {
 
 void SettingsForm::acceptCB() {
 	Settings::usingTextures = widget.photosSlider->value();
+	Settings::useRecomputedDirections = widget.directionsCheckBox->isChecked();
 	this->close();
 }
 

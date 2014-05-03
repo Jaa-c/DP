@@ -153,7 +153,11 @@ std::vector<Photo*> TextureHandler::getClosestCameras(const glm::vec3 &d, const 
 	const glm::vec3 dir = glm::normalize(d);
 
 	auto comp = [dir](const Photo* a, const Photo* b) {
-		return glm::dot(a->camera.direction, dir) > glm::dot(b->camera.direction, dir);
+		if(Settings::useRecomputedDirections)
+			return glm::dot(a->camera.fixedDirection, dir) > glm::dot(b->camera.fixedDirection, dir);
+		else
+			return glm::dot(a->camera.direction, dir) > glm::dot(b->camera.direction, dir);
+			
 	};
 
 	std::set<Photo*, decltype(comp)> result(comp);
