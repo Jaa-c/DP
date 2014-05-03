@@ -10,6 +10,7 @@
 
 #include "ImageLoader.h"
 #include "Rz3Parser.h"
+#include "ImageBB.h"
 
 
 class CalibrationLoader {
@@ -42,19 +43,22 @@ public:
 			const std::string rz3images = "") {
 		
 		ImageLoader imgLoader(progress);
+		ImageBB imageBB(object.getVertices());
 		
 		switch(type) {
 			case BUNDLER:
 			{ //expected bundler file
 				BundlerParser bundlerData(calibrationFile);
-				const std::vector<CameraPosition> cameras = bundlerData.parseFile();
+				std::vector<CameraPosition> cameras = bundlerData.parseFile();
 				imgLoader.setExpectedCount(cameras.size());
 				const std::vector<ImageData> imgData = imgLoader.checkAllImages(photosFolder);
 
 				outPhotos.reserve(cameras.size());
 				for(uint i = 0; i < cameras.size(); ++i) {
 					const ImageData &img = imgData.at(i);
-					const CameraPosition &cp = cameras.at(i);
+					CameraPosition &cp = cameras.at(i);
+					
+					imageBB.computeCameraParams(cp, img);
 					outPhotos.push_back(
 						Photo(i, img.path, cp, 
 							img.size, img.rowPadding, 
@@ -67,7 +71,7 @@ public:
 			case RZ3:
 			{
 				Rz3Parser rz3Parser(imgLoader, calibrationFile, rz3images, photosFolder);
-				outPhotos = rz3Parser.parseFile(object.getVertices());
+				outPhotos = rz3Parser.parseFile(imageBB);
 				pointData = std::shared_ptr<PointData>(new PointData(outPhotos));
 				break;
 			}

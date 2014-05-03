@@ -23,12 +23,14 @@ struct CameraPosition {
 	glm::vec3 direction; 
 	/// this is computed direction to the center of visible part of an object.
 	glm::vec3 fixedDirection;
+	/// area of photo, that contains the object. 1 = object covers the whole photo, 0= there is no object
+	float relativeArea;
 	
 	float focalL;
 	float d1, d2; //currently not used
 	
 	CameraPosition() {
-		focalL = d1 = d2 = 0;
+		relativeArea = focalL = d1 = d2 = 0;
 	}
 };
 
