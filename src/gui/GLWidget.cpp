@@ -129,7 +129,9 @@ void GLWidget::initializeGL() {
 }
 
 bool GLWidget::eventFilter(QObject *, QEvent *event) {
-	
+	if(!mainWin.isActiveWindow()) {
+		return false;
+	}
 	switch(event->type()) {
 		case QEvent::MouseMove:
 		{

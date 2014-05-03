@@ -17,7 +17,6 @@ class SettingsForm : public QDialog {
 	Q_OBJECT
 public:
 	SettingsForm(std::shared_ptr<GLWidget> glw);
-	virtual ~SettingsForm();
 	
 private slots:
 	void acceptCB();

@@ -156,7 +156,7 @@
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
    <receiver>objectForm</receiver>
-   <slot>accept()</slot>
+   <slot>acceptCB()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>248</x>
@@ -172,7 +172,7 @@
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
    <receiver>objectForm</receiver>
-   <slot>reject()</slot>
+   <slot>rejectCB()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>316</x>
@@ -237,5 +237,7 @@
   <slot>rotSliderXChangedCB(int)</slot>
   <slot>rotSliderYChangedCB(int)</slot>
   <slot>rotSliderZChangedCB(int)</slot>
+  <slot>acceptCB()</slot>
+  <slot>rejectCB()</slot>
  </slots>
 </ui>

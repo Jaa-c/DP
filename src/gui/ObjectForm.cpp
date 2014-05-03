@@ -23,10 +23,6 @@ ObjectForm::ObjectForm() {
 	widget.rotSliderZ->setValue(Settings::objectRotate.z);
 }
 
-ObjectForm::~ObjectForm() {
-	
-}
-
 void ObjectForm::acceptCB() {
 	this->close();
 }

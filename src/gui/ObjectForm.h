@@ -16,7 +16,6 @@ class ObjectForm : public QDialog {
 	Q_OBJECT
 public:
 	ObjectForm();
-	virtual ~ObjectForm();
 	
 private slots:
 	void acceptCB();

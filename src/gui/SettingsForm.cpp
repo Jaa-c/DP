@@ -10,10 +10,7 @@
 #include "../Settings.h"
 
 SettingsForm::SettingsForm(std::shared_ptr<GLWidget> glw) : glWidget(glw)  {
-	setAttribute(Qt::WA_NoMousePropagation); //not working TODO
-	glWidget->setFocusPolicy(Qt::NoFocus);	
 	widget.setupUi(this);
-	
 	
 	widget.photosSlider->setMinimum(1);
 	widget.photosSlider->setMaximum(Settings::maxTextures);
@@ -22,10 +19,6 @@ SettingsForm::SettingsForm(std::shared_ptr<GLWidget> glw) : glWidget(glw)  {
 	widget.directionsCheckBox->setChecked(Settings::useRecomputedDirections);
 	
 	photoSliderPrevVal = widget.photosSlider->value();
-}
-
-SettingsForm::~SettingsForm() {
-	glWidget->setFocusPolicy(Qt::StrongFocus);	
 }
 
 void SettingsForm::acceptCB() {
