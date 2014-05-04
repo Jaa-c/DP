@@ -40,7 +40,7 @@ TextureHandler::~TextureHandler() {
 	}
 }
 
-//TODO needs some optimizations...
+
 void TextureHandler::updateTextures(
 	const glm::vec3 &viewDir, //in object space!!
 	const uint count
@@ -106,7 +106,7 @@ void TextureHandler::updateTextures(
 			else { //lowered the number of textures
 				units.push(tex.unit);
 				tex.release();
-				textures.erase(it++);
+				it = textures.erase(it);
 				continue; //important, otherwise iterator is incremented 2x
 			}
 		}

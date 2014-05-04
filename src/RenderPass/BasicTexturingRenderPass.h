@@ -14,6 +14,7 @@ class BasicTexturingRenderPass : public RenderPass {
 		
 	GLuint textureCount;
 	GLuint textureDataUB;
+	GLuint loc_viewDir;
 	
 public:
 	
@@ -26,6 +27,7 @@ public:
 	{	
 		shader = ShaderHandler::SHADER_BASIC;
 		textureDataUB = GL_ID_NONE;
+		loc_viewDir = GL_ID_NONE;
 	}
 		
 	~BasicTexturingRenderPass() {
@@ -40,6 +42,7 @@ public:
 			getDefaultUniformLocations();
 			
 			textureCount = glGetUniformLocation(programID, "u_textureCount");
+			loc_viewDir = glGetUniformLocation(programID, "u_viewDir");
 			textureDataUB = GL_ID_NONE;
 			
 			// the binding point must be smaller than GL_MAX_UNIFORM_BUFFER_BINDINGS
@@ -92,6 +95,7 @@ public:
 		
 		GLint texCount = textures.size();
 		glUniform1i(textureCount, texCount);
+		glUniform3fv(loc_viewDir, 1, &viewDir[0]);
 		
 		renderer.setUniformLocations(&uLocs);
 		

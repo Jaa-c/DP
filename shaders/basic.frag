@@ -10,6 +10,7 @@ layout(std140) uniform u_textureDataBlock {
 	TextureData ub_texData[32];
 };
 uniform int u_textureCount;
+uniform vec3 u_viewDir;
 
 uniform sampler2DRect u_texture0[32];
 
@@ -42,12 +43,9 @@ bool inRange(in int index, in vec2 coords) {
 
 void main() {
 
-	vec4 light_pos = vec4(0.0f, .0f, -3.0f, 1.0f);
-	vec3 lp = light_pos.xyz;
-
 	vec3 N = normalize(In.v_normal);
-	vec3 L = normalize(lp - In.v_viewPos.xyz);
-	float diffuse = max(dot(N, L), 0.5f);
+	vec3 L = normalize(-u_viewDir);
+	float diffuse = min(dot(N, L), 1.0f);
 
 	vec3 E = normalize(-In.v_viewPos.xyz);
 	vec3 R = normalize(-reflect(L, N));
@@ -86,15 +84,12 @@ void main() {
 		while(index < u_textureCount && !inRange(p[index].i, coords));
 
 		col = texture2DRect(u_texture0[p[index].i], coords).rgb;
-		//col.r += .5f;
 	}
-	vec3 color = min(col * diffuse + specular * .3f, 1.0f);
 
-	//color.r = coords.x / 2400;
-	//color.g = coords.y / 3200;
-	//color.b = 0;
-	//if(In.v_texIndex == 0) color.r += .2f;
-	//if(In.v_texIndex == 1) color.g += .2f;
-		
+	vec3 color = min(vec3(.2f, .2f, .2f) * diffuse + .2f, 1.0f); //mat
+	if(length(col) != 0) {
+		color = col * (color + 0.6f) + .2f;
+	}
+
 	a_FragColor = vec4(color, 1.0f);
 }

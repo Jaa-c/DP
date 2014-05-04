@@ -18,7 +18,6 @@
 
 #include "glm/gtc/matrix_inverse.hpp"
 
-
 class Renderer {
 	GLuint planeVao;
 	Camera& camera;
