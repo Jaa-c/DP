@@ -33,7 +33,6 @@ void GLWidget::paintGL() {
 		
 		renderPassHandler.draw(object);
 		
-		glCheckError(); //DEBUG
 		glUseProgram(0);
 		
 		mainWin.setPhotos(textureHandler->getTextures().size());

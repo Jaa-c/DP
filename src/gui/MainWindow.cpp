@@ -54,7 +54,7 @@ void MainWindow::initScene() {
 	if(radarRP->isChecked()) {
 		glWidget->addRenderPass(RenderPass::RADAR_PASS);
 	}
-	//texturingPreRP->setChecked(true);
+	texturingPreRP->setChecked(true);
 	texturingRP->setChecked(true);
 	radarRP->setChecked(true);
 }

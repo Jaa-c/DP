@@ -5,6 +5,7 @@ struct TextureData {
 	mat4	u_TextureRt;
 	ivec2	u_TextureSize;
 	float	u_TextureFL;
+	float	u_coveredArea; //uninitialized here!!
 };
 layout(std140) uniform u_textureDataBlock {
 	TextureData ub_texData[32];

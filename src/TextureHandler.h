@@ -90,6 +90,7 @@ public:
 	std::vector<Texture> & getTextures();
 	
 	void setClusters(std::vector<Cluster> c);
+	const std::vector<Cluster>& getClusters() const;
 	void emptyClusters();
 //private:
 	//TODO SLOW, this is just a stupid version

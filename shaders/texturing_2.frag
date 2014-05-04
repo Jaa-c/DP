@@ -5,11 +5,13 @@ struct TextureData {
 	mat4	u_TextureRt;
 	ivec2	u_TextureSize;
 	float	u_TextureFL;
+	float	u_coveredArea;
 };
 layout(std140) uniform u_textureDataBlock {
 	TextureData ub_texData[32];
 };
 uniform int u_textureCount;
+uniform int u_texuresBasic;
 
 uniform sampler2DRect u_texture0[32];
 
@@ -49,8 +51,9 @@ void main() {
 	
 	vec3 bestCoords = vec3(.0, -1.0f, -1.0f);
 	float bestWeight = 0.0f;
-	for(int i = 0; i < u_textureCount; ++i) {
-		weight = 1.f / (i + .1f);
+	for(int i = 0; i < u_texuresBasic; ++i) {
+		weight = 1.f; // (i + .1f);
+		weight *= ub_texData[i].u_coveredArea;
 
 		projectCoords(i, In.v_position, coords);
 		weight *= float(inRange(i, coords));
@@ -75,7 +78,5 @@ void main() {
 	//if(ub_texData[int(bestCoords.x)].u_TextureSize.x == 512) color.b = 0.4;
 	//if(bestWeight == 0) color.r = 1;
 
-	
 	a_FragColor = vec4(color, 1.0f);
-	//a_FragColor = vec4(-N, 1.0f);
 }

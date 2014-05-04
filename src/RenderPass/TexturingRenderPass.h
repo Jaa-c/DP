@@ -15,6 +15,7 @@ class TexturingRenderPass : public RenderPass {
 		
 	GLuint loc_viewDir;
 	GLuint loc_textureCount;
+	GLuint loc_texturesBasic;
 	GLuint textureDataUB;
 	
 	std::shared_ptr<TexturingPrePass> prePass;
@@ -31,6 +32,8 @@ public:
 	{	
 		shader = ShaderHandler::SHADER_TEXTURING_2;
 		textureDataUB = GL_ID_NONE;
+		loc_textureCount = GL_ID_NONE;
+		loc_texturesBasic = GL_ID_NONE;
 	}
 		
 	~TexturingRenderPass() {
@@ -50,6 +53,7 @@ public:
 			getDefaultUniformLocations();
 			
 			loc_textureCount = glGetUniformLocation(programID, "u_textureCount");
+			loc_texturesBasic = glGetUniformLocation(programID, "u_texuresBasic");
 			loc_viewDir = glGetUniformLocation(programID, "u_viewDir");
 			if(prePass) {
 				textureDataUB = prePass->textureDataUB;
@@ -95,13 +99,17 @@ public:
 				offset += 2 * sizeof(int);
 				float focalL = p->camera.focalL / p->getImageScale(); //changing focal length for thumbnails
 				glBufferSubData(GL_UNIFORM_BUFFER, offset, sizeof(float), &focalL);
-				offset += 2 * sizeof(float); //note that this is std140 alignment!
+				offset += sizeof(float);
+				glBufferSubData(GL_UNIFORM_BUFFER, offset, sizeof(float), &p->camera.relativeArea);
+				offset += sizeof(float);
 			}
 			glBindBuffer(GL_UNIFORM_BUFFER, 0);
 		}
 
 		GLint texCount = textures->size();
 		glUniform1i(loc_textureCount, texCount);
+		GLint basicTex = textureHandler->getClusters().empty() ? texCount : ceil(texCount/2.f);
+		glUniform1i(loc_texturesBasic, basicTex);
 				
 		glUniform3fv(loc_viewDir, 1, &viewDir[0]);
 		
