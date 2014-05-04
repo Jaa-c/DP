@@ -71,8 +71,8 @@ public:
 	
 	Photo(
 		const uint ID, 
-		const std::string name,
-		const CameraPosition camera,
+		const std::string &name,
+		const CameraPosition &camera,
 		const glm::ivec2 size, 
 		const uint rowPadding,
 		RGBData thumb,

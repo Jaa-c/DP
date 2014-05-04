@@ -128,7 +128,7 @@ public:
 	 * @return true if loaded OK
      */
 	static bool loadJPEG(
-		const std::string filename,
+		const std::string &filename,
 		RGBData &raw,
 		int &width,
 		int &height,

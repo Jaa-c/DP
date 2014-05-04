@@ -75,9 +75,10 @@ public:
 	ImageLoader(std::function<void(int)> progress = NULL) {
 		this->progress = progress;
 		expectedCount = 0;
+		prgVal = 0;
 	}
 	
-	const std::vector<ImageData> checkAllImages(const std::string path) {
+	const std::vector<ImageData> checkAllImages(const std::string &path) {
 		if(path.substr(path.length()-1, 1) != "/")
 			return readDirectory(path + "/");
 		else

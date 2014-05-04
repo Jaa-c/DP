@@ -102,7 +102,7 @@ void GLWidget::createScene(
 		
 		glClearColor(0.4f, 0.4f, 0.7f, 0);
 	}
-	catch(std::string msg) {
+	catch(std::string &msg) {
 		QMessageBox messageBox;
 		messageBox.critical(0, "Error!", msg.c_str());
 	}
@@ -233,7 +233,7 @@ GLWidget::GLWidget(const QGLFormat& format, int w, int h, QWidget* parent) :
 	controlls(Controlls::getInstance()),
 	textureHandler(nullptr), 
 	object(nullptr),
-	mainWin(*((MainWindow *) parent))
+	mainWin(*dynamic_cast<MainWindow *>(parent))
 {
 	controlls.setPointers(&camera, &shaderHandler);
 

@@ -66,7 +66,8 @@ protected:
 		ShaderHandler& s, 
 		std::shared_ptr<TextureHandler> t
 	) : type(type), programID(GL_ID_NONE),
-		renderer(r), shaderHandler(s), textureHandler(t) 
+		renderer(r), shaderHandler(s), textureHandler(t),
+		shader(ShaderHandler::SIZE)
 	{ 
 	}
 	

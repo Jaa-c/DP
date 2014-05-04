@@ -249,7 +249,6 @@ public:
 			
 			glGetBufferSubData(GL_SHADER_STORAGE_BUFFER, sizeOfresult - sizeof(GLboolean), sizeof(GLboolean), &moving);
 		}
-//		std::cout << "iter: " << iter << "\n"; 
 		std::vector<Cluster> clusters;
 		
 		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, resultBuffer);

@@ -16,8 +16,7 @@
 class RadarRenderPass : public RenderPass {
 	
 	Camera &camera;
-	
-	
+
 	//coordinates mapped on radar
 	glm::vec2 xr, yr;
 	int x, y, width, height;
@@ -30,7 +29,9 @@ public:
 		std::shared_ptr<TextureHandler> th,
 		Camera &camera
 	) : 
-		RenderPass(RADAR_PASS, r, s, th), camera(camera) {}
+	RenderPass(RADAR_PASS, r, s, th), camera(camera) {
+		x = y = width = height = 0;
+	}
 	
 	
 	~RadarRenderPass() {

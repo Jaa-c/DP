@@ -79,10 +79,9 @@ public:
 		//this needs optimization later!!
 		if(textureDataUB != GL_ID_NONE) {
 			glBindBuffer(GL_UNIFORM_BUFFER, textureDataUB);
-			int offset = 0;
 			for(uint i = 0; i < textures.size(); ++i) { //slooooooooow
 				const Photo *p = textures.at(i).photo;
-				offset = indices.at(p->ID) * sizeOfTextureData;
+				uint offset = indices.at(p->ID) * sizeOfTextureData;
 				glBufferSubData(GL_UNIFORM_BUFFER, offset, sizeof(glm::mat4), &p->camera.Rt[0][0]);
 				offset += 16 * sizeof(float);
 				glBufferSubData(GL_UNIFORM_BUFFER, offset, sizeof(glm::ivec2) , &p->getImage().size);

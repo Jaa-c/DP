@@ -78,7 +78,7 @@ class Renderer {
 
 public:
 	
-	Renderer(Camera& camera) : planeVao(GL_ID_NONE), camera(camera) {
+	Renderer(Camera& camera) : planeVao(GL_ID_NONE), camera(camera), ulocs(nullptr) {
 	}
 	
 	void setUniformLocations(std::vector<GLuint> * locs) {

@@ -72,8 +72,7 @@ void TextureHandler::updateTextures(
 		}
 	}
 
-	uint i = 0;
-	for(auto it = currentPhotos.begin(); it != currentPhotos.end(); ++i) {
+	for(auto it = currentPhotos.begin(); it != currentPhotos.end(); ) {
 		Photo *p = *it;
 		bool erased = false;
 		//compare textures and current photos
@@ -91,7 +90,6 @@ void TextureHandler::updateTextures(
 		}
 	}
 	
-	i = 0;
 	for(auto it = textures.begin(); it < textures.end(); ) {
 		Texture &tex = *it;
 		//remove textures that are no longer used
@@ -114,7 +112,6 @@ void TextureHandler::updateTextures(
 		++it;
 	}
 
-	i = 0;
 	for(auto p : currentPhotos) {
 		if(!units.empty()) {
 			textures.push_back(Texture(GL_TEXTURE_RECTANGLE, units.top(), p));	

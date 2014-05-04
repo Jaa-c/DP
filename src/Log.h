@@ -41,12 +41,12 @@ class Log {
 		
 	/// taken from: http://stackoverflow.com/a/8098080/683905
 	static string string_format(const string fmt_str, va_list args) {
-		int final_n, n = fmt_str.size() * 2; /* reserve 2 times as much as the length of the fmt_str */
+		int n = fmt_str.size() * 2; /* reserve 2 times as much as the length of the fmt_str */
 		std::unique_ptr<char[]> formatted;
 		while(1) {
 			formatted.reset(new char[n]); /* wrap the plain char array into the unique_ptr */
 			strcpy(&formatted[0], fmt_str.c_str());
-			final_n = vsnprintf(&formatted[0], n, fmt_str.c_str(), args);
+			int final_n = vsnprintf(&formatted[0], n, fmt_str.c_str(), args);
 			if (final_n < 0 || final_n >= n)
 				n += abs(final_n - n + 1);
 			else

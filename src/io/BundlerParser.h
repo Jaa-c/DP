@@ -16,7 +16,7 @@ class BundlerParser {
 	const std::string file;
 		
 public:
-	BundlerParser(const std::string file) : file(file) {}
+	BundlerParser(const std::string &file) : file(file) {}
 	~BundlerParser() {}
 			
 	std::vector<CameraPosition> parseFile() {

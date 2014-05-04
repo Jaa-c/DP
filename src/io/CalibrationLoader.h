@@ -38,9 +38,9 @@ public:
 	
 	void loadData(
 			const FileType type, 
-			const std::string photosFolder, 
-			const std::string calibrationFile,
-			const std::string rz3images = "") {
+			const std::string &photosFolder, 
+			const std::string &calibrationFile,
+			const std::string &rz3images = "") {
 		
 		ImageLoader imgLoader(progress);
 		ImageBB imageBB(object.getVertices());
