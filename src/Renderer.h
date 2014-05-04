@@ -82,13 +82,14 @@ public:
 		glUniformMatrix4fv(ulocs->at(RenderPass::PROJECTION_MATRIX), 1, GL_FALSE, &projection[0][0]);	
 	}
 	
-	void drawTextures(std::vector<Texture> * textures) {
-		std::vector<GLint> units;
-		for(auto &tex : *textures)  {
+	void drawTextures(std::vector<Texture>& textures, const std::unordered_map<uint, uint> & indices) {
+		std::vector<GLint> units(textures.size());
+		for(auto &tex : textures)  {
 			drawTexture(tex);
-			units.push_back(tex.unit);
+			uint index = indices.at(tex.photo->ID);
+			units[index] = tex.unit;
 		}
-		glUniform1iv(ulocs->at(RenderPass::TEXTURE0), textures->size(), &units[0]);
+		glUniform1iv(ulocs->at(RenderPass::TEXTURE0), textures.size(), &units[0]);
 	}
 	
 	void drawPointData(ObjectData &data) {

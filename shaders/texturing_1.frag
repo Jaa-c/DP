@@ -47,7 +47,7 @@ void main() {
 	vec3 bestCoords = vec3(.0, -1.0f, -1.0f);
 	float bestWeight = 0.0f;
 	for(int i = 0; i < u_textureCount; ++i) {
-		weight = 1.f / (i + 1);
+		weight = 1.f;
 
 		projectCoords(i, In.v_position, coords);
 		weight *= float(inRange(i, coords));

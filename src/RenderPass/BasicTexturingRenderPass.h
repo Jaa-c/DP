@@ -65,31 +65,38 @@ public:
 		glUseProgram(programID);
 		
 		assert(textureHandler);
-		std::vector<Texture> * textures = &textureHandler->getTextures();
+		const glm::mat4 invMvm = glm::transpose(object->getMvm());
+		glm::vec3 viewDir = glm::normalize(object->getCentroidPosition() - renderer.getCamera().getCameraPosition());
+		glm::vec3 viewDirObjSpace(glm::normalize(invMvm * glm::vec4(viewDir, 1.0f)));
+		
+		textureHandler->updateTextures(viewDirObjSpace, Settings::usingTextures);
+		std::vector<Texture> &textures = textureHandler->getTextures();
+		const std::unordered_map<uint, uint> & indices = textureHandler->getIndices();
 		
 		//this needs optimization later!!
 		if(textureDataUB != GL_ID_NONE) {
 			glBindBuffer(GL_UNIFORM_BUFFER, textureDataUB);
 			int offset = 0;
-			for(uint i = 0; i < textures->size(); ++i) { //slooooooooow
-				const Photo *p = textures->at(i).photo;
-				//int offset = i * sizeOfTextureData;
+			for(uint i = 0; i < textures.size(); ++i) { //slooooooooow
+				const Photo *p = textures.at(i).photo;
+				offset = indices.at(p->ID) * sizeOfTextureData;
 				glBufferSubData(GL_UNIFORM_BUFFER, offset, sizeof(glm::mat4), &p->camera.Rt[0][0]);
 				offset += 16 * sizeof(float);
 				glBufferSubData(GL_UNIFORM_BUFFER, offset, sizeof(glm::ivec2) , &p->getImage().size);
 				offset += 2 * sizeof(int);
-				glBufferSubData(GL_UNIFORM_BUFFER, offset, sizeof(float), &p->camera.focalL);
+				float focalL = p->camera.focalL / p->getImageScale(); //changing focal length for thumbnails
+				glBufferSubData(GL_UNIFORM_BUFFER, offset, sizeof(float), &focalL);
 				offset += 2 * sizeof(float); //note that this is std140 alignment!
 			}			
 		}
 		
-		GLint texCount = textures->size();
+		GLint texCount = textures.size();
 		glUniform1i(textureCount, texCount);
 		
 		renderer.setUniformLocations(&uLocs);
 		
 		renderer.bindCameraMatrices();
-		renderer.drawTextures(textures);
+		renderer.drawTextures(textures, textureHandler->getIndices());
 		renderer.drawObject(*object);
 		
 		glUseProgram(0);

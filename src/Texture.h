@@ -30,10 +30,7 @@ public:
 	
 	GLuint textureID;
 	static GLuint samplerID;
-	
-	///current index of the texture (the order in which are textures drawn)
-	uint index;
-	
+		
 	bool current; // flag for loading
 	bool updateImage;
 

@@ -51,6 +51,11 @@ void TextureHandler::updateTextures(
 	
 	std::vector<Photo*> currentPhotos = getBestCameras(viewDir, count);
 	
+	photoIndices.clear();
+	for(uint i = 0; i < currentPhotos.size(); ++i) {
+		photoIndices.insert(std::pair<uint, uint>(currentPhotos[i]->ID, i));
+	}
+	
 	///mostly DEBUG
 	if(Settings::usePrefferedCamera) {
 		Photo *p = &photos[Settings::prefferedCamera];
@@ -180,6 +185,11 @@ const std::vector<Cluster>& TextureHandler::getClusters() const {
 
 void TextureHandler::emptyClusters() {
 	clusters.clear();
+}
+
+
+const std::unordered_map<uint, uint> & TextureHandler::getIndices() const {
+	return photoIndices;
 }
 
 void TextureHandler::loadFullImage(Photo &p) {

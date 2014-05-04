@@ -66,6 +66,7 @@ class TextureHandler : public QObject {
 	std::stack<GLuint> units;
 	std::vector<Texture> textures;
 	std::unordered_map<int, Photo *> nearPhotos;
+	std::unordered_map<uint, uint> photoIndices;
 	
 	std::vector<Cluster> clusters;
 	
@@ -88,6 +89,7 @@ public:
 			
 	const std::vector<Photo> & getPhotos() const;
 	std::vector<Texture> & getTextures();
+	const std::unordered_map<uint, uint> & getIndices() const;
 	
 	void setClusters(std::vector<Cluster> c);
 	const std::vector<Cluster>& getClusters() const;

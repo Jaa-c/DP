@@ -86,13 +86,16 @@ public:
 		glm::vec3 viewDirObjSpace(glm::normalize(invMvm * glm::vec4(viewDir, 1.0f)));
 		
 		textureHandler->updateTextures(viewDirObjSpace, Settings::usingTextures);
-		std::vector<Texture> * textures = &textureHandler->getTextures();
+		std::vector<Texture> &textures = textureHandler->getTextures();
+		const std::unordered_map<uint, uint> & indices = textureHandler->getIndices();
 		
 		if(textureDataUB != GL_ID_NONE) {
 			glBindBuffer(GL_UNIFORM_BUFFER, textureDataUB);
 			int offset = 0;
-			for(uint i = 0; i < textures->size(); ++i) { //slooooooooow
-				const Photo *p = textures->at(i).photo;
+			for(uint i = 0; i < textures.size(); ++i) { //slooooooooow
+				const Photo *p = textures.at(i).photo;
+				offset = indices.at(p->ID) * sizeOfTextureData;
+				
 				glBufferSubData(GL_UNIFORM_BUFFER, offset, sizeof(glm::mat4), &p->camera.Rt[0][0]);
 				offset += 16 * sizeof(float);
 				glBufferSubData(GL_UNIFORM_BUFFER, offset, sizeof(glm::ivec2) , &p->getImage().size);
@@ -106,7 +109,7 @@ public:
 			glBindBuffer(GL_UNIFORM_BUFFER, 0);
 		}
 
-		GLint texCount = textures->size();
+		GLint texCount = textures.size();
 		glUniform1i(loc_textureCount, texCount);
 		GLint basicTex = textureHandler->getClusters().empty() ? texCount : ceil(texCount/2.f);
 		glUniform1i(loc_texturesBasic, basicTex);
@@ -115,7 +118,7 @@ public:
 		
 		renderer.setUniformLocations(&uLocs);
 		renderer.bindCameraMatrices();
-		renderer.drawTextures(textures);
+		renderer.drawTextures(textures, indices);
 		renderer.drawObject(*object);
 		
 		glCheckError();

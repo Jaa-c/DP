@@ -26,6 +26,8 @@ in block {
 
 layout(location = 0) out vec4 a_FragColor;
 
+
+const float dirLimit = 0.4; //0 = perpendicular, 1 = same direction
 // -----------
 
 void projectCoords(in int index, in vec4 pos, out vec2 coords) {
@@ -39,35 +41,66 @@ bool inRange(in int index, in vec2 coords) {
 	return coords.x >= 0 && coords.x < s.x && coords.y > 0 && coords.y < s.y; 
 }
 
+float computeWeight(in int index, in vec3 N, out vec2 coords, in float dl = dirLimit) {
+	float weight = 1.f;
+	weight *= ub_texData[index].u_coveredArea;
+
+	projectCoords(index, In.v_position, coords);
+	weight *= float(inRange(index, coords));
+
+	mat4 Rt = ub_texData[index].u_TextureRt;
+	float dirDiff = dot(N, normalize(u_NormalMatrix *  vec3(Rt[0][2], Rt[1][2], Rt[2][2])));
+	weight *= -(dirDiff + 1.f) / (1.f - dl) + 1;
+	return weight;
+}
+
 void main() {
 
 	vec3 N = normalize(In.v_normal);
 	vec3 L = normalize(-u_viewDir);
 	float diffuse = min(dot(N, L), 1.0f);
-
-	const float dirLimit = 0.4; //0 = perpendicular, 1 = same direction
+	
 	vec2 coords;
 	float weight;
-	
 	vec3 bestCoords = vec3(.0, -1.0f, -1.0f);
 	float bestWeight = 0.0f;
+
+	//use only the inital photos for texturing
 	for(int i = 0; i < u_texuresBasic; ++i) {
-		weight = 1.f; // (i + .1f);
-		weight *= ub_texData[i].u_coveredArea;
-
-		projectCoords(i, In.v_position, coords);
-		weight *= float(inRange(i, coords));
-
-		mat4 Rt = ub_texData[i].u_TextureRt;
-		float dirDiff = dot(N, normalize(u_NormalMatrix *  vec3(Rt[0][2], Rt[1][2], Rt[2][2])));
-		weight *= -(dirDiff + 1.f) / (1.f - dirLimit) + 1;
-
-		if(weight > bestWeight) { //TODO
+		weight = computeWeight(i, N, coords);
+		if(weight > bestWeight) {
 			bestWeight = weight;
 			bestCoords.x = i;
 			bestCoords.yz = coords;
 		}
 	}
+
+	//now fill empty areas with additional textures
+	if(bestWeight == 0) { //this condition is neccessary :(
+		for(int i = u_texuresBasic; i < u_textureCount; ++i) {
+			weight = computeWeight(i, N, coords);
+			if(weight > bestWeight) {
+				bestWeight = weight;
+				bestCoords.x = i;
+				bestCoords.yz = coords;
+			}
+		}
+	}
+
+	//now, depending on the number of textures, there can still be empty spaces
+	//we don't want that, even if we can't texture them properly
+	//let's just texture them with what we have, 
+	if(bestWeight == 0) { //this condition is neccessary :(
+		for(int i = 0; i < u_textureCount; ++i) {
+			weight = computeWeight(i, N, coords, 0.0f);
+			if(weight > bestWeight) {
+				bestWeight = weight;
+				bestCoords.x = i;
+				bestCoords.yz = coords;
+			}
+		}
+	}
+	
 	
 	vec3 tex = texture2DRect(u_texture0[int(bestCoords.x)], bestCoords.yz).rgb;
 	vec3 color = min(vec3(.2f, .2f, .2f) * diffuse + .2f, 1.0f); //mat
