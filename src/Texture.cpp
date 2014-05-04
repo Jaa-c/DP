@@ -1,7 +1,8 @@
 #include "Texture.h"
 #include "src/globals.h"
 
-GLuint Texture::samplerID = GL_ID_NONE;
+GLuint Texture::nearestSamplerID = GL_ID_NONE;
+GLuint Texture::linearSamplerID = GL_ID_NONE;
 
 Texture::Texture(const GLenum target, const GLuint unit, Photo * photo) : 
 	photo(photo), target(target), unit(unit), 

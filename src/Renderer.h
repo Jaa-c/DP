@@ -40,15 +40,22 @@ class Renderer {
 			
 			glBindTexture(texture.target, 0);
 		}
-		if(texture.samplerID == GL_ID_NONE) {
-			glGenSamplers(1, &texture.samplerID);
-			glSamplerParameteri(texture.samplerID, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-			glSamplerParameteri(texture.samplerID, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-			glSamplerParameteri(texture.samplerID, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-			glSamplerParameteri(texture.samplerID, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+		if(texture.nearestSamplerID == GL_ID_NONE) {
+			glGenSamplers(1, &texture.nearestSamplerID);
+			glSamplerParameteri(texture.nearestSamplerID, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+			glSamplerParameteri(texture.nearestSamplerID, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+			glSamplerParameteri(texture.nearestSamplerID, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+			glSamplerParameteri(texture.nearestSamplerID, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+			
+			glGenSamplers(1, &texture.linearSamplerID);
+			glSamplerParameteri(texture.linearSamplerID, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			glSamplerParameteri(texture.linearSamplerID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glSamplerParameteri(texture.linearSamplerID, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+			glSamplerParameteri(texture.linearSamplerID, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
 		}
 		
-		assert(texture.samplerID);
+		assert(texture.nearestSamplerID);
+		assert(texture.linearSamplerID);
 		assert(texture.textureID);
 		
 		glCheckError();
@@ -60,8 +67,13 @@ class Renderer {
 			glBindTexture(texture.target, 0);
 			texture.updateImage = false;
 		}
+		if(Settings::billinearFiltering) {
+			glBindSampler(texture.unit, texture.linearSamplerID);
+		}
+		else {
+			glBindSampler(texture.unit, texture.nearestSamplerID);
+		}
 		
-		glBindSampler(texture.unit, texture.samplerID);
 		glBindTexture(texture.target, texture.textureID);
 	}
 

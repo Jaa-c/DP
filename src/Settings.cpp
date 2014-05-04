@@ -6,12 +6,13 @@
 #include "Settings.h"
 
 uint Settings::maxTextures = 32;
-quint32	Settings::usingTextures = 4;
+uint Settings::usingTextures = 8;
 glm::vec3 Settings::objectRotate = glm::vec3(0, 0, 0);
 glm::vec2 Settings::radarPos = glm::vec2(10, 10);
 glm::vec2 Settings::radarSize = glm::vec2(250, 250);
 bool Settings::usePrefferedCamera = false;
 bool Settings::useRecomputedDirections = true;
+bool Settings::billinearFiltering = true;
 uint Settings::prefferedCamera = 0;
 	
 void Settings::reset() {
@@ -19,6 +20,7 @@ void Settings::reset() {
 	Settings::objectRotate = glm::vec3(0, 0, 0);
 	Settings::usePrefferedCamera = false;
 	Settings::useRecomputedDirections = true;
+	Settings::billinearFiltering = true;
 	Settings::prefferedCamera = 0;
 }
 

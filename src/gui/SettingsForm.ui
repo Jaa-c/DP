@@ -62,6 +62,9 @@
     <property name="fieldGrowthPolicy">
      <enum>QFormLayout::ExpandingFieldsGrow</enum>
     </property>
+    <property name="labelAlignment">
+     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+    </property>
     <property name="verticalSpacing">
      <number>10</number>
     </property>
@@ -95,13 +98,6 @@
       </property>
      </widget>
     </item>
-    <item row="2" column="1">
-     <widget class="QCheckBox" name="directionsCheckBox">
-      <property name="text">
-       <string/>
-      </property>
-     </widget>
-    </item>
     <item row="2" column="0">
      <widget class="QLabel" name="label_4">
       <property name="toolTip">
@@ -109,6 +105,30 @@
       </property>
       <property name="text">
        <string>Use computed directions</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="1">
+     <widget class="QCheckBox" name="directionsCheckBox">
+      <property name="text">
+       <string>(recommended)</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="0">
+     <widget class="QLabel" name="label_5">
+      <property name="toolTip">
+       <string>Use camera directions, that are recomputed based on model position in the photo.</string>
+      </property>
+      <property name="text">
+       <string>Billinear filtering</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="1">
+     <widget class="QCheckBox" name="filteringCheckBox">
+      <property name="text">
+       <string/>
       </property>
      </widget>
     </item>

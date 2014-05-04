@@ -29,7 +29,8 @@ public:
 	GLuint unit;
 	
 	GLuint textureID;
-	static GLuint samplerID;
+	static GLuint nearestSamplerID;
+	static GLuint linearSamplerID;
 		
 	bool current; // flag for loading
 	bool updateImage;
@@ -45,7 +46,7 @@ public:
 	
 	friend std::ostream & operator << (std::ostream& os, const Texture &tex) {
 		os  << "Texture{unit=" << tex.unit << ", textureID=" << tex.textureID 
-			<< ", samplerId=" << tex.samplerID << ", photo.ID=" << tex.photo->ID 
+			<< ", samplerId=" << tex.nearestSamplerID << ", photo.ID=" << tex.photo->ID 
 			<< "}\n";
 		return os;
 	}
