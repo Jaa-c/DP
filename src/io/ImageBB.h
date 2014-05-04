@@ -9,8 +9,9 @@
 #define	IMAGEBB_H
 
 
-#include <QImage> //tmp
+#include <QImage>
 
+#include "ImageLoader.h" //tmp
 
 /**
  * Computes Bounding Box in image space to find center and area covered by 
@@ -18,6 +19,7 @@
  */
 class ImageBB {
 	const std::vector<glm::vec3> & vertices;
+	const bool saveImage = false; //debug feature
 		
 	struct PointPair {
 		glm::ivec2 proj;
@@ -50,7 +52,8 @@ public:
 	}
 	
 	void computeCameraParams(CameraPosition &cam, const ImageData &img) {
-//		QImage qimg((imageFolder + name).c_str());
+		std::shared_ptr<QImage> qimg;
+		if(saveImage) qimg = std::make_shared<QImage>((img.path).c_str());
 
 		std::vector<PointPair> res; //position in pixels
 		for(auto &p : vertices) {
@@ -65,7 +68,7 @@ public:
 				pair.orig = p;
 				pair.proj = pt;
 				res.push_back(pair);
-//				drawPoint(pt, qimg, qRgb(0, 255, 0));
+				if(saveImage) drawPoint(pt, *qimg, qRgb(0, 255, 0));
 			}
 		}
 
@@ -112,7 +115,7 @@ public:
 		if(res.size() > 0) {
 			for(uint i = 0; i < res.size(); ++i) {
 				auto &pt = res[i];
-//				drawPoint(pt.proj, qimg, qRgb(255, 0, 0), 14);
+				if(saveImage) drawPoint(pt.proj, *qimg, qRgb(255, 0, 0), 14);
 				c += pt.proj;
 				centroid += pt.orig;
 				if(i + 1 < res.size())
@@ -132,12 +135,14 @@ public:
 		}
 		
 		assert(cam.relativeArea >= 0.f && cam.relativeArea <= 1.f);
-				
-//			drawPoint(centroid, qimg, qRgb(255, 255, 255), 18);
-//			glm::ivec2 c = img.size/2;
-//			drawPoint(c, qimg, qRgb(255, 255, 0), 18);
-//			if(name.compare("0270_1020_110_09_00_000_098345.jp") == 0)
-//				qimg.save((imageFolder + "0-" + name).c_str());
+		
+		if(saveImage) {
+			drawPoint(c, *qimg, qRgb(255, 255, 255), 18);
+			glm::ivec2 mid = img.size/2;
+			drawPoint(mid, *qimg, qRgb(255, 255, 0), 18);
+			std::string name = img.path.substr(0, img.path.length() - 4) + "-tmp.jpg";
+			qimg->save(name.c_str());
+		}
 	
 	}
 
