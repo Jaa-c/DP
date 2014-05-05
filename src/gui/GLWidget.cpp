@@ -167,6 +167,12 @@ void GLWidget::addRenderPass(RenderPass::RenderPassType pass) {
 			break;
 		case RenderPass::TEXTURING_PRE_PASS:
 		{
+			if(!GLEW_NV_shader_atomic_float) {
+				throw std::string(
+						"This texturing pass requires nVidia card " 
+						"with GL_NV_shader_atomic_float extension.");
+			}
+			
 			renderPassHandler.remove(RenderPass::TEXTURING_PASS);
 			
 			std::shared_ptr<TexturingPrePass> pp = std::make_shared<TexturingPrePass>(renderer, shaderHandler, textureHandler);

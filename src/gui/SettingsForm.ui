@@ -185,6 +185,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>photosSlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>SettingsForm</receiver>
+   <slot>photoSliderChangedCB(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>219</x>
+     <y>50</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>270</x>
+     <y>83</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>photoSliderChangedCB(int)</slot>

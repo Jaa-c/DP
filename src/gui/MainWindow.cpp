@@ -44,7 +44,8 @@ MainWindow::MainWindow(QApplication *app, int w, int h) : view(nullptr) {
 }
 
 void MainWindow::initAppState() {
-
+	renderPass->setEnabled(false);
+	settings->setEnabled(false);
 }
 
 void MainWindow::initScene() {
@@ -54,9 +55,13 @@ void MainWindow::initScene() {
 	if(radarRP->isChecked()) {
 		glWidget->addRenderPass(RenderPass::RADAR_PASS);
 	}
-	texturingPreRP->setChecked(true);
 	texturingRP->setChecked(true);
 	radarRP->setChecked(true);
+	renderPass->setEnabled(true);
+	settings->setEnabled(true);
+	
+	//should be last, if nvidia not avaiable
+	texturingPreRP->setChecked(true);
 }
 
 void MainWindow::createActions() {

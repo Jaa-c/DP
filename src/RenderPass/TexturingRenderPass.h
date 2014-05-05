@@ -81,9 +81,10 @@ public:
 		assert(textureHandler);
 		glUseProgram(programID);
 		
-		const glm::mat4 invMvm = glm::transpose(object->getMvm());
+		const glm::mat3 invMvm = glm::inverseTranspose(glm::mat3(object->getMvm()));
+		const glm::mat4 invMvmDir = glm::transpose(object->getMvm());
 		glm::vec3 viewDir = glm::normalize(object->getCentroidPosition() - renderer.getCamera().getCameraPosition());
-		glm::vec3 viewDirObjSpace(glm::normalize(invMvm * glm::vec4(viewDir, 1.0f)));
+		glm::vec3 viewDirObjSpace(glm::normalize(invMvmDir * glm::vec4(viewDir, 1.0f)));
 		
 		textureHandler->updateTextures(viewDirObjSpace, Settings::usingTextures);
 		std::vector<Texture> &textures = textureHandler->getTextures();
@@ -97,8 +98,8 @@ public:
 
 				glBufferSubData(GL_UNIFORM_BUFFER, offset, sizeof(glm::mat4), &p->camera.Rt[0][0]);
 				offset += 16 * sizeof(float);
-				//glm::vec3 fd = glm::normalize(glm::mat3(invMvm) *  p->camera.fixedDirection);
-				glBufferSubData(GL_UNIFORM_BUFFER, offset, sizeof(glm::vec3), &p->camera.fixedDirection);
+				glm::vec3 fd = glm::normalize(invMvm *  p->camera.fixedDirection);
+				glBufferSubData(GL_UNIFORM_BUFFER, offset, sizeof(glm::vec3), &fd);
 				offset += 4 * sizeof(float);
 				glBufferSubData(GL_UNIFORM_BUFFER, offset, sizeof(glm::ivec2) , &p->getImage().size);
 				offset += 2 * sizeof(int);

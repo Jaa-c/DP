@@ -31,6 +31,9 @@ public:
 		} catch(const std::exception& e) {
 			msg = std::string(e.what());
 		}
+		catch(const std::string &e) {
+			msg = e;
+		}
 		catch(const char* e) {
 			msg = e;
 		}

@@ -26,6 +26,7 @@ in block {
 
 layout(location = 0) out vec3 a_data;
 
+const float dirLimit = 0.4; //cos(a), 0 = perpendicular, 1 = same direction
 // -----------
 
 void projectCoords(in int index, in vec4 pos, out vec2 coords) {
@@ -36,13 +37,12 @@ void projectCoords(in int index, in vec4 pos, out vec2 coords) {
 
 bool inRange(in int index, in vec2 coords) {
 	ivec2 s = ub_texData[index].u_TextureSize;
-	return coords.x >= 0 && coords.x < s.x && coords.y > 0 && coords.y < s.y; 
+	return coords.x >= 0 && coords.x < s.x && coords.y >= 0 && coords.y < s.y; 
 }
 
 void main() {
 
 	vec3 N = normalize(In.v_normal);
-	const float dirLimit = 0.4; //0 = perpendicular, 1 = same direction
 	vec2 coords;
 	float weight;
 	vec3 bestCoords = vec3(.0, -1.0f, -1.0f);
@@ -53,9 +53,7 @@ void main() {
 		projectCoords(i, In.v_position, coords);
 		weight *= float(inRange(i, coords));
 
-		mat4 Rt = ub_texData[i].u_TextureRt;
-		//float dirDiff = dot(N, normalize(u_NormalMatrix *  vec3(Rt[0][2], Rt[1][2], Rt[2][2])));
-		float dirDiff = dot(N, normalize(u_NormalMatrix * ub_texData[i].u_cameraViewDir));
+		float dirDiff = dot(N, ub_texData[i].u_cameraViewDir);
 		weight *= -(dirDiff + 1.f) / (1.f - dirLimit) + 1;
 		
 		if(weight > 0) {

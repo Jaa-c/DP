@@ -118,10 +118,7 @@ private:
 			checkProgramInfoLog(g_ProgramId[shader]);
 			Log::e("Shader program creation failed.");
 			glDeleteProgram(g_ProgramId[shader]);
-			g_ProgramId[shader]  = 0;
-			return;
-		} else {
-			Log::i("Shader program compiled successfully.");
+			g_ProgramId[shader] = 0;
 		}
 	}
 	
@@ -152,7 +149,7 @@ private:
 		glCompileShader(shader_id);
 
 		if (checkShaderCompileStatus(shader_id) != GL_TRUE) {
-			Log::e(log, "failed");
+			Log::e(log, "failed!");
 			checkShaderInfoLog(shader_id);
 			glDeleteShader(shader_id);
 			return 0;
