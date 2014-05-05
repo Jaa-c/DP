@@ -5,6 +5,7 @@
 
 struct TextureData {
 	mat4	u_TextureRt;
+	vec3	u_cameraViewDir;
 	ivec2	u_TextureSize;
 	float	u_TextureFL;
 	float	u_coveredArea;
@@ -49,8 +50,9 @@ float computeWeight(in int index, in vec3 N, out vec2 coords, in float dl = dirL
 	projectCoords(index, In.v_position, coords);
 	weight *= float(inRange(index, coords));
 
-	mat4 Rt = ub_texData[index].u_TextureRt;
-	float dirDiff = dot(N, normalize(u_NormalMatrix *  vec3(Rt[0][2], Rt[1][2], Rt[2][2])));
+	//mat4 Rt = ub_texData[index].u_TextureRt;
+	//float dirDiff = dot(N, normalize(u_NormalMatrix *  vec3(Rt[0][2], Rt[1][2], Rt[2][2])));
+	float dirDiff = dot(N, normalize(u_NormalMatrix * ub_texData[index].u_cameraViewDir)); //TODO
 	weight *= -(dirDiff + 1.f) / (1.f - dl) + 1;
 	return weight;
 }
@@ -69,6 +71,7 @@ void main() {
 	//use only the inital photos for texturing
 	for(int i = 0; i < u_texuresBasic; ++i) {
 		weight = computeWeight(i, N, coords);
+		weight *= dot(u_viewDir, normalize(u_NormalMatrix * ub_texData[i].u_cameraViewDir)); //TODO
 		if(weight > bestWeight) {
 			bestWeight = weight;
 			bestCoords.x = i;

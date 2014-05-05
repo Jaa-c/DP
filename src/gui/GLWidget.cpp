@@ -39,8 +39,8 @@ void GLWidget::paintGL() {
 	}
 	
 	gettimeofday(&end, NULL);
-	float t = ((end.tv_sec - start.tv_sec) + (end.tv_usec - start.tv_usec)*10e-6);
-	if(t > 1.f) {
+	double t = ((end.tv_sec - start.tv_sec) + (end.tv_usec - start.tv_usec)*10e-6);
+	if(t > 1.) {
 		mainWin.setFps(fps / t);
 		fps = 0;
 		gettimeofday(&start, NULL);

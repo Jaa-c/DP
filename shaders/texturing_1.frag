@@ -3,6 +3,7 @@
 
 struct TextureData {
 	mat4	u_TextureRt;
+	vec3	u_cameraViewDir;
 	ivec2	u_TextureSize;
 	float	u_TextureFL;
 	float	u_coveredArea; //uninitialized here!!
@@ -53,7 +54,8 @@ void main() {
 		weight *= float(inRange(i, coords));
 
 		mat4 Rt = ub_texData[i].u_TextureRt;
-		float dirDiff = dot(N, normalize(u_NormalMatrix *  vec3(Rt[0][2], Rt[1][2], Rt[2][2])));
+		//float dirDiff = dot(N, normalize(u_NormalMatrix *  vec3(Rt[0][2], Rt[1][2], Rt[2][2])));
+		float dirDiff = dot(N, normalize(u_NormalMatrix * ub_texData[i].u_cameraViewDir));
 		weight *= -(dirDiff + 1.f) / (1.f - dirLimit) + 1;
 		
 		if(weight > 0) {

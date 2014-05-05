@@ -46,7 +46,7 @@ public:
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		glClearColor(0.4f, 0.4f, 0.7f, 0);
 		
-		const uint sizeOfTextureData = sizeof(glm::mat4) + sizeof(glm::ivec2) + 2 * sizeof(float);
+		const uint sizeOfTextureData = sizeof(glm::mat4) + 8 * sizeof(GLfloat);
 		
 		if(programID == GL_ID_NONE) {
 			programID = shaderHandler.getProgramId(shader);
@@ -97,6 +97,9 @@ public:
 
 				glBufferSubData(GL_UNIFORM_BUFFER, offset, sizeof(glm::mat4), &p->camera.Rt[0][0]);
 				offset += 16 * sizeof(float);
+				//glm::vec3 fd = glm::normalize(glm::mat3(invMvm) *  p->camera.fixedDirection);
+				glBufferSubData(GL_UNIFORM_BUFFER, offset, sizeof(glm::vec3), &p->camera.fixedDirection);
+				offset += 4 * sizeof(float);
 				glBufferSubData(GL_UNIFORM_BUFFER, offset, sizeof(glm::ivec2) , &p->getImage().size);
 				offset += 2 * sizeof(int);
 				float focalL = p->camera.focalL / p->getImageScale(); //changing focal length for thumbnails

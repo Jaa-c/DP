@@ -52,13 +52,14 @@ public:
 				std::vector<CameraPosition> cameras = bundlerData.parseFile();
 				imgLoader.setExpectedCount(cameras.size());
 				const std::vector<ImageData> imgData = imgLoader.checkAllImages(photosFolder);
-
+				progress(0);
 				outPhotos.reserve(cameras.size());
 				for(uint i = 0; i < cameras.size(); ++i) {
 					const ImageData &img = imgData.at(i);
 					CameraPosition &cp = cameras.at(i);
 					
 					imageBB.computeCameraParams(cp, img);
+					progress(floor(100.f / cameras.size()));
 					outPhotos.push_back(
 						Photo(i, img.path, cp, 
 							img.size, img.rowPadding, 
