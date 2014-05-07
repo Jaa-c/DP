@@ -151,17 +151,17 @@ public:
 			glGenFramebuffers(1, &frameBuffer);
 		}
 		
-		glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
-		glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, normalsTexture, 0);
-		glClearColor(0.f, 0.f, 0.f, 0.f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		GLenum DrawBuffers[1] = {GL_COLOR_ATTACHMENT0};
-		glDrawBuffers(1, DrawBuffers); 
-		
-		if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
-			Log::e("[Texturing render pass] framebuffer NOT OK");
-			throw "framebuffer error, can't render textures!";
-		}
+//		glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
+//		glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, normalsTexture, 0);
+//		glClearColor(0.f, 0.f, 0.f, 0.f);
+//		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+//		GLenum DrawBuffers[1] = {GL_COLOR_ATTACHMENT0};
+//		glDrawBuffers(1, DrawBuffers); 
+//		
+//		if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+//			Log::e("[Texturing render pass] framebuffer NOT OK");
+//			throw "framebuffer error, can't render textures!";
+//		}
 		
 		GLint texCount = photos.size();
 		glUniform1i(loc_textureCount, texCount);
@@ -208,8 +208,8 @@ public:
 		};
 		
 		int iter = 0;
-		bool moving = true;
-		while(moving && iter < 5) {
+		bool done = false;
+		do {
 			iter++;
 			glUseProgram(reductionShaderID);
 
@@ -227,6 +227,10 @@ public:
 			glCheckError();
 
 			glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT | GL_BUFFER_UPDATE_BARRIER_BIT);
+			if(done || iter > 4) {
+				break; // start and end with reduction
+			}
+			
 			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, resultBuffer);
 			Cl* data = (Cl*) glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_READ_WRITE);
 			for(int i = 0; i < 5; ++i) {
@@ -249,12 +253,13 @@ public:
 			glCheckError();
 			glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT | GL_BUFFER_UPDATE_BARRIER_BIT);
 			
-			glGetBufferSubData(GL_SHADER_STORAGE_BUFFER, sizeOfresult - sizeof(GLboolean), sizeof(GLboolean), &moving);
-		}
+			glGetBufferSubData(GL_SHADER_STORAGE_BUFFER, sizeOfresult - sizeof(GLboolean), sizeof(GLboolean), &done);
+		} while(true);
 		std::vector<Cluster> clusters;
+		std::vector<Cl> data(5);
 		
-		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, resultBuffer);
-		Cl* data = (Cl*) glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_READ_WRITE);
+		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, resultBuffer);	
+		glGetBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeOfresult- sizeof(GLboolean), &data[0]);
 		int sum = 0;
 		for(int i = 0; i < 5; ++i) {
 			if(data[i].size != 0) {
@@ -266,7 +271,6 @@ public:
 			}
 			sum += data[i].size;
 		}
-		glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 		
 //		glBindTexture(GL_TEXTURE_2D, normalsTexture);

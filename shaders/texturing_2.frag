@@ -4,11 +4,11 @@
 #define MAX_TEXTURES 32
 
 struct TextureData {
-	mat4	u_TextureRt;
-	vec3	u_cameraViewDir;
-	ivec2	u_TextureSize;
-	float	u_TextureFL;
-	float	u_coveredArea;
+	mat4	u_Rt;			//matice R|t
+	vec3	u_cameraViewDir;//opraveny smer kamery
+	ivec2	u_textureSize;	//rozmery fotografie
+	float	u_textureFL;	//ohniskova vzdalenost
+	float	u_coveredArea;	//normalizovana plocha
 };
 layout(std140) uniform u_textureDataBlock {
 	TextureData ub_texData[MAX_TEXTURES];
@@ -33,23 +33,23 @@ const float dirLimit = 0.4; //cos(a), 0 = perpendicular, 1 = same direction
 
 void projectCoords(in int index, in vec4 pos, out vec2 coords) {
 	TextureData data = ub_texData[index];
-	vec3 c = (data.u_TextureRt * pos).xyz;
-	coords =  c.xy/c.z * data.u_TextureFL + data.u_TextureSize.xy * 0.5f;
+	vec3 c = (data.u_Rt * pos).xyz;
+	coords =  c.xy/c.z * data.u_textureFL + data.u_textureSize.xy * 0.5f;
 }
 
 bool inRange(in int index, in vec2 coords) {
-	ivec2 s = ub_texData[index].u_TextureSize;
+	ivec2 s = ub_texData[index].u_textureSize;
 	return coords.x >= 0 && coords.x < s.x && coords.y >= 0 && coords.y < s.y; 
 }
 
 float computeWeight(in int index, in vec3 N, out vec2 coords, in float dl = dirLimit) {
-	float weight = 1.f;
-	weight *= ub_texData[index].u_coveredArea;
+	TextureData data = ub_texData[index];
+	float weight = data.u_coveredArea;
 
 	projectCoords(index, In.v_position, coords);
 	weight *= float(inRange(index, coords));
 
-	float dirDiff = dot(N, ub_texData[index].u_cameraViewDir);
+	float dirDiff = dot(N, data.u_cameraViewDir);
 	weight *= -(dirDiff + 1.f) / (1.f - dl) + 1;
 	return weight;
 }
@@ -68,7 +68,7 @@ void main() {
 	//use only the inital photos for texturing
 	for(int i = 0; i < u_texuresBasic; ++i) {
 		weight = computeWeight(i, N, coords);
-		weight *= dot(u_viewDir, ub_texData[i].u_cameraViewDir); //TODO
+		weight *= dot(u_viewDir, ub_texData[i].u_cameraViewDir);
 		if(weight > bestWeight) {
 			bestWeight = weight;
 			bestCoords.x = i;

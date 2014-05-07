@@ -28,4 +28,4 @@ QMAKE_CXXFLAGS += -std=c++11
 equals(QT_MAJOR_VERSION, 5) {
 CONFIG += c++11
 }
-"LIBS += -lGL -lX11 -lGLEW -lglfw -lassimp -ljpeg"
+"LIBS += -lGL -lX11 -lGLEW -lassimp -ljpeg"

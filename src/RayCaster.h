@@ -1,4 +1,5 @@
 /* 
+ * DEPRECATED
  * File:   RayCaster.h
  * Author: jaa
  *

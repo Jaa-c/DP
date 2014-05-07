@@ -45,9 +45,6 @@ void TextureHandler::updateTextures(
 	const glm::vec3 &viewDir, //in object space!!
 	const uint count
 ) {
-	if(!nearPhotos.empty()) {
-		nearPhotos.clear();
-	}
 	
 	std::vector<Photo*> currentPhotos = getBestCameras(viewDir, count);
 	
@@ -158,7 +155,6 @@ std::vector<Photo*> TextureHandler::getClosestCameras(const glm::vec3 &d, const 
 			return glm::dot(a->camera.fixedDirection, dir) > glm::dot(b->camera.fixedDirection, dir);
 		else
 			return glm::dot(a->camera.direction, dir) > glm::dot(b->camera.direction, dir);
-			
 	};
 
 	std::set<Photo*, decltype(comp)> result(comp);
@@ -211,11 +207,6 @@ void TextureHandler::getResult(Photo *p) {
 	else {
 		p->loading = false;
 	}
-}
-
-
-void TextureHandler::setRayCaster(std::shared_ptr<RayCaster> r) {
-	rayCaster = r;
 }
 
 const std::vector<Photo> & TextureHandler::getPhotos() const {

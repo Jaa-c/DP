@@ -61,7 +61,7 @@ void MainWindow::initScene() {
 	settings->setEnabled(true);
 	
 	//should be last, if nvidia not avaiable
-	texturingPreRP->setChecked(true);
+	//texturingPreRP->setChecked(true);
 }
 
 void MainWindow::createActions() {
@@ -92,7 +92,7 @@ void MainWindow::createActions() {
 	basicTexturingRP->setActionGroup(texGroup.get());
 	connect(basicTexturingRP.get(), SIGNAL(changed()), this, SLOT(basicTexturingPassCB()));
 	
-	bundlerPointsRP = std::make_shared<QAction>(tr("&Bundler Points Pass"), this);
+	bundlerPointsRP = std::make_shared<QAction>(tr("&Display camera positions"), this);
 	bundlerPointsRP->setCheckable(true);
 	connect(bundlerPointsRP.get(), SIGNAL(changed()), this, SLOT(bundlerPointsPassCB()));
 	

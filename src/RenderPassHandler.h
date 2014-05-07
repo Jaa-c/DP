@@ -13,8 +13,8 @@
 
 class RenderPassHandler {
 	//typedef std::unordered_map<uint, RenderPass *> PassList;
-	typedef std::map<uint, std::shared_ptr<RenderPass>> PassList;
 	typedef std::pair<uint, std::shared_ptr<RenderPass>> dataType;
+	typedef std::map<uint, std::shared_ptr<RenderPass>> PassList;
 	
 	PassList passes;
 

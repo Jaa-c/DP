@@ -40,7 +40,7 @@ public:
 		catch(...) {
 			msg = "unknow exception";			
 		}
-		msg = "Unexpected error: " + msg;
+		msg = "Error: " + msg;
 		err->showMessage(msg.c_str());
 		Log::e(msg);
 	}

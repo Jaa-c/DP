@@ -143,12 +143,6 @@ public:
 			glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
 			drawPoint(c);
 			
-			glColor4f(1.0f, 1.0f, 0.0f, 1.0f); //current in RAM
-			for(auto p : textureHandler->nearPhotos) {
-				tmp = object->getMvm() * glm::vec4(p.second->camera.position, 1.0f);
-				drawPoint(tmp);
-			}
-
 			glColor4f(0.0f, 0.0f, 1.0f, 1.0f); //current on GPU
 			for(auto &tex : textureHandler->getTextures()) {
 				tmp = object->getMvm() * glm::vec4(tex.photo->camera.position, 1.0f);

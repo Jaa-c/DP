@@ -14,7 +14,7 @@ layout(std140) uniform u_textureDataBlock {
 uniform int u_textureCount;
 uniform int u_textureIndices[32];
 
-uniform vec3 u_viewDir; //debug
+uniform vec3 u_viewDir;
 uniform mat3 u_NormalMatrix;
 
 in block {

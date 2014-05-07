@@ -59,13 +59,10 @@ class TextureHandler : public QObject {
 	friend class CalibrationLoader; 
 	/// displays kdtree data, so let's give it access, mostly debug
 	friend class RadarRenderPass;
-	
-	std::shared_ptr<RayCaster> rayCaster;
-	
+		
 	std::vector<Photo> photos;
 	std::stack<GLuint> units;
 	std::vector<Texture> textures;
-	std::unordered_map<int, Photo *> nearPhotos;
 	std::unordered_map<uint, uint> photoIndices;
 	
 	std::vector<Cluster> clusters;

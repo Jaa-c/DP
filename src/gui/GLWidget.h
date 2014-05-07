@@ -40,7 +40,6 @@ class GLWidget : public QGLWidget
 	
 	std::shared_ptr<TextureHandler> textureHandler;
 	std::shared_ptr<ObjectData> object;
-	std::shared_ptr<RayCaster> rayCaster;
 	
 	struct timeval start, end;
 	int fps;
