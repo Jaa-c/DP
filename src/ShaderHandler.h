@@ -60,6 +60,10 @@ public:
 		return g_ProgramId[shader];
 	}
 	
+	void resetShader(ShaderType shader) {
+		g_ProgramId[shader] = 0;
+	}
+	
 	void resetShaders() {
 		for(int i = 0; i < SIZE; i++) {
 			g_ProgramId[i] = 0;

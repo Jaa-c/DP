@@ -103,9 +103,10 @@ public:
 		assert(programID != GL_ID_NONE);
 		glUseProgram(programID);
 		
-		const glm::mat4 invMvm = glm::transpose(object->getMvm());
+		const glm::mat3 invMvm = glm::inverseTranspose(glm::mat3(object->getMvm()));
+		const glm::mat4 invMvmDir = glm::transpose(object->getMvm());
 		glm::vec3 viewDir = glm::normalize(object->getCentroidPosition() - renderer.getCamera().getCameraPosition());
-		glm::vec3 viewDirObjSpace(glm::normalize(invMvm * glm::vec4(viewDir, 1.0f)));
+		glm::vec3 viewDirObjSpace(glm::normalize(invMvmDir * glm::vec4(viewDir, 1.0f)));
 
 		std::vector<Photo *> photos = textureHandler->getClosestCameras(viewDirObjSpace, Settings::usingTextures); 
 				
@@ -116,7 +117,8 @@ public:
 				const Photo *p = photos.at(i);
 				glBufferSubData(GL_UNIFORM_BUFFER, offset, sizeof(glm::mat4), &p->camera.Rt[0][0]);
 				offset += 16 * sizeof(float);
-				glBufferSubData(GL_UNIFORM_BUFFER, offset, sizeof(glm::vec3), &p->camera.fixedDirection);
+				glm::vec3 fd = glm::normalize(invMvm *  p->camera.fixedDirection);
+				glBufferSubData(GL_UNIFORM_BUFFER, offset, sizeof(glm::vec3), &fd);
 				offset += 4 * sizeof(float);
 				glBufferSubData(GL_UNIFORM_BUFFER, offset, sizeof(glm::ivec2) , &p->getImage().size);
 				offset += 2 * sizeof(int);
@@ -151,17 +153,17 @@ public:
 			glGenFramebuffers(1, &frameBuffer);
 		}
 		
-//		glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
-//		glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, normalsTexture, 0);
-//		glClearColor(0.f, 0.f, 0.f, 0.f);
-//		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-//		GLenum DrawBuffers[1] = {GL_COLOR_ATTACHMENT0};
-//		glDrawBuffers(1, DrawBuffers); 
-//		
-//		if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
-//			Log::e("[Texturing render pass] framebuffer NOT OK");
-//			throw "framebuffer error, can't render textures!";
-//		}
+		glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
+		glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, normalsTexture, 0);
+		glClearColor(0.f, 0.f, 0.f, 0.f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		GLenum DrawBuffers[1] = {GL_COLOR_ATTACHMENT0};
+		glDrawBuffers(1, DrawBuffers); 
+		
+		if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+			Log::e("[Texturing render pass] framebuffer NOT OK");
+			throw "framebuffer error, can't render textures!";
+		}
 		
 		GLint texCount = photos.size();
 		glUniform1i(loc_textureCount, texCount);
@@ -208,8 +210,8 @@ public:
 		};
 		
 		int iter = 0;
-		bool done = false;
-		do {
+		bool moving = true;
+		while(moving && iter < 5) {
 			iter++;
 			glUseProgram(reductionShaderID);
 
@@ -227,9 +229,6 @@ public:
 			glCheckError();
 
 			glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT | GL_BUFFER_UPDATE_BARRIER_BIT);
-			if(done || iter > 4) {
-				break; // start and end with reduction
-			}
 			
 			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, resultBuffer);
 			Cl* data = (Cl*) glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_READ_WRITE);
@@ -253,13 +252,14 @@ public:
 			glCheckError();
 			glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT | GL_BUFFER_UPDATE_BARRIER_BIT);
 			
-			glGetBufferSubData(GL_SHADER_STORAGE_BUFFER, sizeOfresult - sizeof(GLboolean), sizeof(GLboolean), &done);
-		} while(true);
+			glGetBufferSubData(GL_SHADER_STORAGE_BUFFER, sizeOfresult - sizeof(GLboolean), sizeof(GLboolean), &moving);
+		};
 		std::vector<Cluster> clusters;
-		std::vector<Cl> data(5);
+		//std::vector<Cl> data(5);
 		
 		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, resultBuffer);	
-		glGetBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeOfresult- sizeof(GLboolean), &data[0]);
+		//glGetBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeOfresult- sizeof(GLboolean), &data[0]);
+		Cl* data = (Cl*) glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_READ_WRITE);
 		int sum = 0;
 		for(int i = 0; i < 5; ++i) {
 			if(data[i].size != 0) {
@@ -271,6 +271,7 @@ public:
 			}
 			sum += data[i].size;
 		}
+		glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 		
 //		glBindTexture(GL_TEXTURE_2D, normalsTexture);

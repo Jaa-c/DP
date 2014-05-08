@@ -44,6 +44,7 @@ public:
 	
 	
 	virtual void reset() {
+		shaderHandler.resetShader(shader);
 		programID = GL_ID_NONE;
 	}
 	
