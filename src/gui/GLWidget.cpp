@@ -4,7 +4,7 @@
 #include "../RenderPass/BasicTexturingRenderPass.h"
 #include "../RenderPass/TexturingRenderPass.h"
 #include "../RenderPass/TexturingPrePass.h"
-#include "../RenderPass/BundlerPointsRenderPass.h"
+#include "../RenderPass/CameraPointsRenderPass.h"
 #include "../RenderPass/RadarRenderPass.h"
 #include "../RenderPass/NormalsDebugPass.h"
 #include "../io/CalibrationLoader.h"
@@ -191,7 +191,7 @@ void GLWidget::addRenderPass(RenderPass::RenderPassType pass) {
 		case RenderPass::BUNDLER_POINTS_PASS:
 			renderPassHandler.add(
 				RenderPass::BUNDLER_POINTS_PASS,
-				std::make_shared<BundlerPointsRenderPass>(renderer, shaderHandler, textureHandler)
+				std::make_shared<CameraPointsRenderPass>(renderer, shaderHandler, textureHandler)
 			);
 			break;
 		case RenderPass::RADAR_PASS:

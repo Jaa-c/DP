@@ -4,7 +4,7 @@
 #extension GL_ARB_shader_storage_buffer_object : require
 
 #define SIZE 256
-#define CLUSTERS 5
+#define CLUSTERS 4
 #define MAX_ITER 20
 
 layout(local_size_x = 16, local_size_y = 16, local_size_z = 1) in;
@@ -40,7 +40,7 @@ void main() {
 	const uint id = pos.y * (gl_WorkGroupSize.x + gl_NumWorkGroups.x) + pos.x;
 
 	if(u_iteration == 1) { //initialize
-		indices[id] = id % CLUSTERS;
+		indices[id] = gl_WorkGroupID.x + gl_WorkGroupID.y * gl_NumWorkGroups.x % CLUSTERS;
 	}
 
 	uint centroidIDX = indices[id];
@@ -53,27 +53,27 @@ void main() {
     memoryBarrierShared();
     barrier();
 
-	for(int i = 0; i < 5; ++i) {
+	for(int i = 0; i < CLUSTERS; ++i) {
 		sizeCache[i][gl_LocalInvocationIndex] = 0;
 		cache[i][gl_LocalInvocationIndex] = vec3(0, 0, 0);
 	}
-    sizeCache[centroidIDX][gl_LocalInvocationIndex] = int(isNormal);
+	sizeCache[centroidIDX][gl_LocalInvocationIndex] = int(isNormal);
 	cache[centroidIDX][gl_LocalInvocationIndex] = int(isNormal) * N;
-    
+
 	int stepv = (SIZE >> 1); 
-    while(stepv > 0) { //reduction over data in each working group
-        if (gl_LocalInvocationIndex < stepv) {
-			for(int i = 0; i < 5; ++i) {
+	while(stepv > 0) { //reduction over data in each working group
+		if (gl_LocalInvocationIndex < stepv) {
+			for(int i = 0; i < CLUSTERS; ++i) {
 				sizeCache[i][gl_LocalInvocationIndex] += sizeCache[i][gl_LocalInvocationIndex + stepv];
 				cache[i][gl_LocalInvocationIndex] += cache[i][gl_LocalInvocationIndex + stepv];
 			}
-        }
-        memoryBarrierShared();
-        barrier();
-        stepv = (stepv >> 1);
-    }
-    if (gl_LocalInvocationIndex == 0) {
-		for(int i = 0; i < 5; ++i) {	//TODO
+		}
+		memoryBarrierShared();
+		barrier();
+		stepv = (stepv >> 1);
+	}
+	if (gl_LocalInvocationIndex == 0) {
+		for(int i = 0; i < CLUSTERS; ++i) {
 			if(sizeCache[i][0] != 0)
 				atomicAdd(clusters[i].size, sizeCache[i][0]);
 			if(cache[i][0].x != 0)
@@ -83,8 +83,5 @@ void main() {
 			if(cache[i][0].z != 0)
 				atomicAdd(clusters[i].cntr.z, cache[i][0].z);
 		}
-    }
-
-    memoryBarrier();
-    barrier();
+	}
 }

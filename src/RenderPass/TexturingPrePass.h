@@ -33,6 +33,8 @@ class TexturingPrePass : public RenderPass {
 	GLuint resultBuffer;
 	GLuint idxBuffer;
 	
+	const static int CLUSTERS = 4;
+	
 public:
 	
 	TexturingPrePass(
@@ -186,7 +188,7 @@ public:
 			loc_red_iter = glGetUniformLocation(reductionShaderID, "u_iteration");		
 		}
 		
-		const int sizeOfresult = 20 * sizeof(GLfloat) + sizeof(GLboolean); //TODO
+		const int sizeOfresult = CLUSTERS * (sizeof(glm::vec3) + sizeof(GLuint)) + sizeof(GLboolean); //TODO
 		const float blockSize = 16.f;
 		const glm::ivec2 gridSize(ceil(winSize.x/blockSize), ceil(winSize.y/blockSize));
 		const int sizeofInd = gridSize.x * gridSize.y * blockSize*blockSize * sizeof(GLuint);
@@ -232,7 +234,7 @@ public:
 			
 			glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, resultBuffer);
 			Cl* data = (Cl*) glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_READ_WRITE);
-			for(int i = 0; i < 5; ++i) {
+			for(int i = 0; i < CLUSTERS; ++i) {
 				data[i].cntr /= data[i].size;
 				data[i].cntr = glm::normalize(data[i].cntr);
 			}
@@ -255,13 +257,12 @@ public:
 			glGetBufferSubData(GL_SHADER_STORAGE_BUFFER, sizeOfresult - sizeof(GLboolean), sizeof(GLboolean), &moving);
 		};
 		std::vector<Cluster> clusters;
-		//std::vector<Cl> data(5);
-		
+		std::vector<Cl> data(CLUSTERS);
 		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, resultBuffer);	
-		//glGetBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeOfresult- sizeof(GLboolean), &data[0]);
-		Cl* data = (Cl*) glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_READ_WRITE);
+		glGetBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, sizeOfresult- sizeof(GLboolean), &data[0]);
+		
 		int sum = 0;
-		for(int i = 0; i < 5; ++i) {
+		for(int i = 0; i < CLUSTERS; ++i) {
 			if(data[i].size != 0) {
 				Cluster c;
 				c.id = clusters.size();
@@ -271,7 +272,6 @@ public:
 			}
 			sum += data[i].size;
 		}
-		glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 		
 //		glBindTexture(GL_TEXTURE_2D, normalsTexture);

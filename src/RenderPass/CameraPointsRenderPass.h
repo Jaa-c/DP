@@ -10,11 +10,11 @@
 
 #include "RenderPass.h"
 
-class BundlerPointsRenderPass : public RenderPass {
+class CameraPointsRenderPass : public RenderPass {
 		
 public:
 	
-	BundlerPointsRenderPass(
+	CameraPointsRenderPass(
 		Renderer& r, 
 		ShaderHandler& s, 
 		std::shared_ptr<TextureHandler> th
@@ -24,7 +24,7 @@ public:
 		shader = ShaderHandler::SHADER_POINTS;
 	}
 		
-	~BundlerPointsRenderPass() {
+	~CameraPointsRenderPass() {
 		
 	}
 	
