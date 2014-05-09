@@ -43,7 +43,8 @@ void GLWidget::paintGL() {
 	
 	float time = gltimer->end();
 	gltimer->start();
-	if(Settings::circle) std::cout << time <<  "\n";
+	if(Settings::circle) std::cout << time << ";" << Settings::temp << "\n";
+	Settings::temp = 0;
 	if(++f == 10) {
 		mainWin.setFps(1000.f / time);
 		f = 0;

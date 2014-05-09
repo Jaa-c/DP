@@ -10,6 +10,7 @@
 
 #include "../globals.h"
 #include "../Log.h"
+#include "../Settings.h"//tmp
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
@@ -228,7 +229,7 @@ public:
 			else {
 				input.seekg(3 * sizeof(int));
 			}
-			
+
 			const size_t size = (width + rowPadding) * height * 3;
 			raw.resize(size);
 			input.read((char*) &raw[0], raw.size() * sizeof(uchar));

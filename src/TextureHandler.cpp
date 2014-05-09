@@ -18,7 +18,7 @@
 #include "Settings.h"
 #include "src/Photo.h"
 #include "RayCaster.h"
-	
+
 TextureHandler::TextureHandler() {
 	//I want low nober of threads I don't want to waint long a get 
 	//all pictures at once, rather get them "sequentially"
@@ -191,6 +191,8 @@ void TextureHandler::loadFullImage(Photo &p) {
 		ImgThread *loader = new ImgThread(p);
 		loader->setAutoDelete(true);
 		pool.start(loader);
+		Settings::temp++;
+		//std::cout << " start ";
 	}
 }
 

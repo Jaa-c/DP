@@ -18,8 +18,7 @@
 #include "Photo.h"
 #include "Texture.h"
 #include "io/ImageLoader.h"
-
-class RayCaster;
+#include "Settings.h"
 
 
 struct Cluster {
@@ -29,19 +28,19 @@ struct Cluster {
 	int size;
 };
 
-class ImgThread : public QObject, public QRunnable {
-	Q_OBJECT
-
+class ImgThread : public QRunnable {
+	
 	Photo &p;
 
 	virtual void run() {
 		if(p.loading) { //It could have been canceled
-			ImageLoader::loadImage(p);
+			ImageLoader::loadImage(p);;
 		}
 		if(!p.loading) {
 			p.image.data.clear();
 			p.image.data.shrink_to_fit();
 		}
+		
 		p.loading = false;
 	}
 
@@ -61,6 +60,7 @@ class TextureHandler : public QObject {
 	friend class CalibrationLoader; 
 	/// displays kdtree data, so let's give it access, mostly debug
 	friend class RadarRenderPass;
+	
 	
 	QThreadPool pool;
 		
@@ -82,9 +82,7 @@ public:
 		const glm::vec3 &viewDir,
 		const uint count
 	);
-	
-	void setRayCaster(std::shared_ptr<RayCaster> r);
-			
+				
 	const std::vector<Photo> & getPhotos() const;
 	std::vector<Texture> & getTextures();
 	const std::unordered_map<uint, uint> & getIndices() const;

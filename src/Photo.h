@@ -58,7 +58,7 @@ class Photo {
 	friend class TextureHandler;
 	friend class ImageLoader;
 	friend class ImgThread;
-	
+		
 	Image image;
 	Image thumbnail;
 	
@@ -92,16 +92,16 @@ public:
 	}
 	
 	const Image& getImage() const {
-//		if(!loading && image.data.size() != 0)
-//			return image;
-//		else
+		if(!loading && image.data.size() != 0)
+			return image;
+		else
 			return thumbnail;	
 	}
 	
 	float getImageScale() const {
-//		if(!loading && image.data.size() != 0)
-//			return 1.0f;
-//		else
+		if(!loading && image.data.size() != 0)
+			return 1.0f;
+		else
 			return thumbScale;
 	}
 	
