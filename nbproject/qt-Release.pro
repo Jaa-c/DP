@@ -29,3 +29,4 @@ equals(QT_MAJOR_VERSION, 5) {
 CONFIG += c++11
 }
 "LIBS += -lGL -lX11 -lGLEW -lglfw -lassimp -ljpeg"
+"QMAKE_CXX += -O3"

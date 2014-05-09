@@ -232,7 +232,7 @@ public:
 
 			const size_t size = (width + rowPadding) * height * 3;
 			raw.resize(size);
-			input.read((char*) &raw[0], raw.size() * sizeof(uchar));
+			input.read((char*) &raw[0], size * sizeof(uchar));
 		}
 	}
 	

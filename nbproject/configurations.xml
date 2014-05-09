@@ -335,6 +335,7 @@
         <modules>core gui widgets opengl</modules>
         <defs>
           <Elem>"LIBS += -lGL -lX11 -lGLEW -lglfw -lassimp -ljpeg"</Elem>
+          <Elem>"QMAKE_CXX += -O3"</Elem>
         </defs>
       </qt>
       <compileType>

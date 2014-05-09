@@ -53,6 +53,21 @@ public:
 
 };
 
+class CleanThread : public QRunnable {
+	Photo &p;
+	virtual void run() {
+		p.loading = false;
+		p.image.data.clear();
+		p.image.data.shrink_to_fit();
+	}
+
+public:
+	CleanThread(Photo &p) 
+		: QRunnable(), p(p) 
+	{
+	}
+};
+
 class TextureHandler : public QObject {
 	Q_OBJECT
 	

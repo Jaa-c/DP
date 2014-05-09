@@ -197,9 +197,11 @@ void TextureHandler::loadFullImage(Photo &p) {
 }
 
 void TextureHandler::releaseImage(Photo &p) {
-	p.loading = false;
-	p.image.data.clear();
-	p.image.data.shrink_to_fit();
+	if(!p.image.data.empty()) {
+		CleanThread *clean = new CleanThread(p);
+		clean->setAutoDelete(true);
+		pool.start(clean);
+	}
 }
 
 const std::vector<Photo> & TextureHandler::getPhotos() const {

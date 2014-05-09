@@ -58,6 +58,7 @@ class Photo {
 	friend class TextureHandler;
 	friend class ImageLoader;
 	friend class ImgThread;
+	friend class CleanThread;
 		
 	Image image;
 	Image thumbnail;
