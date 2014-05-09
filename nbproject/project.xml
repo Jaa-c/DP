@@ -11,6 +11,7 @@
             <make-dep-projects/>
             <sourceRootList>
                 <sourceRootElem>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src</sourceRootElem>
+                <sourceRootElem>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src</sourceRootElem>
             </sourceRootList>
             <confList>
                 <confElem>

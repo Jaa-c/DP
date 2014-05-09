@@ -90,8 +90,31 @@
       <itemPath>shaders/texturing_2.frag</itemPath>
       <itemPath>shaders/texturing_2.vert</itemPath>
     </logicalFolder>
+    <logicalFolder name="TestFiles"
+                   displayName="Test Files"
+                   projectFiles="false"
+                   kind="TEST_LOGICAL_FOLDER">
+    </logicalFolder>
+    <logicalFolder name="ExternalFiles"
+                   displayName="Important Files"
+                   projectFiles="false"
+                   kind="IMPORTANT_FILES_FOLDER">
+      <itemPath>Makefile</itemPath>
+      <itemPath>shaders/basic.frag</itemPath>
+      <itemPath>shaders/basic.vert</itemPath>
+      <itemPath>shaders/kmeans.comp</itemPath>
+      <itemPath>shaders/normals.frag</itemPath>
+      <itemPath>shaders/normals.geom</itemPath>
+      <itemPath>shaders/normals.vert</itemPath>
+      <itemPath>shaders/reduction.comp</itemPath>
+      <itemPath>shaders/texturing_1.frag</itemPath>
+      <itemPath>shaders/texturing_1.vert</itemPath>
+      <itemPath>shaders/texturing_2.frag</itemPath>
+      <itemPath>shaders/texturing_2.vert</itemPath>
+    </logicalFolder>
   </logicalFolder>
   <sourceRootList>
+    <Elem>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src</Elem>
     <Elem>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src</Elem>
   </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>

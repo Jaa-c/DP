@@ -31,7 +31,6 @@ struct Cluster {
 class ImgThread : public QRunnable {
 	
 	Photo &p;
-
 	virtual void run() {
 		if(p.loading) { //It could have been canceled
 			ImageLoader::loadImage(p);;
@@ -40,7 +39,6 @@ class ImgThread : public QRunnable {
 			p.image.data.clear();
 			p.image.data.shrink_to_fit();
 		}
-		
 		p.loading = false;
 	}
 
@@ -48,10 +46,27 @@ public:
 	ImgThread(Photo &p) 
 		: QRunnable(), p(p) 
 	{
+	}
+};
 
+class CleanThread : public QRunnable {
+	
+	Photo &p;
+	virtual void run() {
+		if(!p.image.data.empty()) {
+			p.image.data.clear();
+			p.image.data.shrink_to_fit();
+		}
 	}
 
+public:
+	CleanThread(Photo &p) 
+		: QRunnable(), p(p) 
+	{
+	}
 };
+
+
 
 class TextureHandler : public QObject {
 	Q_OBJECT
