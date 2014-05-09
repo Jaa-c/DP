@@ -61,7 +61,13 @@ public:
 	}
 		
 	~TexturingPrePass() {
-		//TODO delete buffers
+		glDeleteBuffers(1, &textureDataUB);
+		glDeleteBuffers(1, &frameBuffer);
+		glDeleteBuffers(1, &resultBuffer);
+		glDeleteBuffers(1, &idxBuffer);
+		if(glIsTexture(normalsTexture)) { //TODO
+			glDeleteTextures(1, &normalsTexture);
+		}
 	}
 	
 	virtual void reset() {
@@ -362,7 +368,7 @@ public:
 			cl.centroid = glm::normalize(cl.centroid);
 			
 			cl.weight = cl.size / (float) sum;
-			assert(cl.weight >= 0);
+			//assert(cl.weight >= 0);
 		}
 
 		std::sort(clusters.begin(), clusters.end(), 

@@ -24,7 +24,7 @@ TextureHandler::TextureHandler() {
 	//all pictures at once, rather get them "sequentially"
 	uint thr = std::thread::hardware_concurrency();
 	thr = std::max((uint) 2, thr - 2);
-	QThreadPool::globalInstance()->setMaxThreadCount(thr);
+	pool.setMaxThreadCount(thr);
 	Log::i("Using %d threads for image load.", thr);
 	
 	textures.reserve(Settings::maxTextures);
@@ -47,12 +47,7 @@ void TextureHandler::updateTextures(
 ) {
 	
 	std::vector<Photo*> currentPhotos = getBestCameras(viewDir, count);
-	
-	photoIndices.clear();
-	for(uint i = 0; i < currentPhotos.size(); ++i) {
-		photoIndices.insert(std::pair<uint, uint>(currentPhotos[i]->ID, i));
-	}
-	
+
 	///mostly DEBUG
 	if(Settings::usePrefferedCamera) {
 		Photo *p = &photos[Settings::prefferedCamera];
@@ -67,6 +62,11 @@ void TextureHandler::updateTextures(
 			currentPhotos.insert(currentPhotos.begin(), p);
 			currentPhotos.pop_back();
 		}
+	}
+	
+	photoIndices.clear();
+	for(uint i = 0; i < currentPhotos.size(); ++i) {
+		photoIndices.insert(std::pair<uint, uint>(currentPhotos[i]->ID, i));
 	}
 
 	for(auto it = currentPhotos.begin(); it != currentPhotos.end(); ) {
@@ -189,8 +189,8 @@ void TextureHandler::loadFullImage(Photo &p) {
 	if(!p.loading) {
 		p.loading = true;
 		ImgThread *loader = new ImgThread(p);
-		connect(loader, SIGNAL(result(Photo *)), SLOT(getResult(Photo *)), Qt::QueuedConnection); //Qt::DirectConnection
-		QThreadPool::globalInstance()->start(loader);
+		loader->setAutoDelete(true);
+		pool.start(loader);
 	}
 }
 
@@ -198,15 +198,6 @@ void TextureHandler::releaseImage(Photo &p) {
 	p.loading = false;
 	p.image.data.clear();
 	p.image.data.shrink_to_fit();
-}
-
-void TextureHandler::getResult(Photo *p) {
-	if(!p->loading) { //already deleted
-		releaseImage(*p);
-	}
-	else {
-		p->loading = false;
-	}
 }
 
 const std::vector<Photo> & TextureHandler::getPhotos() const {

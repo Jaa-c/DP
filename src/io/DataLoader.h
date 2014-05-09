@@ -232,10 +232,6 @@ public:
 			const size_t size = (width + rowPadding) * height * 3;
 			raw.resize(size);
 			input.read((char*) &raw[0], raw.size() * sizeof(uchar));
-			//Log::i("[DataLoader] Loaded image: " + filename + " %d x %d", width, height);
-		}
-		else {
-			//Log::e("[DataLoader] File does not exist: " + filename);
 		}
 	}
 	

@@ -116,12 +116,12 @@ void MainWindow::createActions() {
 }
 
 void MainWindow::createMenus() {
-	file = menuBar()->addMenu(tr("&File"));
+	file = menuBar()->addMenu(tr("File"));
 	file->addAction(openAct.get());
 	file->addSeparator();
 	file->addAction(quitAct.get());
 	
-	renderPass = menuBar()->addMenu(tr("&Render Passes"));
+	renderPass = menuBar()->addMenu(tr("Render Passes"));
 	renderPass->addAction(texturingPreRP.get());
 	renderPass->addAction(texturingRP.get());
 	renderPass->addAction(basicTexturingRP.get());
@@ -132,11 +132,11 @@ void MainWindow::createMenus() {
 //	view = menuBar()->addMenu(tr("&View"));
 //	view->addAction(displayRadar);
 	
-	settings = menuBar()->addMenu(tr("&Settings"));
+	settings = menuBar()->addMenu(tr("Settings"));
 	settings->addAction(programSettings.get());
 	settings->addAction(objectSettings.get());
 	
-	debug = menuBar()->addMenu(tr("&Debug"));
+	debug = menuBar()->addMenu(tr("Debug"));
 	debug->addAction(reloadShaders.get());
 }
 

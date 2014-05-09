@@ -39,6 +39,7 @@ public:
 	///DEBUG
 	static bool usePrefferedCamera;
 	static uint prefferedCamera;
+	static bool circle;
 	
 	static void serialize(std::string file);
 	static void deserialize(std::string file);

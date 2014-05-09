@@ -71,48 +71,51 @@ public:
 				if(saveImage) drawPoint(pt, *qimg, qRgb(0, 255, 0));
 			}
 		}
-
-		//graham's algorithm for convex hull
-		std::sort(res.begin(), res.end(), 
-			[] (const PointPair& a, const PointPair& b) -> bool
-			{
-				if(a.proj.x == b.proj.x) return a.proj.y < b.proj.y;
-				return a.proj.x < b.proj.x;
-			}
-		);
-
-		std::vector<PointPair> stack, stack2;
-		auto it = res.begin(), it2 = res.end();
-		stack.push_back(*it++);
-		stack.push_back(*it);
-
-		stack2.push_back(*--it2);
-		stack2.push_back(*--it2);
-
-		for(uint i = 2; i < res.size(); ++i) {
-			auto p = (*++it);
-			while(stack.size() > 1 && orientation((*(stack.end()-2)).proj, (*(stack.end()-1)).proj, p.proj) >= 0)  {
-				stack.pop_back();
-			}
-			stack.push_back(p);
-
-			auto p2 = (*--it2);
-			while(stack2.size() > 1 && orientation((*(stack2.end()-2)).proj, (*(stack2.end()-1)).proj, p2.proj) >= 0)  {
-				stack2.pop_back();
-			}
-			stack2.push_back(p2);
-		}
-		res.clear();
-		std::reverse(stack2.begin(), stack2.end()); //because area computation
-		std::reverse(stack.begin(), stack.end());
-
-		std::copy(stack2.begin(), stack2.end(), std::back_inserter(res));
-		std::copy(stack.begin() + 1, stack.end() - 1, std::back_inserter(res));
-
+		
 		glm::ivec2 c(0, 0);
-		glm::vec3 centroid(0, 0, 0);
-		cam.relativeArea = 0;
-		if(res.size() > 0) {
+		
+		if(res.size() > 3) { //if there are not enough points, better skip it
+			//graham's algorithm for convex hull
+			std::sort(res.begin(), res.end(), 
+				[] (const PointPair& a, const PointPair& b) -> bool
+				{
+					if(a.proj.x == b.proj.x) return a.proj.y < b.proj.y;
+					return a.proj.x < b.proj.x;
+				}
+			);
+
+			std::vector<PointPair> stack, stack2;
+			auto it = res.begin(), it2 = res.end();
+			stack.push_back(*it++);
+			stack.push_back(*it);
+
+			stack2.push_back(*--it2);
+			stack2.push_back(*--it2);
+
+			for(uint i = 2; i < res.size(); ++i) {
+				auto p = (*++it);
+				while(stack.size() > 1 && orientation((*(stack.end()-2)).proj, (*(stack.end()-1)).proj, p.proj) >= 0)  {
+					stack.pop_back();
+				}
+				stack.push_back(p);
+
+				auto p2 = (*--it2);
+				while(stack2.size() > 1 && orientation((*(stack2.end()-2)).proj, (*(stack2.end()-1)).proj, p2.proj) >= 0)  {
+					stack2.pop_back();
+				}
+				stack2.push_back(p2);
+			}
+			res.clear();
+			std::reverse(stack2.begin(), stack2.end()); //because area computation
+			std::reverse(stack.begin(), stack.end());
+
+			std::copy(stack2.begin(), stack2.end(), std::back_inserter(res));
+			std::copy(stack.begin() + 1, stack.end() - 1, std::back_inserter(res));
+
+			
+			glm::vec3 centroid(0, 0, 0);
+			cam.relativeArea = 0;
+		
 			for(uint i = 0; i < res.size(); ++i) {
 				auto &pt = res[i];
 				if(saveImage) drawPoint(pt.proj, *qimg, qRgb(255, 0, 0), 14);

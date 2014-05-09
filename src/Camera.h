@@ -10,6 +10,7 @@
 
 #include "globals.h"
 #include "glm/gtc/matrix_transform.hpp"
+#include "Settings.h"
 
 class Camera {
 	
@@ -30,6 +31,9 @@ class Camera {
 	const float rotateSpeed = 0.2f; //mouse rotate speed (sensitivity)
 	const float walkSpeed = 0.90f; //walking speed (wasd)
 	
+	float angle;
+	glm::vec3 cameraPosTemp;
+	
 public:
 	enum Move {
 		FORWARD,
@@ -41,6 +45,7 @@ public:
 	Camera(int winWidth, int winHeight) : freeWalk(true) {
 		resetView();
 		resizeWindow(winWidth, winHeight);
+		angle = 0;
 	}
 	
 	void resetView() {
@@ -95,6 +100,24 @@ public:
 				cameraPos[1] += g_CameraViewMatrix[1][0] * walkSpeed;
 				cameraPos[2] += g_CameraViewMatrix[2][0] * walkSpeed;
 				break;
+		}
+	}
+	
+	void circle(glm::vec3 lookAt) {
+		if(angle == 0) {
+			Log::i("round started!");
+			cameraPosTemp = cameraPos;
+		}
+		angle += 0.003f;
+		cameraPos.x = 30.f * glm::cos(angle) + lookAt.x;
+		cameraPos.z = 30.f * glm::sin(angle) + lookAt.z;
+		g_CameraViewMatrix = glm::lookAt(cameraPos, lookAt, glm::vec3(0, 1, 0));
+		if(angle >= M_PI * 2) {
+			angle = 0.f;
+			std::cout << "\n";
+			Log::i("round finished!");
+			Settings::circle = false;
+			cameraPos = cameraPosTemp;
 		}
 	}
 	

@@ -17,6 +17,7 @@
 #include "../Renderer.h"
 #include "../Controlls.h"
 #include "../io/CalibrationLoader.h"
+#include "../GLTimer.h"
 
 #include "../RenderPassHandler.h"
 #include "MainWindow.h"
@@ -41,8 +42,8 @@ class GLWidget : public QGLWidget
 	std::shared_ptr<TextureHandler> textureHandler;
 	std::shared_ptr<ObjectData> object;
 	
-	struct timeval start, end;
-	int fps;
+	std::shared_ptr<GLTimer> gltimer;
+	int f;
 	
 	MainWindow& mainWin;
 	

@@ -11,6 +11,7 @@
 #include "../io/ImageLoader.h"
 #include "../Settings.h"
 #include "../RayCaster.h"
+#include "src/Settings.h"
 
 #include <QtGui/QMouseEvent>
 #include <QtGui/QMessageBox>
@@ -23,12 +24,14 @@
 const std::string GLWidget::settingsExt = "-settings.conf";
 
 void GLWidget::paintGL() {
+	
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
 	if(object) {
 		camera.updateCameraViewMatrix();
+		if(Settings::circle) camera.circle(object->getCentroidPosition());
+		
 		object->rotate(Settings::objectRotate);
-//		rayCaster->cast(viewDir);
 		textureHandler->emptyClusters();
 		
 		renderPassHandler.draw(object);
@@ -38,15 +41,13 @@ void GLWidget::paintGL() {
 		mainWin.setPhotos(textureHandler->getTextures().size());
 	}
 	
-	gettimeofday(&end, NULL);
-	double t = ((end.tv_sec - start.tv_sec) + (end.tv_usec - start.tv_usec)*10e-6);
-	if(t > 1.) {
-		mainWin.setFps(fps / t);
-		fps = 0;
-		gettimeofday(&start, NULL);
+	float time = gltimer->end();
+	gltimer->start();
+	if(Settings::circle) std::cout << time <<  "\n";
+	if(++f == 10) {
+		mainWin.setFps(1000.f / time);
+		f = 0;
 	}
-	fps++;
-	
 	this->update(); //TODO
 }
 
@@ -121,6 +122,7 @@ void GLWidget::initializeGL() {
 
 	// Set OpenGL state variables
 	glClearColor(0.7f, 0.7f, 0.7f, 0);
+	gltimer = std::make_shared<GLTimer>();
 }
 
 bool GLWidget::eventFilter(QObject *, QEvent *event) {
@@ -235,13 +237,11 @@ GLWidget::GLWidget(const QGLFormat& format, int w, int h, QWidget* parent) :
 	controlls(Controlls::getInstance()),
 	textureHandler(nullptr), 
 	object(nullptr),
+	gltimer(nullptr),
 	mainWin(*dynamic_cast<MainWindow *>(parent))
 {
 	controlls.setPointers(&camera, &shaderHandler);
-
-	fps = 0;
-    srand((unsigned)std::time(0)); 
-	gettimeofday(&start, NULL);
+	f = 0;
 }
 
 GLWidget::~GLWidget() {

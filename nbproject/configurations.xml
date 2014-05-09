@@ -30,6 +30,7 @@
       </logicalFolder>
       <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/Camera.h</itemPath>
       <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/Controlls.h</itemPath>
+      <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/GLTimer.h</itemPath>
       <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/Log.h</itemPath>
       <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/ObjectData.h</itemPath>
       <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/Photo.h</itemPath>
@@ -125,6 +126,11 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/GLTimer.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/Log.h"
             ex="false"
             tool="3"
@@ -146,11 +152,6 @@
             flavor2="0">
       </item>
       <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/RenderPass/BasicTexturingRenderPass.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/RenderPass/CameraPointsRenderPass.h"
             ex="false"
             tool="3"
             flavor2="0">
@@ -364,6 +365,11 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/GLTimer.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/Log.h"
             ex="false"
             tool="3"
@@ -385,11 +391,6 @@
             flavor2="0">
       </item>
       <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/RenderPass/BasicTexturingRenderPass.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/RenderPass/CameraPointsRenderPass.h"
             ex="false"
             tool="3"
             flavor2="0">
@@ -592,6 +593,11 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/GLTimer.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/Log.h"
             ex="false"
             tool="3"
@@ -613,11 +619,6 @@
             flavor2="0">
       </item>
       <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/RenderPass/BasicTexturingRenderPass.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
-      </item>
-      <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/RenderPass/CameraPointsRenderPass.h"
             ex="false"
             tool="3"
             flavor2="0">

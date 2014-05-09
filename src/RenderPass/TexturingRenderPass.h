@@ -37,7 +37,7 @@ public:
 	}
 		
 	~TexturingRenderPass() {
-
+		glDeleteBuffers(1, &textureDataUB);
 	}
 	
 	void draw(std::shared_ptr<ObjectData> object) {

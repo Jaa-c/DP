@@ -28,9 +28,14 @@ OpenForm::OpenForm(std::shared_ptr<GLWidget> glw) : glWidget(glw) {
 			openForm.photosPath->setText("/home/jaa/Documents/FEL/DP/data/statue/photos/");	
 			break;
 		case 2:
-			openForm.geometryPath->setText("/home/jaa/Documents/FEL/DP/data/debug/statue.obj");
-			openForm.bundlerPath->setText("/home/jaa/Documents/FEL/DP/data/debug/bundle.out");
-			openForm.photosPath->setText("/home/jaa/Documents/FEL/DP/data/debug/photos/");
+			openForm.geometryPath->setText("/home/jaa/Documents/FEL/DP/data/faust/faust_50_part3.obj");
+			openForm.bundlerPath->setText("/home/jaa/Documents/FEL/DP/data/faust/bundle.out");
+			openForm.photosPath->setText("/home/jaa/Documents/FEL/DP/data/faust/");
+			break;
+		case 3:
+			openForm.geometryPath->setText("/home/jaa/Documents/FEL/DP/data/sarkofag/sarkofag.obj");
+			openForm.bundlerPath->setText("/home/jaa/Documents/FEL/DP/data/sarkofag/bundle.out");
+			openForm.photosPath->setText("/home/jaa/Documents/FEL/DP/data/sarkofag/photos");
 			break;
 	}
 }

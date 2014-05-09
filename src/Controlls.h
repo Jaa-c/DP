@@ -67,6 +67,8 @@ public:
 					Log::i("Using preffered camera mode.");
 				}
 				break;
+			case 'C':
+				Settings::circle = !Settings::circle;
 			case 'R':// recompile shaders
 				shaderHandler->resetShaders();
 				break;

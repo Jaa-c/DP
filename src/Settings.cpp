@@ -14,6 +14,7 @@ bool Settings::usePrefferedCamera = false;
 bool Settings::useRecomputedDirections = true;
 bool Settings::billinearFiltering = true;
 uint Settings::prefferedCamera = 0;
+bool Settings::circle = false;
 	
 void Settings::reset() {
 	Settings::usingTextures = 4;
@@ -22,6 +23,7 @@ void Settings::reset() {
 	Settings::useRecomputedDirections = true;
 	Settings::billinearFiltering = true;
 	Settings::prefferedCamera = 0;
+	Settings::circle = false;
 }
 
 

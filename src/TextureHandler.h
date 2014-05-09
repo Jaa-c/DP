@@ -13,6 +13,7 @@
 #include <unordered_map>
 #include <QObject>
 #include <QRunnable>
+#include <QThreadPool>
 
 #include "Photo.h"
 #include "Texture.h"
@@ -37,11 +38,12 @@ class ImgThread : public QObject, public QRunnable {
 		if(p.loading) { //It could have been canceled
 			ImageLoader::loadImage(p);
 		}
-		emit result(&p);
+		if(!p.loading) {
+			p.image.data.clear();
+			p.image.data.shrink_to_fit();
+		}
+		p.loading = false;
 	}
-
-signals:
-	void result(Photo *);
 
 public:
 	ImgThread(Photo &p) 
@@ -59,6 +61,8 @@ class TextureHandler : public QObject {
 	friend class CalibrationLoader; 
 	/// displays kdtree data, so let's give it access, mostly debug
 	friend class RadarRenderPass;
+	
+	QThreadPool pool;
 		
 	std::vector<Photo> photos;
 	std::stack<GLuint> units;
@@ -66,10 +70,7 @@ class TextureHandler : public QObject {
 	std::unordered_map<uint, uint> photoIndices;
 	
 	std::vector<Cluster> clusters;
-	
-public slots:
-	void getResult(Photo *p);
-	
+		
 public:	
 	TextureHandler();
 	~TextureHandler();
