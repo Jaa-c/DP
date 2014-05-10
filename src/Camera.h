@@ -109,8 +109,8 @@ public:
 			cameraPosTemp = cameraPos;
 		}
 		angle += 0.003f;
-		cameraPos.x = 30.f * glm::cos(angle) + lookAt.x;
-		cameraPos.z = 30.f * glm::sin(angle) + lookAt.z;
+		cameraPos.x = 20.f * glm::cos(angle) + lookAt.x;
+		cameraPos.z = 20.f * glm::sin(angle) + lookAt.z;
 		g_CameraViewMatrix = glm::lookAt(cameraPos, lookAt, glm::vec3(0, 1, 0));
 		if(angle >= M_PI * 2) {
 			angle = 0.f;

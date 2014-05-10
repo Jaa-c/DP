@@ -61,7 +61,7 @@ void MainWindow::initScene() {
 	settings->setEnabled(true);
 	
 	//should be last, if nvidia not avaiable
-	texturingPreRP->setChecked(true);
+	texturingPreRP->setChecked(false);
 }
 
 void MainWindow::createActions() {

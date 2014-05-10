@@ -14,19 +14,16 @@ class GLTimer {
 		
 	void swapQueries() {
 		if(queryBack) {
-			queryBack = 0;
-			queryFront = 1;
+			queryBack = 0, queryFront = 1;
 		}
 		else {
-			queryBack = 1;
-			queryFront = 0;
+			queryBack = 1, queryFront = 0;
 		}
 	}
 	
 public:
 	GLTimer() {
-		queryBack = 0;
-		queryFront = 1;
+		queryBack = 0, queryFront = 1;
 		glGenQueries(2, &queryID[0]);
 		// dummy query to prevent OpenGL errors from popping out
 		glBeginQuery(GL_TIME_ELAPSED, queryID[queryFront]);
@@ -39,7 +36,6 @@ public:
 	///returns elapsed time in ms.
 	float end() {
 		glEndQuery(GL_TIME_ELAPSED);
-		
 		GLuint64 time;
 		glGetQueryObjectui64v(queryID[queryFront], GL_QUERY_RESULT, &time);
 		swapQueries();

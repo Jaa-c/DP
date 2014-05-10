@@ -107,6 +107,6 @@ void main() {
 	if(length(tex) != 0) {
 		color = tex * (color + 0.6f) + .2f;
 	}
-	if(ub_texData[int(bestCoords.x)].u_textureSize == 512) color.b += .4f;
+	//if(ub_texData[int(bestCoords.x)].u_textureSize == 512) color.b += .4f;
 	a_FragColor = vec4(color, 1.0f);
 }

@@ -55,6 +55,10 @@ public:
 				progress(0);
 				outPhotos.reserve(cameras.size());
 				for(uint i = 0; i < cameras.size(); ++i) {
+					if(imgData.size() <= i) {
+						cameras.erase(cameras.begin() + i, cameras.end());
+						break;
+					}
 					const ImageData &img = imgData.at(i);
 					CameraPosition &cp = cameras.at(i);
 					

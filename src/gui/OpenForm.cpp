@@ -28,14 +28,19 @@ OpenForm::OpenForm(std::shared_ptr<GLWidget> glw) : glWidget(glw) {
 			openForm.photosPath->setText("/home/jaa/Documents/FEL/DP/data/statue/photos/");	
 			break;
 		case 2:
+			openForm.geometryPath->setText("/home/jaa/Documents/FEL/DP/data/sarkofag/sarkofag.obj");
+			openForm.bundlerPath->setText("/home/jaa/Documents/FEL/DP/data/sarkofag/bundle.out");
+			openForm.photosPath->setText("/home/jaa/Documents/FEL/DP/data/sarkofag/photos");
+			break;
+		case 3:
 			openForm.geometryPath->setText("/home/jaa/Documents/FEL/DP/data/faust/faust_50_part3.obj");
 			openForm.bundlerPath->setText("/home/jaa/Documents/FEL/DP/data/faust/bundle.out");
 			openForm.photosPath->setText("/home/jaa/Documents/FEL/DP/data/faust/");
 			break;
-		case 3:
-			openForm.geometryPath->setText("/home/jaa/Documents/FEL/DP/data/sarkofag/sarkofag.obj");
-			openForm.bundlerPath->setText("/home/jaa/Documents/FEL/DP/data/sarkofag/bundle.out");
-			openForm.photosPath->setText("/home/jaa/Documents/FEL/DP/data/sarkofag/photos");
+		case 4:
+			openForm.geometryPath->setText("/home/jaa/Documents/FEL/DP/data/amadija/mesh.obj");
+			openForm.bundlerPath->setText("/home/jaa/Documents/FEL/DP/data/amadija/bundle.out");
+			openForm.photosPath->setText("/home/jaa/Documents/FEL/DP/data/amadija/photos");
 			break;
 	}
 }
