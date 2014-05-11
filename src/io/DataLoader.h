@@ -65,7 +65,7 @@ public:
 				0);
 		
 		if(scene == nullptr) {
-			Log::e("[DataLoader] unable to load file: %s", importer.GetErrorString());
+			Log::e(std::string("[DataLoader] unable to load file: ") + importer.GetErrorString());
 			throw "Error while loading file \n" + file + "\n" + importer.GetErrorString();
 		}
 		

@@ -33,7 +33,7 @@ class ImgThread : public QRunnable {
 	Photo &p;
 	virtual void run() {
 		if(p.loading) { //It could have been canceled
-			ImageLoader::loadImage(p);;
+			ImageLoader::loadImage(p);
 		}
 		if(!p.loading) {
 			p.image.data.clear();
@@ -77,7 +77,8 @@ class TextureHandler : public QObject {
 	friend class RadarRenderPass;
 	
 	
-	QThreadPool pool;
+	QThreadPool loadPool;
+	QThreadPool clearPool;
 		
 	std::vector<Photo> photos;
 	std::stack<GLuint> units;
@@ -105,13 +106,9 @@ public:
 	void setClusters(std::vector<Cluster> c);
 	const std::vector<Cluster>& getClusters() const;
 	void emptyClusters();
-//private:
-	//TODO SLOW, this is just a stupid version
-	//but not major problem for now
-	//only based on current direction
+	
 	std::vector<Photo*> getClosestCameras(const glm::vec3 & dir, const uint count);
 	
-	///based on directions from RayCaster
 	std::vector<Photo*> getBestCameras(const glm::vec3 & dir, const uint count);
 
 };

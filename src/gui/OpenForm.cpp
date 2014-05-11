@@ -14,10 +14,10 @@ OpenForm::OpenForm(std::shared_ptr<GLWidget> glw) : glWidget(glw) {
 	openForm.setupUi(this);
 	openForm.tabWidget->setCurrentIndex(0);
 	//DEBUG TEMP
-	switch(0) {
+	switch(1) {
 		case 0:
 			openForm.geometryPath->setText("/home/jaa/Documents/FEL/DP/data/dum/dil09nn.obj");
-			openForm.photosPath->setText("/home/jaa/Documents/FEL/DP/data/dum/09/");//usr/data/09");	
+			openForm.photosPath->setText("/home/jaa/Documents/FEL/DP/data/dum/09/");
 			openForm.rz3Path->setText("/home/jaa/Documents/FEL/DP/data/dum/09_done.rz3");
 			openForm.rz3Images->setText("/home/jaa/Documents/FEL/DP/data/dum/09_pictures0_OK.txt");
 			openForm.tabWidget->setCurrentIndex(1);
@@ -31,16 +31,25 @@ OpenForm::OpenForm(std::shared_ptr<GLWidget> glw) : glWidget(glw) {
 			openForm.geometryPath->setText("/home/jaa/Documents/FEL/DP/data/sarkofag/sarkofag.obj");
 			openForm.bundlerPath->setText("/home/jaa/Documents/FEL/DP/data/sarkofag/bundle.out");
 			openForm.photosPath->setText("/home/jaa/Documents/FEL/DP/data/sarkofag/photos");
+			openForm.tabWidget->setCurrentIndex(0);
 			break;
 		case 3:
+			openForm.geometryPath->setText("/home/jaa/Documents/FEL/DP/data/kachna/kachna.obj");
+			openForm.scannerPath->setText("/home/jaa/Documents/FEL/DP/data/kachna/kachna.info");
+			openForm.photosPath->setText("/home/jaa/Documents/FEL/DP/data/kachna");
+			openForm.tabWidget->setCurrentIndex(2);
+			break;
+		case 4:
 			openForm.geometryPath->setText("/home/jaa/Documents/FEL/DP/data/faust/faust_50_part3.obj");
 			openForm.bundlerPath->setText("/home/jaa/Documents/FEL/DP/data/faust/bundle.out");
 			openForm.photosPath->setText("/home/jaa/Documents/FEL/DP/data/faust/");
+			openForm.tabWidget->setCurrentIndex(0);
 			break;
-		case 4:
+		case 5:
 			openForm.geometryPath->setText("/home/jaa/Documents/FEL/DP/data/amadija/mesh.obj");
 			openForm.bundlerPath->setText("/home/jaa/Documents/FEL/DP/data/amadija/bundle.out");
 			openForm.photosPath->setText("/home/jaa/Documents/FEL/DP/data/amadija/photos");
+			openForm.tabWidget->setCurrentIndex(0);
 			break;
 	}
 }
@@ -52,10 +61,10 @@ OpenForm::~OpenForm() {
 void OpenForm::acceptCB() {
 	if( openForm.geometryPath->text().length() > 0 && 
 		openForm.photosPath->text().length() > 0 && (
-		openForm.bundlerPath->text().length() > 0 || (
+		openForm.bundlerPath->text().length() > 0 || 
+		openForm.scannerPath->text().length() > 0 || (
 		openForm.rz3Path->text().length() > 0 &&
-		openForm.rz3Images->text().length() > 0
-		)))
+		openForm.rz3Images->text().length() > 0 )))
 	{
 		this->close();
 		
@@ -70,6 +79,9 @@ void OpenForm::acceptCB() {
 		else if(type == CalibrationLoader::FileType::RZ3) {
 			file1 = openForm.rz3Path->text().toStdString();
 			file2 = openForm.rz3Images->text().toStdString();
+		}
+		else if(type == CalibrationLoader::FileType::SCANNER) {
+			file1 = openForm.scannerPath->text().toStdString();
 		}
 		
 		glWidget->deleteScene();

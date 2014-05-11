@@ -24,7 +24,9 @@ TextureHandler::TextureHandler() {
 	//all pictures at once, rather get them "sequentially"
 	uint thr = std::thread::hardware_concurrency();
 	thr = std::max((uint) 2, thr - 2);
-	pool.setMaxThreadCount(thr);
+	loadPool.setMaxThreadCount(1);
+	clearPool.setMaxThreadCount(thr);
+	
 	Log::i("Using %d threads for image load.", thr);
 	
 	textures.reserve(Settings::maxTextures);
@@ -49,7 +51,7 @@ void TextureHandler::updateTextures(
 	std::vector<Photo*> currentPhotos = getBestCameras(viewDir, count);
 
 	///mostly DEBUG
-	if(Settings::usePrefferedCamera) {
+	if(Settings::usePrefferedCamera && false) {
 		Photo *p = &photos[Settings::prefferedCamera];
 		if(p->image.data.size() == 0) {
 			loadFullImage(*p);
@@ -185,12 +187,12 @@ const std::unordered_map<uint, uint> & TextureHandler::getIndices() const {
 	return photoIndices;
 }
 
-void TextureHandler::loadFullImage(Photo &p) {
+void TextureHandler::loadFullImage(Photo &p) {	
 	if(!p.loading) {
 		p.loading = true;
 		ImgThread *loader = new ImgThread(p);
 		loader->setAutoDelete(true);
-		pool.start(loader);
+		loadPool.start(loader);
 		Settings::temp++;
 		//std::cout << " start ";
 	}
@@ -200,11 +202,9 @@ void TextureHandler::releaseImage(Photo &p) {
 	if(!p.loading && !p.image.data.empty()) {
 		CleanThread *clean = new CleanThread(p);
 		clean->setAutoDelete(true);
-		pool.start(clean, 1);
+		clearPool.start(clean, 1);
 	}
 	p.loading = false;
-//	p.image.data.clear();
-//	p.image.data.shrink_to_fit();
 }
 
 const std::vector<Photo> & TextureHandler::getPhotos() const {

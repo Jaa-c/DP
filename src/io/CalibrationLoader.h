@@ -10,6 +10,7 @@
 
 #include "ImageLoader.h"
 #include "Rz3Parser.h"
+#include "ScannerParser.h"
 #include "ImageBB.h"
 
 
@@ -22,7 +23,8 @@ class CalibrationLoader {
 public:
 	enum FileType {
 		BUNDLER = 0, //this is expected to be in the same order as GUI tabWidget
-		RZ3
+		RZ3,
+		SCANNER
 	};
 	
 	CalibrationLoader(
@@ -80,8 +82,34 @@ public:
 				pointData = std::shared_ptr<PointData>(new PointData(outPhotos));
 				break;
 			}
+			case SCANNER: 
+			{
+				ScannerParser scParser(imgLoader, calibrationFile, photosFolder);
+				std::vector<CameraPosition> cameras = scParser.parseFile();
+				imgLoader.setExpectedCount(cameras.size());
+				const std::vector<ImageData> imgData = imgLoader.checkAllImages(photosFolder);
+				progress(0);
+				outPhotos.reserve(cameras.size());
+				for(uint i = 0; i < cameras.size(); ++i) {
+					if(imgData.size() <= i) {
+						cameras.erase(cameras.begin() + i, cameras.end());
+						break;
+					}
+					const ImageData &img = imgData.at(i);
+					CameraPosition &cp = cameras.at(i);
+					
+					imageBB.computeCameraParams(cp, img);
+					progress(floor(100.f / cameras.size()));
+					outPhotos.push_back(
+						Photo(i, img.path, cp, 
+							img.size, img.rowPadding, 
+							img.thumbImage, img.thumbSize, img.thumbRowPadding));
+				}
+				
+				pointData = std::shared_ptr<PointData>(new PointData(outPhotos));
+			}
 		} 
-	
+		progress(100);
 	}
 	
 	std::shared_ptr<PointData> getPointData() {

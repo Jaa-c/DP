@@ -10,7 +10,6 @@
 
 #include "parser.h"
 #include "ImageBB.h"
-#include <regex>
 #include <map>
 
 class Rz3Parser {
