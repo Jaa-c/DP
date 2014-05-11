@@ -22,6 +22,7 @@
       </logicalFolder>
       <logicalFolder name="RenderPass" displayName="RenderPass" projectFiles="true">
         <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/RenderPass/BasicTexturingRenderPass.h</itemPath>
+        <itemPath>src/RenderPass/CameraPointsRenderPass.h</itemPath>
         <itemPath>src/RenderPass/NormalsDebugPass.h</itemPath>
         <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/RenderPass/RadarRenderPass.h</itemPath>
         <itemPath>../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/RenderPass/RenderPass.h</itemPath>
@@ -334,6 +335,11 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="src/RenderPass/CameraPointsRenderPass.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="src/RenderPass/NormalsDebugPass.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/RenderPass/TexturingPrePass.h" ex="false" tool="3" flavor2="0">
@@ -573,6 +579,11 @@
             tool="3"
             flavor2="0">
       </item>
+      <item path="src/RenderPass/CameraPointsRenderPass.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
       <item path="src/RenderPass/NormalsDebugPass.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/RenderPass/TexturingPrePass.h" ex="false" tool="3" flavor2="0">
@@ -797,6 +808,11 @@
             flavor2="0">
       </item>
       <item path="../../../../../Dokumenty/FEL/DP/trunk/qtDP/src/io/parser.h"
+            ex="false"
+            tool="3"
+            flavor2="0">
+      </item>
+      <item path="src/RenderPass/CameraPointsRenderPass.h"
             ex="false"
             tool="3"
             flavor2="0">

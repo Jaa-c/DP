@@ -66,6 +66,7 @@ public:
 				if(Settings::usePrefferedCamera) {
 					Log::i("Using preffered camera mode.");
 				}
+				camera->switchFreewalk();
 				break;
 			case 'C':
 				Settings::circle = !Settings::circle;
@@ -78,14 +79,14 @@ public:
 					if(cameraId < 0) {
 						cameraId = photos->size()-1;
 					}
-					//setCameraParams();
+					setCameraParams();
 					Settings::prefferedCamera = cameraId;
 				}
 				break;
 			case Qt::Key_Right:
 				if(photos) {
 					cameraId = (cameraId + 1) % photos->size();
-					//setCameraParams();
+					setCameraParams();
 					Settings::prefferedCamera = cameraId;
 				}
 				break;
@@ -120,12 +121,13 @@ public:
 		 camera->resizeWindow(width, height);
 	}	
 	
-//	void setCameraParams() {
-//		if(photos) {
-//			Log::d("using camera: %d", cameraId);
-//			const CameraPosition * cam = &photos->at(cameraId).camera;
-//		}
-//	}
+	void setCameraParams() {
+		if(photos) {
+			Log::d("using camera: %d", cameraId);
+			const CameraPosition * cam = &photos->at(cameraId).camera;
+			camera->setCameraParams(cam->Rt);
+		}
+	}
 	
 	const Photo * getCurrentPhoto() {
 		return &photos->at(cameraId);

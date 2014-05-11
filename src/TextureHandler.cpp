@@ -51,8 +51,9 @@ void TextureHandler::updateTextures(
 	std::vector<Photo*> currentPhotos = getBestCameras(viewDir, count);
 
 	///mostly DEBUG
-	if(Settings::usePrefferedCamera && false) {
+	if(Settings::usePrefferedCamera) {
 		Photo *p = &photos[Settings::prefferedCamera];
+		std::cout << p->name << "\n";
 		if(p->image.data.size() == 0) {
 			loadFullImage(*p);
 		}

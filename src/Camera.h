@@ -67,7 +67,7 @@ public:
 	void updateCameraViewMatrix() {
 		if(!freeWalk) {
 			return;
-		}
+		}		
 		//camera inertia
 		cameraPosLag += (cameraPos - cameraPosLag) * inertia;
 		cameraRotLag += (cameraRot - cameraRotLag) * inertia;
@@ -132,6 +132,10 @@ public:
 		g_CameraViewMatrix[0] = glm::vec4(rot[0], 0.0f);
 		g_CameraViewMatrix[1] = glm::vec4(rot[1], 0.0f);
 		g_CameraViewMatrix[2] = glm::vec4(rot[2], 0.0f);	
+	}
+	
+	void setCameraParams(const glm::mat4 &m) {
+		g_CameraViewMatrix = m;
 	}
 	
 	void switchFreewalk() {

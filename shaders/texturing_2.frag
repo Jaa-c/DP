@@ -93,7 +93,7 @@ void main() {
 	//let's just texture them with what we have, 
 	if(bestWeight == 0) {
 		for(int i = 0; i < u_textureCount; ++i) {
-			weight = computeWeight(i, N, coords, 0.0f);
+			weight = computeWeight(i, N, coords, -0.20f);
 			if(weight > bestWeight) {
 				bestWeight = weight;
 				bestCoords.x = i;
