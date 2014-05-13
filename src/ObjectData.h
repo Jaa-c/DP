@@ -1,6 +1,6 @@
-/* 
+/** @file 
  * File:   ObjectData.h
- * Author: jaa
+ * Author: Daniel Pinc <princdan@fel.cvut.cz>
  *
  * Created on 16. listopad 2013, 19:13
  */
@@ -14,6 +14,9 @@
 #include "TextureHandler.h"
 #include "Settings.h"
 
+/**
+ * Container for point data
+ */
 struct PointData {
 private:
 	/// Positions of cameras
@@ -53,22 +56,24 @@ public:
 	
 };
 
+/**
+ * Container for object data
+ */
 struct ObjectData {
 private:
-	std::vector<GLuint> indices;
-	std::vector<glm::vec3> vertices;
-	std::vector<glm::vec3> normals;
-	glm::vec3 centroid;
+	std::vector<GLuint> indices; //!< indices if indexed geometry used
+	std::vector<glm::vec3> vertices; //!< object vertices
+	std::vector<glm::vec3> normals; //!< object normals
+	glm::vec3 centroid; //!< centroid of vertices
 	
-	//AABB
-	glm::vec3 min;
-	glm::vec3 max;
+	glm::vec3 min; //!< AABB min
+	glm::vec3 max; //!< AABB max
 		
-	bool ok;
+	bool ok;  //!< ok if all loded properly
 	
-	glm::mat4 mvm;
-	glm::vec3 rotation;
-	glm::vec3 translation;
+	glm::mat4 mvm; //!< model matrix
+	glm::vec3 rotation;  //!< object rotation
+	glm::vec3 translation;  //!< object translation
 	
 	void updateMvm() {
 		mvm = glm::translate(glm::mat4(1.0f), translation);
@@ -78,23 +83,20 @@ private:
 	}
 	
 public:
-	const std::string fileName;
+	const std::string fileName;  //!< name of source file
 	
-	GLuint vaoID;
-	GLuint texCoordsID;
-	GLuint verticesID;
-	GLuint normalsID;
-	GLuint indicesID;
+	GLuint vaoID;  //!< OpenGL ID of vertex arrays object
+	GLuint verticesID; //!< OpenGL ID VBO
+	GLuint normalsID; //!<  OpenGL ID VBO
+	GLuint indicesID; //!<  OpenGL ID VBO
 	
-	/// deprecated
-	std::vector<Texture> * textures;
 	std::shared_ptr<PointData> pointData;
 	
 	
 	ObjectData(std::string file) : ok(true), fileName(file),	
-		vaoID(GL_ID_NONE), texCoordsID(GL_ID_NONE), verticesID(GL_ID_NONE), 
+		vaoID(GL_ID_NONE), verticesID(GL_ID_NONE), 
 		normalsID(GL_ID_NONE), indicesID(GL_ID_NONE), 
-		textures(NULL), pointData(NULL)
+		pointData(NULL)
 	{
 		try {
 			DataLoader::importModel(file, indices, vertices, normals, centroid, translation, min, max);
@@ -144,6 +146,10 @@ public:
 		return centroid;
 	}
 	
+	/**
+	 * Renturns centroid position transformed by model matrix
+     * @return 
+     */
 	const glm::vec3 getCentroidPosition() const {
 		glm::vec4 c(centroid, 1.0);
 		glm::vec4 v = mvm * c;
@@ -154,6 +160,11 @@ public:
 		return std::pair<glm::vec3, glm::vec3>(min, max);
 	}
 	
+	/**
+	 * Checks if given point is inside AABB
+     * @param p
+     * @return 
+     */
 	bool insideAABB(const glm::vec3 &p) const {
 		return p.x < max.x && p.y < max.y && p.z < max.z &&
 				p.x > min.x && p.y > min.y && p.z > min.z;

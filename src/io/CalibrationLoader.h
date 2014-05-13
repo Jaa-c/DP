@@ -1,6 +1,6 @@
-/* 
+/** @file 
  * File:   CalibrationLoader.h
- * Author: jaa
+ * Author: Daniel Pinc <princdan@fel.cvut.cz>
  *
  * Created on 17. březen 2014, 14:50
  */
@@ -13,20 +13,33 @@
 #include "ScannerParser.h"
 #include "ImageBB.h"
 
-
+/**
+ * Handles loading of calibration files and matching camera data with images
+ * 
+ */
 class CalibrationLoader {
-	std::vector<Photo> &outPhotos;
+	std::vector<Photo> &outPhotos; //!< reference to vector where the loaded data are stored
 	//only from bundler data
-	std::shared_ptr<PointData> pointData;
-	const std::function<void(int)> progress;
-	const ObjectData& object;
+	std::shared_ptr<PointData> pointData; //!< Point data from bundler
+	const std::function<void(int)> progress; //"< function that reports loading progres
+	const ObjectData& object; //!< The loaded object
 public:
+	/**
+	 * Type of calibration data
+	 * 
+	 * This is expected to be in the same order as GUI tabWidget in OpenForm
+	 */
 	enum FileType {
-		BUNDLER = 0, //this is expected to be in the same order as GUI tabWidget
+		BUNDLER = 0,
 		RZ3,
 		SCANNER
 	};
 	
+	/** 
+     * @param th reference to texture handler
+     * @param object loaded object
+     * @param progress function that reports progress of loading
+     */
 	CalibrationLoader(
 			std::shared_ptr<TextureHandler> th, 
 			const ObjectData& object, 
@@ -38,6 +51,13 @@ public:
 		pointData.reset();
 	}
 	
+	/**
+	 * Loads data to texture handler
+     * @param type type of calibration data
+     * @param photos folder folder with photos
+     * @param calibration file file with calibration data
+     * @param rz3images indices to photos (rz3 only)
+     */
 	void loadData(
 			const FileType type, 
 			const std::string &photosFolder, 

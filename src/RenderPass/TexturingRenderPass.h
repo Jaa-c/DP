@@ -1,6 +1,6 @@
-/* 
+/** @file 
  * File:   TexturingRenderPass.h
- * Author: jaa
+ * Author: Daniel Pinc <princdan@fel.cvut.cz>
  *
  * Created on 14. březen 2014, 22:39
  */
@@ -11,6 +11,9 @@
 #include "RenderPass.h"
 #include "TexturingPrePass.h"
 
+/**
+ * The main pass for texturing
+ */
 class TexturingRenderPass : public RenderPass {
 		
 	GLuint loc_viewDir;
@@ -18,7 +21,7 @@ class TexturingRenderPass : public RenderPass {
 	GLuint loc_texturesBasic;
 	GLuint textureDataUB;
 	
-	std::shared_ptr<TexturingPrePass> prePass;
+	std::shared_ptr<TexturingPrePass> prePass; //!< pointer to pre pass if on
 	
 public:
 	

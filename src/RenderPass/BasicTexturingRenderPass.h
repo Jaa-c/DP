@@ -1,8 +1,10 @@
-/* 
+/** 
  * File:   TexturingRenderPass.h
- * Author: jaa
+ * Author: Daniel Pinc <princdan@fel.cvut.cz>
  *
  * Created on 23. listopad 2013, 21:07
+ * 
+ * DEPRECATED pass used for initial texting only
  */
 
 #ifndef BASICTEXTURINGRENDERPASS_H

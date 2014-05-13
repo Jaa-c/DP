@@ -1,6 +1,6 @@
-/* 
+/** @file 
  * File:   Controlls.h
- * Author: jaa
+ * Author: Daniel Pinc <princdan@fel.cvut.cz>
  *
  * Created on 28. září 2013, 13:46
  */
@@ -14,16 +14,19 @@
 
 #include <Qt> 
 
+/**
+ * Handles user inputs (keyboard, mouse)
+ */
 class Controlls {
 private:
 	Camera *camera;
 	ShaderHandler *shaderHandler;
-	const std::vector<Photo> *photos; //to be removed!!
+	const std::vector<Photo> *photos;
 	
-	bool mouseRotationEnabled;
-	int ox, oy;
+	bool mouseRotationEnabled; //!< true if left button is held
+	int ox, oy; //!< for mouse rotation
 	
-	int cameraId;
+	int cameraId; //!< camera ID if preffered camera is used, DEBUG
 	
 	Controlls() : mouseRotationEnabled(false), cameraId(0) {}
     Controlls(Controlls const&);
@@ -34,7 +37,12 @@ public:
 		static Controlls instance;
 		return instance;
 	}
-
+	
+	/**
+	 * Initializers
+     * @param cam
+     * @param shaderHandler
+     */
 	void setPointers(Camera * cam, ShaderHandler *shaderHandler) {
 		this->camera = cam;
 		this->shaderHandler = shaderHandler;
@@ -66,7 +74,6 @@ public:
 				if(Settings::usePrefferedCamera) {
 					Log::i("Using preffered camera mode.");
 				}
-				camera->switchFreewalk();
 				break;
 			case 'C':
 				Settings::circle = !Settings::circle;
@@ -116,6 +123,9 @@ public:
 		}
 	}
 	
+	/**
+	 * Callback if window size has changed
+     */
 	void windowSizeChangedImpl(int width, int height) {
 		 glViewport(0, 0, width, height);
 		 camera->resizeWindow(width, height);

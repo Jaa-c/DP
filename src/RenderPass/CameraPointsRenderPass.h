@@ -1,6 +1,6 @@
-/* 
+/** @file 
  * File:   BundlerPointsRenderPass.h
- * Author: jaa
+ * Author: Daniel Pinc <princdan@fel.cvut.cz>
  *
  * Created on 24. listopad 2013, 14:14
  */
@@ -10,6 +10,12 @@
 
 #include "RenderPass.h"
 
+/**
+ * Render pass that draws camera positions to scene
+ * @param r
+ * @param s
+ * @param th
+ */
 class CameraPointsRenderPass : public RenderPass {
 		
 public:

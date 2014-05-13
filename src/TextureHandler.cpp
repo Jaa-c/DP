@@ -195,8 +195,6 @@ void TextureHandler::loadFullImage(Photo &p) {
 		ImgThread *loader = new ImgThread(p);
 		loader->setAutoDelete(true);
 		loadPool.start(loader);
-		Settings::temp++;
-		//std::cout << " start ";
 	}
 }
 

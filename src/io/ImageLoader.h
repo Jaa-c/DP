@@ -1,6 +1,6 @@
-/* 
+/** @file 
  * File:   TextureHandler.h
- * Author: jaa
+ * Author: Daniel Pinc <princdan@fel.cvut.cz>
  *
  * Created on 24. listopad 2013, 14:59
  */
@@ -22,27 +22,37 @@
 #include "../Photo.h"
 #include "../TextureHandler.h"
 
+/**
+ * Storage for image-related data
+ */
 struct ImageData {
-	std::string path;
-	RGBData image;
-	glm::ivec2 size;
-	uint rowPadding;
+	std::string path; //!< File path
+	RGBData image; //!< The image
+	glm::ivec2 size; //!< Size of the image
+	uint rowPadding; //!< Padding of the image (4-byte alignment)
 	
-	RGBData thumbImage;
-	glm::ivec2 thumbSize;
-	uint thumbRowPadding;
+	RGBData thumbImage; //!< Thumbnail
+	glm::ivec2 thumbSize; //!< Thumnail size
+	uint thumbRowPadding; //!< Thumbnail padding (4-byte alignment)
 };
 
+/**
+ * Handles image loading,
+ * creates raws and thumbnails
+ */
 class ImageLoader {
-	std::function<void(int)> progress;
-	float prgVal;
-	int expectedCount;
+	std::function<void(int)> progress; //!< Progress if loading thw whole folder at once
+	float prgVal; //!< progress value
+	int expectedCount; //!< Expected number of images to be loaded
 		
-	const std::string RAW = "raw";
-	const std::string JPG = "jpg";
-	const std::string THUMB = "thumb.";
-	static const int thumbExpectedSize = 512;
+	const std::string RAW = "raw"; //!< RAW file extension
+	const std::string JPG = "jpg"; //!< jpg file extension
+	const std::string THUMB = "thumb."; //!< thumbnail suffix
+	static const int thumbExpectedSize = 512; //!< thumbnail size 
 	
+	/*
+	 * Reads all JPGs from given directory
+	 */
 	std::vector<ImageData> readDirectory(const std::string& path) {
 		std::vector<ImageData> data;
 		dirent* de;
@@ -64,9 +74,6 @@ class ImageLoader {
 					return a.path < b.path;
 				}
 			);
-//			for(ImageData &i : data) {
-//				std::cout << i.path << "\n";
-//			}
 		}
 		return data;
 	}
@@ -78,18 +85,34 @@ public:
 		prgVal = 0;
 	}
 	
+	/**
+	 * Reads info about all images in given directory.)
+	 * Thumbnails and raws are created if neccessary
+     * @param path dir with images
+     * @return vector of image info
+     */
 	const std::vector<ImageData> checkAllImages(const std::string &path) {
 		if(path.substr(path.length()-1, 1) != "/")
 			return readDirectory(path + "/");
 		else
 			return readDirectory(path);
-			
 	}
 	
+	/**
+	 * Loads given image from HDD
+     * @param p photo to be loaded
+     */
 	static void loadImage(Photo &p) {
 		DataLoader::loadRAWData(p.name, p.image.data, p.image.size.x, p.image.size.y, p.image.rowPadding);
 	} 
 
+	/**
+	 * reads image info, creates raw and thumbnail if not exist
+     * @param folder folder with file
+     * @param name file name
+     * @param id output data about the image
+     * @return true if file exists
+     */
 	bool checkImage(const std::string &folder,const std::string &name, ImageData& id) {
 		std::string fileName = name.substr(0, name.length()-3);
 		std::string rawFile = folder + RAW + "/" + fileName + RAW;

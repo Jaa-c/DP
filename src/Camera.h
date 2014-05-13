@@ -1,6 +1,6 @@
-/* 
+/** @file 
  * File:   Camera.h
- * Author: jaa
+ * Author: Daniel Pinc <princdan@fel.cvut.cz>
  *
  * Created on 24. listopad 2013, 0:42
  */
@@ -12,29 +12,32 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "Settings.h"
 
+/**
+ * Handles virtual camera
+ */
 class Camera {
 	
-	//Transformation matrixes
-	glm::mat4 g_CameraProjectionMatrix; // Camera projection transformation
-	glm::mat4 g_CameraViewMatrix; // Camera view transformation
+	glm::mat4 g_CameraProjectionMatrix; //!< Camera projection transformation
+	glm::mat4 g_CameraViewMatrix; //!< Camera view transformation
 
-	glm::vec3 cameraPos;
-	glm::vec3 cameraRot;
-	glm::vec3 cameraPosLag;
-	glm::vec3 cameraRotLag;
+	glm::vec3 cameraPos; //!< Position of the camera
+	glm::vec3 cameraRot; //!< Rotation angles
+	glm::vec3 cameraPosLag; //!< Used for inertia effect
+	glm::vec3 cameraRotLag; //!< Used for inertia effect
 	
-	glm::ivec2 winDim;
+	glm::ivec2 winDim; //!< window size
+		
+	const float inertia = 0.08f; //!< mouse inertia
+	const float rotateSpeed = 0.2f; //!< mouse rotate speed (sensitivity)
+	const float walkSpeed = 0.90f; //!< walking speed (wasd)
 	
-	bool freeWalk;
-	
-	const float inertia = 0.08f; //mouse inertia
-	const float rotateSpeed = 0.2f; //mouse rotate speed (sensitivity)
-	const float walkSpeed = 0.90f; //walking speed (wasd)
-	
-	float angle;
-	glm::vec3 cameraPosTemp;
+	float angle; //!< if rotating
+	glm::vec3 cameraPosTemp; //!< if rotating 
 	
 public:
+	/**
+	 * Move direction
+	 */
 	enum Move {
 		FORWARD,
 		BACK,
@@ -42,12 +45,15 @@ public:
 		RIGHT
 	};
 	
-	Camera(int winWidth, int winHeight) : freeWalk(true) {
+	Camera(int winWidth, int winHeight) {
 		resetView();
 		resizeWindow(winWidth, winHeight);
 		angle = 0;
 	}
 	
+	/**
+	 * Resets view to the original position
+     */
 	void resetView() {
 		cameraPos = glm::vec3(0.0f, 0.0f, 5.0f);
 		cameraRot = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -62,12 +68,10 @@ public:
 	}
 	
 	/**
+	 * Updates camera matrix
 	 * this code is inspired by NVIDIA CUDA samples v5.0 (Smoke Particles)
 	 */
-	void updateCameraViewMatrix() {
-		if(!freeWalk) {
-			return;
-		}		
+	void updateCameraViewMatrix() {	
 		//camera inertia
 		cameraPosLag += (cameraPos - cameraPosLag) * inertia;
 		cameraRotLag += (cameraRot - cameraRotLag) * inertia;
@@ -78,6 +82,10 @@ public:
 		g_CameraViewMatrix = glm::translate(g_CameraViewMatrix, -cameraPosLag);
 	}
 	
+	/**
+	 * Moves camera based on given direction
+     * @param dir
+     */
 	void move(Move dir) {
 		switch(dir) {
 			case BACK:
@@ -103,6 +111,11 @@ public:
 		}
 	}
 	
+	/**
+	 * TESTING ONLY
+	 * Rotates camera around object
+     * @param lookAt center of rotation
+     */
 	void circle(glm::vec3 lookAt) {
 		if(angle == 0) {
 			Log::i("round started!");
@@ -121,11 +134,20 @@ public:
 		}
 	}
 	
+	/**
+	 * Roataes the camera 
+     * @param diffX difference in X axe in pixels
+     * @param diffY difference in Y axe in pixels
+     */
 	void rotate(float diffX, float diffY) {
 		cameraRot[0] += diffY * rotateSpeed;
 		cameraRot[1] += diffX * rotateSpeed;
 	}
 	
+	/**
+	 * TESTING ONLY
+	 * Sets camera matrix based on given data
+     */
 	void setCameraParams(const glm::mat3 &rot, const glm::vec3 &trans) {
 		g_CameraViewMatrix[3] = glm::vec4(trans, 1.0f);
 		
@@ -134,18 +156,14 @@ public:
 		g_CameraViewMatrix[2] = glm::vec4(rot[2], 0.0f);	
 	}
 	
+	/**
+	 * TESTING ONLY
+	 * Sets camera matrix based on given data
+     */	
 	void setCameraParams(const glm::mat4 &m) {
 		g_CameraViewMatrix = m;
 	}
-	
-	void switchFreewalk() {
-		freeWalk = !freeWalk;
-	}
-	
-	bool isCameraStatic() const {
-		return !freeWalk;
-	}
-	
+		
 	const glm::mat4 &getModelViewMatrix() const {
 		return g_CameraViewMatrix;
 	}

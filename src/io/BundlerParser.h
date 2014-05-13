@@ -1,6 +1,6 @@
-/* 
+/** @file 
  * File:   BundlerParser.h
- * Author: jaa
+ * Author: Daniel Pinc <princdan@fel.cvut.cz>
  *
  * Created on 3. říjen 2013, 12:44
  */
@@ -11,14 +11,26 @@
 #include "parser.h"
 #include <set>
 
+/**
+ * Parses bundler output
+ * for format info see http://www.cs.cornell.edu/~snavely/bundler/bundler-v0.4-manual.html#S6
+ */
 class BundlerParser {
-	std::vector<glm::vec3> points;
-	const std::string file;
+	std::vector<glm::vec3> points; //!< 3D points from bundler file
+	const std::string file; //!< path to file
 		
 public:
+	/**
+	 * 
+     * @param file path to bundler file
+     */
 	BundlerParser(const std::string &file) : file(file) {}
 	~BundlerParser() {}
-			
+	
+	/**
+	 * Parses given file
+     * @return list of camera data
+     */
 	std::vector<CameraPosition> parseFile() {
 		points.clear();
 		std::vector<CameraPosition> cameras;
@@ -107,7 +119,8 @@ public:
 		}
 		return cameras;	
 	}
-		
+	
+	/// Returns 3D points from bundler file
 	std::vector<glm::vec3> &getPoints()  {
 		return points;
 	}	

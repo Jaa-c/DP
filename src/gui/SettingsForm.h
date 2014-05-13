@@ -1,8 +1,9 @@
-/* 
+/** @file 
  * File:   SettingsForm.h
- * Author: jaa
+ * Author: Daniel Pinc <princdan@fel.cvut.cz>
  *
  * Created on 4. březen 2014, 22:24
+ * Opens form with settings
  */
 
 #ifndef _SETTINGSFORM_H

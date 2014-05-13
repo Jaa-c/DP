@@ -1,6 +1,6 @@
-/* 
+/** @file 
  * File:   Log.h
- * Author: jaa
+ * Author: Daniel Pinc <princdan@fel.cvut.cz>
  *
  * Created on 16. listopad 2013, 23:20
  */
@@ -16,6 +16,9 @@
 using std::cout;
 using std::string;
 
+/**
+ * Log to console
+ */
 class Log {
 		
 	enum Level {
@@ -56,20 +59,21 @@ class Log {
 	}
 
 public:
+	/// Log with info level
 	static void i(const string msg, ...) {
 		va_list argptr;
 		va_start(argptr, msg);
 		log(string_format(msg, argptr), LOG_INFO);
 		va_end(argptr);
 	}
-	
+	/// Log with debug level
 	static void d(const string msg, ...) {
 		va_list argptr;
 		va_start(argptr, msg);
 		log(string_format(msg, argptr), LOG_DEBUG);
 		va_end(argptr);
 	}
-	
+	/// Log with error level
 	static void e(const string msg, ...) {
 		va_list argptr;
 		va_start(argptr, msg);

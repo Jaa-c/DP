@@ -1,6 +1,6 @@
-/* 
+/** @file 
  * File:   ModelLoader.h
- * Author: jaa
+ * Author: Daniel Pinc <princdan@fel.cvut.cz>
  *
  * Created on 16. listopad 2013, 14:30
  */
@@ -21,6 +21,9 @@
 
 #include "glm/core/type.hpp"
 
+/**
+ * Static function for file loading from HDD 
+ */
 class DataLoader {
 	
 	static inline void updateBB(const aiVector3D &vert, glm::vec3 &max, glm::vec3 &min) {
@@ -35,7 +38,7 @@ class DataLoader {
 		
 public:	
 	/**
-	 * Imports model from varios formats
+	 * Imports model from various formats
      * @param file path to file
      * @param outIndices list of model indices
      * @param outVertices list of vertices
@@ -176,7 +179,6 @@ public:
 				raw.push_back((unsigned char) 0);
 			}
         }
-		//width += rowPadding; //TODO !?
 		
         jpeg_finish_decompress(&cinfo);
         jpeg_destroy_decompress(&cinfo);
@@ -185,6 +187,14 @@ public:
         return true;
 	}
 	
+	/**
+	 * Loads only dimensions from RAW file
+     * @param filename
+     * @param filename path to the image
+     * @param width image width
+     * @param height image height
+     * @param rowPadding alignment
+     */
 	static void loadRawInfo(
 		const std::string &filename,
 		int &width, 
@@ -236,6 +246,10 @@ public:
 		}
 	}
 	
+	/**
+	 * Checks if file exists
+     * @param name path to the file
+     */
 	static inline bool fileExists (const std::string& name) {
 		if (FILE *file = fopen(name.c_str(), "r")) {
 			fclose(file);

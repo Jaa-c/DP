@@ -1,6 +1,6 @@
-/* 
+/** @file 
  * File:   Texture.h
- * Author: jaa
+ * Author:  Daniel Pinc <princdan@fel.cvut.cz>
  *
  * Created on 23. listopad 2013, 22:03
  */
@@ -19,25 +19,30 @@
 
 class CameraPosition;
 
+/**
+ * Represents OpenGL texture
+ */
 class Texture {	
 	uint prevImgSize;
 	
 public:	
-	Photo * photo;
+	Photo * photo; //!< pointer to current photo
 	
-	GLenum target;
-	GLuint unit;
+	GLenum target; //!< texture target
+	GLuint unit; //!< texture unit
 	
-	GLuint textureID;
-	static GLuint nearestSamplerID;
-	static GLuint linearSamplerID;
+	GLuint textureID; //!< texture id
+	static GLuint nearestSamplerID; //!< GL_NEAREST sampler
+	static GLuint linearSamplerID; //!< GL_LINEAR sampler
 		
-	bool current; // flag for loading
-	bool updateImage;
+	bool current; //!< flag for loading image
+	bool updateImage; //!< if image has changed
 
 	Texture(const GLenum target, const GLuint unit, Photo * photo);
 	
+	/// Deletes texture on device
 	void release();
+	/// thue if image present and has data
 	bool checkTexture();
 	void setImage(Photo * photo);
 	const uchar *getImageStart() const;

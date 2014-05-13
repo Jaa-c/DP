@@ -1,6 +1,6 @@
-/* 
+/** @file 
  * File:   RadarRenderPass.h
- * Author: jaa
+ * Author: Daniel Pinc <princdan@fel.cvut.cz>
  *
  * Created on 21. březen 2014, 16:20
  */
@@ -13,10 +13,10 @@
 
 #include <GL/glew.h>
 
+/**
+ * Draws radar into the scene - camera positions and directions
+ */
 class RadarRenderPass : public RenderPass {
-	
-	Camera &camera;
-
 	//coordinates mapped on radar
 	glm::vec2 xr, yr;
 	int x, y, width, height;
@@ -26,10 +26,9 @@ public:
 	RadarRenderPass(
 		Renderer& r, 
 		ShaderHandler& s, 
-		std::shared_ptr<TextureHandler> th,
-		Camera &camera
+		std::shared_ptr<TextureHandler> th
 	) : 
-	RenderPass(RADAR_PASS, r, s, th), camera(camera) {
+	RenderPass(RADAR_PASS, r, s, th) {
 		x = y = width = height = 0;
 	}
 	
@@ -38,15 +37,12 @@ public:
 
 	}
 	
-	/**
-	 * TODO: refactor if there is time
-	 * Please don't look any further.
-     */
 	void draw(std::shared_ptr<ObjectData> object) {
 		if(!object->pointData) {
 			return;
 		}
-		
+		/// DO NOT LOOK DOWN!
+		const Camera &camera = renderer.getCamera();
 		const Points &cameras = object->pointData->getCameraPositions();
 		const Vectors &cameraDirections = object->pointData->getCameraDirections();
 		const glm::mat4 vecMat = glm::inverse(glm::transpose(object->getMvm()));

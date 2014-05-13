@@ -1,6 +1,6 @@
-/* 
+/** @file 
  * File:   NormalsDebugPass.h
- * Author: jaa
+ * Author: Daniel Pinc <princdan@fel.cvut.cz>
  *
  * Created on 24. duben 2014, 15:07
  */
@@ -10,6 +10,12 @@
 
 #include "RenderPass.h"
 
+/**
+ * Draws normals in vertices and in face center
+ * @param r
+ * @param s
+ * @param th
+ */
 class NormalsDebugPass : public RenderPass {
 			
 public:

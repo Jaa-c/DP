@@ -1,6 +1,6 @@
-/* 
+/** @file 
  * File:   ShaderHandler.h
- * Author: jaa
+ * Author:  Daniel Pinc <princdan@fel.cvut.cz>
  *
  * Created on 28. září 2013, 12:48
  */
@@ -12,7 +12,10 @@
 #include <iostream>
 #include "io/DataLoader.h"
 
-
+/**
+ * Handles loading shaders from file, compiling, linking
+ * Also provides shader IDs to render passes
+ */
 class ShaderHandler {
 public:
 	/// list of avaiable shaders
@@ -29,7 +32,7 @@ public:
 	
 	
 private:
-	const std::string SHADER_PATH = "shaders/";
+	const std::string SHADER_PATH = "shaders/"; //!< folder with shaders
 	/// shader file names
 	const std::string SHADER_SRC[SIZE] = {
 		"basic",
@@ -41,8 +44,7 @@ private:
 		"kmeans"
 	};
 	
-	/// Shader program ids
-	GLuint g_ProgramId[SIZE];		
+	GLuint g_ProgramId[SIZE]; //!< Shader program ids		
 	
 public:
 
@@ -52,7 +54,13 @@ public:
 	
 	~ShaderHandler() {}
 	
-	
+	/**
+	 * Returns ID of given program.
+	 * Compiles program if ID not avaiable (lazy load)
+	 * 
+     * @param shader
+     * @return 
+     */
 	GLuint getProgramId(ShaderType shader) {
 		if(g_ProgramId[shader] == 0) {
 			compileShaderProgram(shader);
@@ -60,10 +68,17 @@ public:
 		return g_ProgramId[shader];
 	}
 	
+	/**
+	 * Resets given program
+     * @param shader
+     */
 	void resetShader(ShaderType shader) {
 		g_ProgramId[shader] = 0;
 	}
 	
+	/**
+	 * Resets all programs
+	 */
 	void resetShaders() {
 		for(int i = 0; i < SIZE; i++) {
 			g_ProgramId[i] = 0;
@@ -72,6 +87,10 @@ public:
 
 private:
 	
+	/**
+	 * Compiles shaders from source
+     * @param shader
+     */
 	void compileShaderProgram(ShaderType shader) {
 		std::string name = SHADER_PATH + SHADER_SRC[shader];
 		
@@ -126,6 +145,12 @@ private:
 		}
 	}
 	
+	/**
+	 * Builds shader
+     * @param shader_type
+     * @param source
+     * @return 
+     */
 	GLuint createShaderFromSource(GLenum shader_type, const char* source) {
 		if (source == NULL) {
 			return 0;
@@ -163,6 +188,12 @@ private:
 		}
 	}
 
+	/**
+	 * Loads the file from HDD
+     * @param shader_type
+     * @param file_name
+     * @return 
+     */
 	GLuint createShaderFromFile(GLenum shader_type, const char* file_name) {
 		if (file_name == NULL) {
 			return 0;
@@ -198,6 +229,10 @@ private:
 		return shader_id;
 	}
 
+	/**
+	 * Prints compile status if error happend
+     * @param program_id
+     */
 	void checkProgramInfoLog(GLuint program_id) {
 		if (program_id == 0) {
 			return;
@@ -227,6 +262,10 @@ private:
 		return status;
 	}
 
+	/**
+	 * Checks log if error
+     * @param shader_id
+     */
 	void checkShaderInfoLog(GLuint shader_id) {
 		if (shader_id == 0) {
 			return;

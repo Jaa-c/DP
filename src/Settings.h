@@ -1,6 +1,6 @@
-/* 
+/** @file 
  * File:   Settings.h
- * Author: jaa
+ * Author: Daniel Pinc <princdan@fel.cvut.cz>
  *
  * Created on 20. březen 2014, 21:44
  */
@@ -41,10 +41,11 @@ public:
 	static uint prefferedCamera;
 	static bool circle;
 	
-	static int temp;
-	
+	///saves settings to file	
 	static void serialize(std::string file);
+	/// loads settings from file
 	static void deserialize(std::string file);
+	/// reset settings to their default values
 	static void reset();
 
 };

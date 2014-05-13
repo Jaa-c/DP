@@ -1,6 +1,6 @@
-/* 
+/** @file 
  * File:   Rz3Parser.h
- * Author: jaa
+ * Author: Daniel Pinc <princdan@fel.cvut.cz>
  *
  * Created on 17. březen 2014, 19:44
  */
@@ -12,12 +12,31 @@
 #include "ImageBB.h"
 #include <map>
 
+/**
+ * Parser for rz3 file format.
+ * Expects data like this:
+ * imageSequence	"Sequence 01"
+ * {
+ * 	anything..	b( index size step )	
+ * }
+ * 
+ * Camera
+ * {
+ * 	0
+ * 	F ( focal length )	Pr ( not used )	Pp ( not used )	K ( not used )
+ * 	Oc ( x y z )
+ * 	Rot ( r1 r2 r3 r4 5 r6 r7 r8 r9 )
+ * 
+ * 	1
+ * ...
+ */
 class Rz3Parser {
 	ImageLoader &imgLoader;
 	const string calibFile;
 	const string imageFile;
 	const string imageFolder;
-		
+	
+	/// reuse stringstream
 	void rewriteSS(std::stringstream &ss, string &line) {
 		ss.str("");
 		ss.clear();
@@ -25,10 +44,22 @@ class Rz3Parser {
 	}
 	
 public:
+	/**
+	 * Initializes members
+     * @param imgLoader loader for image data
+     * @param cf calibration file rz3
+     * @param imfile file with image indices
+     * @param imfolder folder with imgaes
+     */
 	Rz3Parser(ImageLoader &imgLoader, const string cf, const string imfile, const string imfolder) 
 		: imgLoader(imgLoader), calibFile(cf), imageFile(imfile), imageFolder(imfolder + "/") {}
 		
-	/// current gcc doesn't support C++11 regex :/, so it's stupid:
+	// current gcc doesn't support C++11 regex :/, so it's stupid
+	/**
+	 * Parses the file
+	 * @param imageBB instance to fix directions
+	 * @return vector of loaded data
+	 */
 	std::vector<Photo> parseFile(ImageBB & imageBB) {
 		std::vector<Photo> data;
 		

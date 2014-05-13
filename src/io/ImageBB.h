@@ -1,6 +1,6 @@
-/* 
+/** @file 
  * File:   ImageBB.h
- * Author: jaa
+ * Author: Daniel Pinc <princdan@fel.cvut.cz>
  *
  * Created on 3. květen 2014, 23:21
  */
@@ -36,7 +36,7 @@ class ImageBB {
 	}
 	
 	/**
-	 * DEBUG
+	 * DEBUG only
 	 */
 	void drawPoint(const glm::ivec2 &p, QImage &img, const QRgb c, const int s = 7) const {
 		for(int i = -s; i <= s; ++i) {
@@ -47,10 +47,19 @@ class ImageBB {
 	}
 	
 public:
+	/**
+	 * Initializes members
+     * @param vertices array of object vertices
+     */
 	ImageBB(const std::vector<glm::vec3> & vertices) : vertices(vertices) {
 	
 	}
 	
+	/**
+	 * Computes convex hull and finds center / area
+     * @param cam camera data
+     * @param img image data
+     */
 	void computeCameraParams(CameraPosition &cam, const ImageData &img) {
 		std::shared_ptr<QImage> qimg;
 		if(saveImage) qimg = std::make_shared<QImage>((img.path).c_str());

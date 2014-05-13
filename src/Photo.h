@@ -1,6 +1,6 @@
-/* 
+/** @file 
  * File:   Photo.h
- * Author: jaa
+ * Author: Daniel Pinc <princdan@fel.cvut.cz>
  *
  * Created on 31. březen 2014, 14:53
  */
@@ -16,18 +16,15 @@
  * + camera position, viewing direction, focal length
  */
 struct CameraPosition {
-	glm::mat4 Rt;
+	glm::mat4 Rt; //!< camera matrix
 	
-	glm::vec3 position;
-	/// this is the direction of the camera
-	glm::vec3 direction; 
-	/// this is computed direction to the center of visible part of an object.
-	glm::vec3 fixedDirection;
-	/// area of photo, that contains the object. 1 = object covers the whole photo, 0= there is no object
-	float relativeArea;
+	glm::vec3 position; //!< camera position
+	glm::vec3 direction; //!< this is the direction of the camera
+	glm::vec3 fixedDirection; //!< this is computed direction to the center of visible part of an object.
+	float relativeArea; //!<  area of photo, that contains the object. 1 = object covers the whole photo, 0= there is no object
 	
-	float focalL;
-	float d1, d2; //currently not used
+	float focalL; //!< focal length in px
+	float d1, d2; //!<currently not used
 	
 	CameraPosition() {
 		relativeArea = focalL = d1 = d2 = 0;
@@ -51,8 +48,7 @@ struct Image {
 };
 
 /**
- * Photo contains image data + thumbnail
- * + camera data
+ * Photo contains image data + thumbnail + camera data
  */
 class Photo {
 	friend class TextureHandler;
@@ -60,16 +56,16 @@ class Photo {
 	friend class ImgThread;
 	friend class CleanThread;
 		
-	Image image;
-	Image thumbnail;
+	Image image; //!< original image
+	Image thumbnail; //!< thumbnail
 	
 public:
-	const uint ID;
-	const std::string name;
-	const CameraPosition camera;
-	float thumbScale;
+	const uint ID; //!< unique ID
+	const std::string name; //!< file name
+	const CameraPosition camera; //!< camera caliration
+	float thumbScale; //!< original size / thumbnail size
 		
-	bool loading;
+	bool loading; //!< true if original is being loaded
 	
 	Photo(
 		const uint ID, 
@@ -87,11 +83,10 @@ public:
 		thumbScale = image.size.x / (float) thumbnail.size.x;
 	}
 	
-	/// for KD-Tree
-	int operator[] (const int i) const {
-		return camera.position[i];
-	}
-	
+	/**
+	 * Returns image if avaiable, thumbnail otherwise
+     * @return 
+     */
 	const Image& getImage() const {
 		if(!loading && image.data.size() != 0)
 			return image;

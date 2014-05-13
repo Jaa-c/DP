@@ -1,7 +1,7 @@
-/* 
+/** 
  * DEPRECATED
  * File:   RayCaster.h
- * Author: jaa
+ * Author: Daniel Pinc <princdan@fel.cvut.cz>
  *
  * Created on 6. duben 2014, 15:25
  */

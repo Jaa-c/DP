@@ -1,8 +1,9 @@
-/* 
+/** @file
  * File:   objectForm.h
- * Author: jaa
+ * Author: Daniel Pinc <princdan@fel.cvut.cz>
  *
  * Created on 20. březen 2014, 21:20
+ * Form with object settings
  */
 
 #ifndef _OBJECTFORM_H

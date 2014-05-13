@@ -43,7 +43,6 @@ void GLWidget::paintGL() {
 	
 	float time = gltimer->end();
 	gltimer->start();
-	Settings::temp = 0;
 	if(++f == 10) {
 		mainWin.setFps(1000.f / time);
 		f = 0;
@@ -63,7 +62,7 @@ void GLWidget::deleteScene() {
 	
 	camera.resetView();
 	renderPassHandler.removeAll();
-	
+	object.reset();
 	glClearColor(0.7f, 0.7f, 0.7f, 0);
 }
 
@@ -204,7 +203,7 @@ void GLWidget::addRenderPass(RenderPass::RenderPassType pass) {
 		case RenderPass::RADAR_PASS:
 			renderPassHandler.add(
 				RenderPass::RADAR_PASS,
-				std::make_shared<RadarRenderPass>(renderer, shaderHandler, textureHandler, camera)
+				std::make_shared<RadarRenderPass>(renderer, shaderHandler, textureHandler)
 			);
 			break;
 		case RenderPass::NORMALS_PASS:

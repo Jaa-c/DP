@@ -1,6 +1,6 @@
-/* 
+/** @file 
  * File:   TexturingPrePass.h
- * Author: jaa
+ * Author: Daniel Pinc <princdan@fel.cvut.cz>
  *
  * Created on 10. duben 2014, 0:34
  */
@@ -12,6 +12,9 @@
 
 class TexturingRenderPass;
 
+/**
+ * Finds faces that needs to be textured
+ */
 class TexturingPrePass : public RenderPass {
 	friend TexturingRenderPass;
 	
@@ -22,9 +25,7 @@ class TexturingPrePass : public RenderPass {
 	GLuint frameBuffer;
 	GLuint normalsTexture;
 	GLuint normalsSampler;
-	
-	std::vector<float> data;
-	
+		
 	GLuint reductionShaderID;
 	GLuint kmeansShaderID;
 	GLuint loc_km_comp_texSize;
@@ -33,7 +34,7 @@ class TexturingPrePass : public RenderPass {
 	GLuint resultBuffer;
 	GLuint idxBuffer;
 	
-	const static int CLUSTERS = 4;
+	const static int CLUSTERS = 4; //!< number of clusters used
 	
 public:
 	
@@ -288,88 +289,6 @@ public:
 			sum += data[i].size;
 		}
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
-		
-//		glBindTexture(GL_TEXTURE_2D, normalsTexture);
-//		if(data.size() < (uint) 3* winSize.x * winSize.y) {
-//			data.resize(3* winSize.x * winSize.y);
-//		}
-//		glReadPixels(0, 0, winSize.x, winSize.y, GL_RGB,  GL_FLOAT, &data[0]);
-//		
-//		const int clusterCount = 5;
-//		typedef std::pair<int, glm::vec3> Norm;
-//		std::vector<Norm> normals;
-////		normals.reserve(data.size() / 3);
-//		
-//		std::vector<Cluster> clusters;
-//		clusters.resize(clusterCount);
-//		for(int i = 0; i < clusterCount; ++i) {
-//			clusters[i].id = i;
-//			clusters[i].size = 0;
-//			clusters[i].weight = 0;
-//		}
-//		
-//		
-//		std::default_random_engine gen;
-//		std::uniform_int_distribution<int> distr(0, clusterCount-1);
-//		
-//		
-//		for(uint i = 0; i < data.size(); i += 3) {
-//			if(data[i] != 0.f || data[i+1] != 0.f || data[i+2] != 0.f) {
-//				int d = distr(gen); //random is OK, it's k-menas works fast...
-//				normals.push_back(Norm(d, glm::vec3(data[i], data[i+1], data[i+2])));
-//			}
-//		}
-//		
-//		bool moving = true;
-//		int iterations = 0;
-//		while(moving && iterations < 20) {
-//			moving = false;
-//			for(Cluster &c : clusters) {
-//				c.centroid *= 0;
-//				c.size = 0;
-//			}
-//			
-//			for(Norm &n : normals) {
-//				clusters[n.first].centroid += n.second;
-//				clusters[n.first].size++;
-//			}
-//			for(Cluster &c : clusters) {
-//				c.centroid /= (float) c.size;
-//				c.centroid = glm::normalize(c.centroid);
-//			}
-//		
-//			float dist = -1;
-//			for(Norm &n : normals) {
-//				dist = glm::dot(n.second, clusters[n.first].centroid);
-//				int moveTo = -1;
-//				for(Cluster &c : clusters) {
-//					const float diff = glm::dot(n.second, c.centroid);
-//					if(diff > dist) {
-//						moveTo = c.id;
-//						dist = diff; // !?
-//					}
-//					else if(diff < dist - 0.05) { //merge similar clusters
-//						if(c.id < n.first) {
-//							moveTo = c.id;
-//							dist = diff; // !?
-//						}
-//					}
-//				}
-//				if(moveTo != -1) {
-//					n.first = moveTo;
-//					moving = true;
-//				}
-//			}
-//			++iterations;
-//		}
-//		for(Cluster &c : clusters) {
-//			c.centroid *= 0;
-//			c.size = 0;
-//		}
-//		for(Norm &n : normals) {
-//			clusters[n.first].centroid += n.second;
-//			clusters[n.first].size++;
-//		}
 		
 		for(Cluster &cl: clusters) {
 			cl.centroid /= (float) cl.size;

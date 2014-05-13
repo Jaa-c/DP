@@ -16,8 +16,6 @@ bool Settings::billinearFiltering = true;
 uint Settings::prefferedCamera = 0;
 bool Settings::circle = false;
 
-int Settings::temp = 0;
-
 void Settings::reset() {
 	Settings::usingTextures = 4;
 	Settings::objectRotate = glm::vec3(0, 0, 0);

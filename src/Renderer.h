@@ -1,6 +1,6 @@
-/* 
+/** @file 
  * File:   Renderer.h
- * Author: jaa
+ * Author: Daniel Pinc <princdan@fel.cvut.cz>
  *
  * Created on 16. listopad 2013, 20:06
  */
@@ -18,13 +18,18 @@
 
 #include "glm/gtc/matrix_inverse.hpp"
 
+/**
+ * Draws everything
+ */
 class Renderer {
-	GLuint planeVao;
-	Camera& camera;
+	Camera& camera; //!< reference to virutal camera
 	
-	std::vector<GLuint> *ulocs;
+	std::vector<GLuint> *ulocs; //!< some default uniform locations
 	
-	
+	/**
+	 * DSraws single texture
+     * @param texture
+     */
 	void drawTexture(Texture &texture) {
 		if(!texture.checkTexture()) {
 			return; //no texture avaiable!
@@ -78,13 +83,20 @@ class Renderer {
 
 public:
 	
-	Renderer(Camera& camera) : planeVao(GL_ID_NONE), camera(camera), ulocs(nullptr) {
+	Renderer(Camera& camera) : camera(camera), ulocs(nullptr) {
 	}
 	
+	/**
+	 * Sets default uniform locations
+     * @param locs
+     */
 	void setUniformLocations(std::vector<GLuint> * locs) {
 		ulocs = locs;
 	}
 	
+	/**
+	 * Binds default camera matrices
+     */
 	void bindCameraMatrices() {
 		const glm::mat4 &modelView = camera.getModelViewMatrix();
 		const glm::mat4 &projection = camera.getProjectionMatrix();
@@ -93,6 +105,11 @@ public:
 		glUniformMatrix4fv(ulocs->at(RenderPass::PROJECTION_MATRIX), 1, GL_FALSE, &projection[0][0]);	
 	}
 	
+	/**
+	 * Draws all textures according to given indices
+     * @param textures
+     * @param indices
+     */
 	void drawTextures(std::vector<Texture>& textures, const std::unordered_map<uint, uint> & indices) {
 		std::vector<GLint> units(textures.size());
 		for(auto &tex : textures)  {
@@ -103,16 +120,19 @@ public:
 		glUniform1iv(ulocs->at(RenderPass::TEXTURE0), textures.size(), &units[0]);
 	}
 	
+	/**
+	 * Draws points
+     * @param data
+     */
 	void drawPointData(ObjectData &data) {
 		std::shared_ptr<PointData> points = data.pointData;
 		if(points == nullptr) {
 			return; 
 		}
 		
-		if(!camera.isCameraStatic()) { //if we are moving
-			glm::mat4 modelView =  camera.getModelViewMatrix() * data.getMvm();
-			glUniformMatrix4fv(ulocs->at(RenderPass::MODELVIEW_MATRIX), 1, GL_FALSE, &modelView[0][0]);		
-		}
+		glm::mat4 modelView =  camera.getModelViewMatrix() * data.getMvm();
+		glUniformMatrix4fv(ulocs->at(RenderPass::MODELVIEW_MATRIX), 1, GL_FALSE, &modelView[0][0]);		
+
 		
 		if(points->pointsVBO == GL_ID_NONE) {
 			glGenBuffers(1, &points->pointsVBO);
@@ -145,18 +165,21 @@ public:
 		
 	}
 	
+	/**
+	 * Dras the object
+     * @param data
+     */
 	void drawObject(ObjectData &data) {
 		if(!data.isOK()) {
 			return;
 		}
 		
-		if(!camera.isCameraStatic()) { //if we are moving
-			glm::mat4 modelView =  camera.getModelViewMatrix() * data.getMvm();
-			glUniformMatrix4fv(ulocs->at(RenderPass::MODELVIEW_MATRIX), 1, GL_FALSE, &modelView[0][0]);
-			
-			glm::mat3 normalMatrix = glm::inverseTranspose(glm::mat3(data.getMvm()));
-			glUniformMatrix3fv(ulocs->at(RenderPass::NORMAL_MATRIX), 1, GL_FALSE, &normalMatrix[0][0]);
-		}
+		glm::mat4 modelView =  camera.getModelViewMatrix() * data.getMvm();
+		glUniformMatrix4fv(ulocs->at(RenderPass::MODELVIEW_MATRIX), 1, GL_FALSE, &modelView[0][0]);
+
+		glm::mat3 normalMatrix = glm::inverseTranspose(glm::mat3(data.getMvm()));
+		glUniformMatrix3fv(ulocs->at(RenderPass::NORMAL_MATRIX), 1, GL_FALSE, &normalMatrix[0][0]);
+		
 		//initialize buffers
 		if (data.vaoID == GL_ID_NONE) {
 			glGenVertexArrays(1, &data.vaoID);

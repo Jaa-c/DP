@@ -1,8 +1,9 @@
-/* 
+/** @file
  * File:   OpenForm.h
- * Author: jaa
+ * Author: Daniel Pinc <princdan@fel.cvut.cz>
  *
  * Created on 24. leden 2014, 16:45
+ * Form to open new scene
  */
 
 #ifndef _OPENFORM_H
