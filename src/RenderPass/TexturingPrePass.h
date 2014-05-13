@@ -111,11 +111,20 @@ public:
 		assert(programID != GL_ID_NONE);
 		glUseProgram(programID);
 		
-		const glm::mat3 invMvm = glm::inverseTranspose(glm::mat3(object->getMvm()));
-		const glm::mat4 invMvmDir = glm::transpose(object->getMvm());
-		glm::vec3 viewDir = glm::normalize(object->getCentroidPosition() - renderer.getCamera().getCameraPosition());
-		glm::vec3 viewDirObjSpace(glm::normalize(invMvmDir * glm::vec4(viewDir, 1.0f)));
-
+		const Camera &cam = renderer.getCamera();
+		
+		const glm::mat4 im = glm::inverse(object->getMvm());
+		const glm::mat3 invMvm = glm::transpose(glm::mat3(im));
+		
+		glm::vec3 viewDir;
+		if(false && object->insideAABB(glm::vec3(im * glm::vec4(cam.getCameraPosition(), 1)))) {
+			viewDir = -cam.getCameraViewDirection();
+		}
+		else {
+			viewDir = glm::normalize(object->getCentroidPosition() - cam.getCameraPosition());
+		}
+		
+		glm::vec3 viewDirObjSpace(glm::normalize(glm::transpose(object->getMvm()) * glm::vec4(viewDir, 1.0f)));
 		std::vector<Photo *> photos = textureHandler->getClosestCameras(viewDirObjSpace, Settings::usingTextures); 
 				
 		if(textureDataUB != GL_ID_NONE) {

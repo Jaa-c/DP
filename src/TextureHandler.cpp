@@ -18,6 +18,7 @@
 #include "Settings.h"
 #include "src/Photo.h"
 #include "RayCaster.h"
+#include "src/Camera.h"
 
 TextureHandler::TextureHandler() {
 	//I want low nober of threads I don't want to waint long a get 

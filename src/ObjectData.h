@@ -153,6 +153,11 @@ public:
 	std::pair<glm::vec3, glm::vec3> getAABB() const {
 		return std::pair<glm::vec3, glm::vec3>(min, max);
 	}
+	
+	bool insideAABB(const glm::vec3 &p) const {
+		return p.x < max.x && p.y < max.y && p.z < max.z &&
+				p.x > min.x && p.y > min.y && p.z > min.z;
+	}
 
 
 };

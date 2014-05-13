@@ -20,7 +20,7 @@ class GLWidget;
 class MainWindow : public QMainWindow
 {
 	Q_OBJECT
-
+	friend class GLWidget;
 public:
 	MainWindow(QApplication *app, int w, int h);
 	
@@ -32,7 +32,6 @@ private slots:
 	void quitCB();
 	void texturingPassCB();
 	void texturingPrePassCB();
-	void basicTexturingPassCB();
 	void bundlerPointsPassCB();
 	void normalsPassCB();
 	void radarPassCB();
@@ -68,7 +67,6 @@ private:
 	std::shared_ptr<QAction> quitAct;
 	std::shared_ptr<QAction> texturingRP;
 	std::shared_ptr<QAction> texturingPreRP;
-	std::shared_ptr<QAction> basicTexturingRP;
 	std::shared_ptr<QAction> bundlerPointsRP;
 	std::shared_ptr<QAction> radarRP;
 	std::shared_ptr<QAction> normalsRP;
@@ -77,7 +75,8 @@ private:
 	std::shared_ptr<QAction> objectSettings;
 	
 	std::shared_ptr<QActionGroup> texGroup;
-
+	
+	bool init;
 };
 
 #endif	/* MAINWINDOW_H */

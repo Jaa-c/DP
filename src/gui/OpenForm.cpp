@@ -14,7 +14,7 @@ OpenForm::OpenForm(std::shared_ptr<GLWidget> glw) : glWidget(glw) {
 	openForm.setupUi(this);
 	openForm.tabWidget->setCurrentIndex(0);
 	//DEBUG TEMP
-	switch(1) {
+	switch(0) {
 		case 0:
 			openForm.geometryPath->setText("/home/jaa/Documents/FEL/DP/data/dum/dil09nn.obj");
 			openForm.photosPath->setText("/home/jaa/Documents/FEL/DP/data/dum/09/");

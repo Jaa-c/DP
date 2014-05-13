@@ -58,9 +58,9 @@ class Renderer {
 		assert(texture.textureID);
 		
 		glCheckError();
-		if(texture.updateImage) {
+		if(texture.updateImage && texture.checkTexture()) {
 			glBindTexture(texture.target, texture.textureID);
-			glTexSubImage2D(texture.target, 0, 0, 0, texture.getSizeWithPadding().x,
+				glTexSubImage2D(texture.target, 0, 0, 0, texture.getSizeWithPadding().x,
 					texture.getSizeWithPadding().y, GL_RGB, GL_UNSIGNED_BYTE, texture.getImageStart());
 			glCheckError();
 			glBindTexture(texture.target, 0);

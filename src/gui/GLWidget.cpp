@@ -43,13 +43,16 @@ void GLWidget::paintGL() {
 	
 	float time = gltimer->end();
 	gltimer->start();
-	if(Settings::circle) std::cout << time << "\n";// << Settings::temp << "\n";
 	Settings::temp = 0;
 	if(++f == 10) {
 		mainWin.setFps(1000.f / time);
 		f = 0;
 	}
 	this->update(); //TODO
+	if(mainWin.init) {
+		mainWin.init = false;
+		mainWin.texturingPreRP->setChecked(false);
+	}
 }
 
 void GLWidget::deleteScene() {
@@ -99,6 +102,7 @@ void GLWidget::createScene(
 		controlls.setPhotos(&textureHandler->getPhotos());
 				
 		glClearColor(0.4f, 0.4f, 0.7f, 0);
+		mainWin.init = true;
 	}
 	catch(std::string &msg) {
 		QMessageBox messageBox;

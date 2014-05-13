@@ -1,6 +1,7 @@
 /* 
+ * @file
  * File:   GLWidget.h
- * Author: jaa
+ * Author: Daniel Pinc <princdan@fel.cvut.cz>
  *
  * Created on 22. leden 2014, 18:48
  */

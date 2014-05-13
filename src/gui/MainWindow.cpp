@@ -8,7 +8,7 @@
 #include <QApplication>
 #include <QtGui/QtGui>
 
-MainWindow::MainWindow(QApplication *app, int w, int h) : view(nullptr) {
+MainWindow::MainWindow(QApplication *app, int w, int h) : view(nullptr), init(false) {
 	//Menu
 	createActions();
 	createMenus();
@@ -61,7 +61,7 @@ void MainWindow::initScene() {
 	settings->setEnabled(true);
 	
 	//should be last, if nvidia not avaiable
-	texturingPreRP->setChecked(false);
+	texturingPreRP->setChecked(true);
 }
 
 void MainWindow::createActions() {
@@ -86,12 +86,7 @@ void MainWindow::createActions() {
 	texturingRP->setCheckable(true);
 	texturingRP->setActionGroup(texGroup.get());
 	connect(texturingRP.get(), SIGNAL(changed()), this, SLOT(texturingPassCB()));
-	
-	basicTexturingRP = std::make_shared<QAction>(tr("B&asic Texturing Pass"), this);
-	basicTexturingRP->setCheckable(true);
-	basicTexturingRP->setActionGroup(texGroup.get());
-	connect(basicTexturingRP.get(), SIGNAL(changed()), this, SLOT(basicTexturingPassCB()));
-	
+		
 	bundlerPointsRP = std::make_shared<QAction>(tr("&Display camera positions"), this);
 	bundlerPointsRP->setCheckable(true);
 	connect(bundlerPointsRP.get(), SIGNAL(changed()), this, SLOT(bundlerPointsPassCB()));
@@ -124,7 +119,6 @@ void MainWindow::createMenus() {
 	renderPass = menuBar()->addMenu(tr("Render Passes"));
 	renderPass->addAction(texturingPreRP.get());
 	renderPass->addAction(texturingRP.get());
-	renderPass->addAction(basicTexturingRP.get());
 	renderPass->addAction(bundlerPointsRP.get());
 	renderPass->addAction(normalsRP.get());
 	renderPass->addAction(radarRP.get());
@@ -180,15 +174,6 @@ void MainWindow::texturingPrePassCB() {
 	}
 	else {
 		glWidget->removeRenderPass(RenderPass::TEXTURING_PRE_PASS);
-	}
-}
-
-void MainWindow::basicTexturingPassCB() {
-	if(basicTexturingRP->isChecked()) {
-		glWidget->addRenderPass(RenderPass::BASIC_TEXTURING_PASS);
-	}
-	else {
-		glWidget->removeRenderPass(RenderPass::BASIC_TEXTURING_PASS);
 	}
 }
 
