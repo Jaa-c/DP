@@ -29,6 +29,10 @@ typedef std::vector<Vector> Vectors;
 #define glCheckError() 
 #endif //DEBUG
 
+#ifndef M_PI
+#define M_PI		3.14159265358979323846
+#endif
+
 void glError(const char *file, int line);
 
 #endif	/* GLOBALS_H */

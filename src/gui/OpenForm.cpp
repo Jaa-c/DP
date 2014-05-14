@@ -13,7 +13,7 @@
 OpenForm::OpenForm(std::shared_ptr<GLWidget> glw) : glWidget(glw) {
 	openForm.setupUi(this);
 	openForm.tabWidget->setCurrentIndex(0);
-	//DEBUG TEMP
+//DEBUG TEMP
 	switch(0) {
 		case 0:
 			openForm.geometryPath->setText("/home/jaa/Documents/FEL/DP/data/dum/dil09nn.obj");
@@ -31,24 +31,6 @@ OpenForm::OpenForm(std::shared_ptr<GLWidget> glw) : glWidget(glw) {
 			openForm.geometryPath->setText("/home/jaa/Documents/FEL/DP/data/sarkofag/sarkofag.obj");
 			openForm.bundlerPath->setText("/home/jaa/Documents/FEL/DP/data/sarkofag/bundle.out");
 			openForm.photosPath->setText("/home/jaa/Documents/FEL/DP/data/sarkofag/photos");
-			openForm.tabWidget->setCurrentIndex(0);
-			break;
-		case 3:
-			openForm.geometryPath->setText("/home/jaa/Documents/FEL/DP/data/kachna/kachna.obj");
-			openForm.scannerPath->setText("/home/jaa/Documents/FEL/DP/data/kachna/kachna.info");
-			openForm.photosPath->setText("/home/jaa/Documents/FEL/DP/data/kachna");
-			openForm.tabWidget->setCurrentIndex(2);
-			break;
-		case 4:
-			openForm.geometryPath->setText("/home/jaa/Documents/FEL/DP/data/faust/faust_50_part3.obj");
-			openForm.bundlerPath->setText("/home/jaa/Documents/FEL/DP/data/faust/bundle.out");
-			openForm.photosPath->setText("/home/jaa/Documents/FEL/DP/data/faust/");
-			openForm.tabWidget->setCurrentIndex(0);
-			break;
-		case 5:
-			openForm.geometryPath->setText("/home/jaa/Documents/FEL/DP/data/amadija/mesh.obj");
-			openForm.bundlerPath->setText("/home/jaa/Documents/FEL/DP/data/amadija/bundle.out");
-			openForm.photosPath->setText("/home/jaa/Documents/FEL/DP/data/amadija/photos");
 			openForm.tabWidget->setCurrentIndex(0);
 			break;
 	}

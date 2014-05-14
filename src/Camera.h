@@ -121,7 +121,7 @@ public:
 			Log::i("round started!");
 			cameraPosTemp = cameraPos;
 		}
-		angle += 0.003f;
+		angle += 0.0015f;
 		cameraPos.x = 30.f * glm::cos(angle) + lookAt.x;
 		cameraPos.z = 30.f * glm::sin(angle) + lookAt.z;
 		g_CameraViewMatrix = glm::lookAt(cameraPos, lookAt, glm::vec3(0, 1, 0));
